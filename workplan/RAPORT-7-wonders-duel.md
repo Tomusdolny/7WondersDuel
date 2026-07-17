@@ -240,7 +240,7 @@ Legenda kolumn:
 | Magistrates Guild | 2 Wood + 1 Clay + 1 Papyrus | 1 moneta / 1 VP za każdą niebieską w mieście z największą liczbą niebieskich |
 | Scientists Guild | 2 Clay + 2 Wood | 1 moneta / 1 VP za każdą zieloną w mieście z największą liczbą zielonych |
 | Moneylenders Guild | 2 Stone + 2 Wood | 1 VP za każde 3 monety w bogatszym skarbcu |
-| Tacticians Guild | 2 Stone + 1 Clay + 1 Papyrus | 1 moneta / 1 VP za każdą czerwoną w mieście z największą liczbą czerwonych |
+| Tacticians Guild | 2 Stone + 1 Clay + 1 Papyrus | 1 moneta / 1 VP za każdą czerwoną w mieście z największą liczbą czerwonych  |
 
 ---
 
