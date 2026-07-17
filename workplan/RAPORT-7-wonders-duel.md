@@ -48,8 +48,7 @@
 - Skarbiec: `1 VP / 3 monety` (pełne zestawy).
 
 ### Symbole nauki (7)
-
-Występują na zielonych kartach + żetonie *Law*. Para identycznych → wybór żetonu Postępu z planszy.
+Występują na zielonych kartach + żetonie *Law*. Para identycznych → wybór żetonu Postępu z planszy.  
 
 
 | Symbol (umowny)                       | Karty z tym symbolem       |
@@ -63,7 +62,7 @@ Występują na zielonych kartach + żetonie *Law*. Para identycznych → wybór 
 | Law                                   | tylko żeton Progress *Law* |
 
 
-> Uwaga: w implementacji lepiej użyć ID symboli (`writing`, `wheel`, `math`, `chemistry`, `sundial`, `astronomy`, `law`), nie ikon.
+> Uwaga: w implementacji lepiej użyć ID symboli (`writing`, `wheel`, `math`, `chemistry`, `sundial`, `astronomy`, `law`), nie  ikon.
 
 ### Łańcuchy (free construction)
 
@@ -293,17 +292,15 @@ Legenda kolumn:
 
 *Koszt płacisz zawsze zasobami. Przy budowie (oprócz Builders i Moneylenders) monety wg „miasta z największą liczbą X”; na koniec gry VP wg tego samego kryterium. Dla Shipowners: jedno miasto liczone łącznie dla brąz+szary.*
 
-
-| Karta                             | Koszt                                  | Efekt                                                                          |
-| --------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------ |
-| Merchants Guild *(Traders Guild)* | 1 Wood + 1 Clay + 1 Glass + 1 Papyrus  | 1 moneta / 1 VP za każdą żółtą w mieście z największą liczbą żółtych           |
-| Shipowners Guild                  | 1 Stone + 1 Clay + 1 Glass + 1 Papyrus | 1 moneta / 1 VP za każdą brązową+szarą w mieście z największą liczbą tych kart |
-| Builders Guild                    | 2 Stone + 1 Wood + 1 Clay + 1 Glass    | 2 VP za każdy cud w mieście z największą liczbą cudów                          |
-| Magistrates Guild                 | 2 Wood + 1 Clay + 1 Papyrus            | 1 moneta / 1 VP za każdą niebieską w mieście z największą liczbą niebieskich   |
-| Scientists Guild                  | 2 Clay + 2 Wood                        | 1 moneta / 1 VP za każdą zieloną w mieście z największą liczbą zielonych       |
-| Moneylenders Guild                | 2 Stone + 2 Wood                       | 1 VP za każde 3 monety w bogatszym skarbcu                                     |
-| Tacticians Guild                  | 2 Stone + 1 Clay + 1 Papyrus           | 1 moneta / 1 VP za każdą czerwoną w mieście z największą liczbą czerwonych     |
-
+| Karta | Koszt | Efekt |
+|-------|-------|-------|
+| Merchants Guild *(Traders Guild)* | 1 Wood + 1 Clay + 1 Glass + 1 Papyrus | 1 moneta / 1 VP za każdą żółtą w mieście z największą liczbą żółtych |
+| Shipowners Guild | 1 Stone + 1 Clay + 1 Glass + 1 Papyrus | 1 moneta / 1 VP za każdą brązową+szarą w mieście z największą liczbą tych kart |
+| Builders Guild | 2 Stone + 1 Wood + 1 Clay + 1 Glass | 2 VP za każdy cud w mieście z największą liczbą cudów |
+| Magistrates Guild | 2 Wood + 1 Clay + 1 Papyrus | 1 moneta / 1 VP za każdą niebieską w mieście z największą liczbą niebieskich |
+| Scientists Guild | 2 Clay + 2 Wood | 1 moneta / 1 VP za każdą zieloną w mieście z największą liczbą zielonych |
+| Moneylenders Guild | 2 Stone + 2 Wood | 1 VP za każde 3 monety w bogatszym skarbcu |
+| Tacticians Guild | 2 Stone + 1 Clay + 1 Papyrus | 1 moneta / 1 VP za każdą czerwoną w mieście z największą liczbą czerwonych  |
 
 ---
 
