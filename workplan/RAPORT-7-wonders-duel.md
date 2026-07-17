@@ -41,7 +41,7 @@
 - Skarbiec: `1 VP / 3 monety` (pełne zestawy).
 
 ### Symbole nauki (7)
-Występują na zielonych kartach + żetonie *Law*. Para identycznych → wybór żetonu Postępu z planszy.
+Występują na zielonych kartach + żetonie *Law*. Para identycznych → wybór żetonu Postępu z planszy.  
 
 | Symbol (umowny) | Karty z tym symbolem |
 |-----------------|----------------------|
@@ -53,7 +53,7 @@ Występują na zielonych kartach + żetonie *Law*. Para identycznych → wybór 
 | Astronomy (glob) | University, Observatory |
 | Law | tylko żeton Progress *Law* |
 
-> Uwaga: w implementacji lepiej użyć ID symboli (`writing`, `wheel`, `math`, `chemistry`, `sundial`, `astronomy`, `law`), nie ikon.
+> Uwaga: w implementacji lepiej użyć ID symboli (`writing`, `wheel`, `math`, `chemistry`, `sundial`, `astronomy`, `law`), nie  ikon.
 
 ### Łańcuchy (free construction)
 
