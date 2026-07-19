@@ -1,15 +1,6 @@
-export type Resource = 'wood' | 'stone' | 'clay' | 'glass' | 'papyrus';
+import type { Resource, ScienceSymbol } from "../../resources";
 
 export type CardColor = 'brown' | 'grey' | 'blue' | 'green' | 'yellow' | 'red' | 'purple';
-
-export type ScienceSymbol =
-  | 'writing'
-  | 'wheel'
-  | 'math'
-  | 'chemistry'
-  | 'sundial'
-  | 'astronomy'
-  | 'law';
 
 /**
  * Symbole łańcuchów (free construction).
