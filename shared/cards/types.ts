@@ -34,11 +34,6 @@ export type ChainSymbol =
   | 'lamp' // Laboratory → Observatory
   | 'column'; // Rostrum → Senate
 
-/** Brak symbolu łańcucha na karcie. */
-export const NO_CHAIN = null;
-
-export type ChainLink = ChainSymbol | typeof NO_CHAIN;
-
 export type Age = 1 | 2 | 3;
 
 export type CardId = string;
@@ -54,8 +49,8 @@ interface CardBase {
   name: string;
   age: Age;
   cost: Cost;
-  /** Symbol łańcucha; brak pola / `NO_CHAIN` = karta poza łańcuchem. */
-  chain: ChainLink;
+  /** Symbol łańcucha; brak pola = karta poza łańcuchem. */
+  chain?: ChainSymbol;
 }
 
 /**
