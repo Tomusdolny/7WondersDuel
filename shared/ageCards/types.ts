@@ -1,4 +1,4 @@
-import type { Resource, ScienceSymbol } from "../../resources";
+import type { Resource, ScienceSymbol } from "../resources";
 
 export type CardColor = 'brown' | 'grey' | 'blue' | 'green' | 'yellow' | 'red' | 'purple';
 

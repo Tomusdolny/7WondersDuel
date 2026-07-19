@@ -1,4 +1,4 @@
-import type { Resource } from '../../resources';
+import type { Resource } from '../resources';
 
 export type WonderId = string;
 
