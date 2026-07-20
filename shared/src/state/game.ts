@@ -1,14 +1,17 @@
-import type { Age, CardId } from '../ageCards/types';
-import type { PlayerId, PlayerState } from './player';
-import type { ProgressTokenId } from '../progressTokens/types';
-import type { WonderId } from '../wonders/types';
-import type { ConflictPosition } from '../militaryTokens/types';
-import type { MilitaryToken } from '../militaryTokens/types';
+import type { Age, CardId } from '../ageCards/types.js';
+import type { PlayerId, PlayerState } from './player.js';
+import type { ProgressTokenId } from '../progressTokens/types.js';
+import type { WonderId } from '../wonders/types.js';
+import type { ConflictPosition } from '../militaryTokens/types.js';
+import type { MilitaryToken } from '../militaryTokens/types.js';
 
 /**
  * Slot w piramidzie ery (20 kart).
  * Dostępność (nieprzykryta) i odkrywanie face-down wylicza silnik z layoutu ery + pozostałych slotów.
  */
+
+export type TakenSlot = null;
+
 export interface StructureSlot {
   /** Indeks w layoucie ery (0–19). */
   index: number;
@@ -64,8 +67,8 @@ export interface GameState {
 
   /** Piramida bieżącej ery (tylko niewzięte karty). */
   // TODO: Move it to its own file and add a function to build the structure from the age number
-  // TODO: Also automate it -> add a function to reveal cards after pick up
-  structure: StructureSlot[];
+  // TODO: Also automate it -> add a function to calculate face-up cards from structure or after pick up
+  structure: (StructureSlot | TakenSlot)[];
 
   /** Discard gry (budynki odrzucone za monety / efektami w trakcie partii). */
   /** NEEDED */

@@ -1,4 +1,4 @@
-import type { Resource } from '../resources';
+import type { Resource } from '../resources.js';
 
 export type WonderId = string;
 

@@ -1,4 +1,4 @@
-import type { WonderCard } from './types';
+import type { WonderCard } from './types.js';
 
 export const WONDER_CARDS = [
   {

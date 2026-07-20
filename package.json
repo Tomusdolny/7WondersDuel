@@ -1,0 +1,19 @@
+{
+  "name": "7ww",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build -w @7ww/shared && npm run build -w @7ww/backend && npm run build -w @7ww/frontend",
+    "build:shared": "npm run build -w @7ww/shared",
+    "dev:backend": "npm run dev -w @7ww/backend",
+    "dev:frontend": "npm run dev -w @7ww/frontend",
+    "typecheck": "npm run typecheck -w @7ww/shared && npm run typecheck -w @7ww/backend && npm run typecheck -w @7ww/frontend"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

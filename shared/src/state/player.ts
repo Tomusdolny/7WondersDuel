@@ -1,7 +1,7 @@
-import type { CardId } from '../ageCards/types';
-import type { WonderId } from '../wonders/types';
-import type { ProgressTokenId } from '../progressTokens/types';
-import type { Resource } from '../resources';
+import type { CardId } from '../ageCards/types.js';
+import type { WonderId } from '../wonders/types.js';
+import type { ProgressTokenId } from '../progressTokens/types.js';
+import type { Resource } from '../resources.js';
 
 export type PlayerId = string;
 export type { ProgressTokenId };

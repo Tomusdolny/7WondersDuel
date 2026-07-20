@@ -1,4 +1,4 @@
-import type { MilitaryToken } from './types';
+import type { MilitaryToken } from './types.js';
 
 export const MILITARY_TOKENS: MilitaryToken[] = [
   {

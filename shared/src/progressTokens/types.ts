@@ -1,4 +1,4 @@
-import type { ScienceSymbol } from '../resources';
+import type { ScienceSymbol } from '../resources.js';
 
 export type ProgressTokenId = string;
 

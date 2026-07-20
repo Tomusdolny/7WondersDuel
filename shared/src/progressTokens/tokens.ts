@@ -1,4 +1,4 @@
-import type { ProgressToken } from './types';
+import type { ProgressToken } from './types.js';
 
 export const PROGRESS_TOKENS = [
   {
