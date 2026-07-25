@@ -1,4 +1,4 @@
-import { navigate } from '../store/uiStore';
+import { createRoom, navigate } from '../store/uiStore';
 
 export function LandingScreen() {
   return (
@@ -6,7 +6,7 @@ export function LandingScreen() {
       <h1>7WW</h1>
       <p>7 Cudów Świata — pojedynek</p>
       <nav>
-        <button type="button" onClick={() => navigate('lobby')}>
+        <button type="button" onClick={() => createRoom()}>
           Utwórz pokój
         </button>
         <button type="button" onClick={() => navigate('lobby')}>

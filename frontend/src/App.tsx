@@ -1,4 +1,5 @@
-import { useUiStore } from './store/uiStore';
+import { useEffect } from 'react';
+import { initClient, useUiStore } from './store/uiStore';
 import { LandingScreen } from './screens/LandingScreen';
 import { LobbyScreen } from './screens/LobbyScreen';
 import { GameScreen } from './screens/GameScreen';
@@ -6,6 +7,10 @@ import { ResultScreen } from './screens/ResultScreen';
 
 export function App() {
   const { screen } = useUiStore();
+
+  useEffect(() => {
+    initClient();
+  }, []);
 
   switch (screen) {
     case 'landing':
