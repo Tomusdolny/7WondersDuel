@@ -1,11 +1,20 @@
-import { ALL_CARDS } from '@7ww/shared';
+import { useUiStore } from './store/uiStore';
+import { LandingScreen } from './screens/LandingScreen';
+import { LobbyScreen } from './screens/LobbyScreen';
+import { GameScreen } from './screens/GameScreen';
+import { ResultScreen } from './screens/ResultScreen';
 
 export function App() {
-  return (
-    <main>
-      <h1>7WW</h1>
-      <p>7 Cudów Świata — pojedynek (MVP szkielet)</p>
-      <p>Kart w shared: {ALL_CARDS.length}</p>
-    </main>
-  );
+  const { screen } = useUiStore();
+
+  switch (screen) {
+    case 'landing':
+      return <LandingScreen />;
+    case 'lobby':
+      return <LobbyScreen />;
+    case 'game':
+      return <GameScreen />;
+    case 'result':
+      return <ResultScreen />;
+  }
 }
