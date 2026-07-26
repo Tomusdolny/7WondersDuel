@@ -68,6 +68,10 @@ export { createInitialGameState } from './_gameLogic/setup/createInitialGameStat
 export { startWonderDraft } from './_gameLogic/setup/startWonderDraft.js';
 export { applySelectWonder } from './_gameLogic/setup/applySelectWonder.js';
 
+export type { ScoreBreakdown, CivilianScoreResult } from './_gameLogic/scoring/types.js';
+export { scoreCivilian } from './_gameLogic/scoring/scoreCivilian.js';
+export { militaryVpFromPosition } from './_gameLogic/scoring/militaryVp.js';
+
 export type { BuildStructureCardResult } from './_gameLogic/building/buildingCards/getStructureCardBuildCost.js';
 export { getStructureCardBuildCost } from './_gameLogic/building/buildingCards/getStructureCardBuildCost.js';
 
