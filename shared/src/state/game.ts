@@ -26,8 +26,10 @@ export type GamePhase =
   | { kind: 'wonderDraft';
       /** Pozostałe cuda do wyboru w bieżącej rundzie draftu. */
       offered: WonderId[];
-      /** Runda 1 lub 2 (każda: 4 cuda, sekwencja 1-2-2-1 / odwrotna). */
+      /** Runda 1 (ABBA) lub 2 (BAAB). */
       round: 1 | 2;
+      /** Cuda jeszcze niewyłożone do `offered` (po starcie: 8). */
+      remaining: WonderId[];
     }
   | { kind: 'playing' }
   | {

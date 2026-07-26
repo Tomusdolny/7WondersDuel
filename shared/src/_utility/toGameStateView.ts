@@ -6,11 +6,16 @@ import type {
   TakenSlot,
 } from '../structure/types.js';
 
-/** Maskuje `cardId` na slotach face-down; reszta stanu bez zmian. */
+/** Maskuje `cardId` na slotach face-down oraz niewyłożone cuda draftu (`remaining`). */
 export function toGameStateView(state: GameState): GameStateView {
+  const structure = toStructurePublic(state.structure);
+  if (state.phase.kind !== 'wonderDraft') {
+    return { ...state, structure };
+  }
   return {
     ...state,
-    structure: toStructurePublic(state.structure),
+    structure,
+    phase: { ...state.phase, remaining: [] },
   };
 }
 

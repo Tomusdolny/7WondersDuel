@@ -5,17 +5,17 @@ import type { Rng } from '../../_utility/rng.js';
 import { dealProgressTokens } from './dealProgressTokens.js';
 import { STARTING_COINS } from '../../coins/types.js';
 import { MILITARY_TOKEN_CENTER } from '../../militaryTokens/types.js';
+import { startWonderDraft } from './startWonderDraft.js';
 
 export type CreateInitialGameStateParams = {
   playerIds: readonly [PlayerId, PlayerId];
   rng: Rng;
-  /** Kto jest `activePlayerId` na starcie — domyślnie `playerIds[0]`. */
-  activePlayerId?: PlayerId;
 };
 
 /**
- * Bootstrap partii (opcja B): gracze, Progress, militarne — bez draftu cudów.
- * `structure` puste; przed grą wywołaj `setupAge`. Cuda: `wonders: []` do osobnego draftu.
+ * Bootstrap partii: gracze (7 monet), Progress, militarne, start draftu cudów.
+ * `players[0]` = A (pierwszy w ABBA), `players[1]` = B.
+ * Po drafcie: `setupAge` osobno.
  */
 export function createInitialGameState(params: CreateInitialGameStateParams): GameState {
   const [idA, idB] = params.playerIds;
@@ -23,18 +23,13 @@ export function createInitialGameState(params: CreateInitialGameStateParams): Ga
     throw new Error('playerIds must be distinct');
   }
 
-  const activePlayerId = params.activePlayerId ?? idA;
-  if (activePlayerId !== idA && activePlayerId !== idB) {
-    throw new Error(`activePlayerId not in playerIds: ${activePlayerId}`);
-  }
-
   const { progressOnBoard, progressInBox } = dealProgressTokens(params.rng);
 
-  return {
+  const base: GameState = {
     version: 0,
     phase: { kind: 'playing' },
     age: 1,
-    activePlayerId,
+    activePlayerId: idA,
     players: [emptyPlayer(idA), emptyPlayer(idB)],
     structure: [],
     discard: [],
@@ -44,6 +39,8 @@ export function createInitialGameState(params: CreateInitialGameStateParams): Ga
     militaryTokens: MILITARY_TOKENS.map((token) => ({ ...token })),
     wondersBuiltTotal: 0,
   };
+
+  return startWonderDraft(base, params.rng);
 }
 
 function emptyPlayer(id: PlayerId): PlayerState {

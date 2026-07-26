@@ -65,6 +65,8 @@ export { setupAge } from './_gameLogic/setup/setupAge.js';
 export { dealProgressTokens } from './_gameLogic/setup/dealProgressTokens.js';
 export type { CreateInitialGameStateParams } from './_gameLogic/setup/createInitialGameState.js';
 export { createInitialGameState } from './_gameLogic/setup/createInitialGameState.js';
+export { startWonderDraft } from './_gameLogic/setup/startWonderDraft.js';
+export { applySelectWonder } from './_gameLogic/setup/applySelectWonder.js';
 
 export type { BuildStructureCardResult } from './_gameLogic/building/buildingCards/getStructureCardBuildCost.js';
 export { getStructureCardBuildCost } from './_gameLogic/building/buildingCards/getStructureCardBuildCost.js';
