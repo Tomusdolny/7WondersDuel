@@ -1,5 +1,5 @@
-import type { PlayerState } from '../../state/player.js';
-import type { WonderCard } from '../../wonders/types.js';
+import type { PlayerState } from '../../../state/player.js';
+import type { WonderCard } from '../../../wonders/types.js';
 import { minCoinsForResources, progressCostReduction } from '../resourcePayment.js';
 
 /**

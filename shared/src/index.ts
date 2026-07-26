@@ -27,11 +27,7 @@ export type { ProgressTokenId, ProgressToken, ProgressEffect } from './progressT
 export { PROGRESS_TOKENS } from './progressTokens/tokens.js';
 
 export type { ConflictPosition, MilitaryToken } from './militaryTokens/types.js';
-export {
-  PLAYER_A_WIN,
-  PLAYER_B_WIN,
-  MILITARY_TOKEN_CENTER,
-} from './militaryTokens/types.js';
+export { PLAYER_A_WIN, PLAYER_B_WIN, MILITARY_TOKEN_CENTER } from './militaryTokens/types.js';
 export { MILITARY_TOKENS } from './militaryTokens/tokens.js';
 
 export type {
@@ -57,11 +53,15 @@ export type {
   StructurePublic,
 } from './structure/types.js';
 
-export { applyInitialFaceUp, revealAfterTake } from './_utility/structureFaceUp.js';
+export { applyInitialFaceUp, revealAfterTake } from './_gameLogic/structure/structureFaceUp.js';
 export { toGameStateView } from './_utility/toGameStateView.js';
 
-export type { BuildStructureCardResult } from './_gameLogic/buildingCards/getStructureCardBuildCost.js';
-export { getStructureCardBuildCost } from './_gameLogic/buildingCards/getStructureCardBuildCost.js';
+export type { BuildStructureCardResult } from './_gameLogic/building/buildingCards/getStructureCardBuildCost.js';
+export { getStructureCardBuildCost } from './_gameLogic/building/buildingCards/getStructureCardBuildCost.js';
 
-export type { BuildWonderResult } from './_gameLogic/buildingWonders/getWonderBuildCost.js';
-export { getWonderBuildCost } from './_gameLogic/buildingWonders/getWonderBuildCost.js';
+export type { BuildWonderResult } from './_gameLogic/building/buildingWonders/getWonderBuildCost.js';
+export { getWonderBuildCost } from './_gameLogic/building/buildingWonders/getWonderBuildCost.js';
+
+export { canPlayerAct } from './_gameLogic/playerActing/canPlayerAct.js';
+export { isSlotAccessible } from './_gameLogic/structure/isSlotAccessible.js';
+export { getDiscardCoins } from './_gameLogic/getDiscardCoins/getDiscardCoins.js';

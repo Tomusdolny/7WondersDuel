@@ -1,11 +1,6 @@
-import type { Age } from '../ageCards/types.js';
-import {
-  COVERED_BY,
-  COVERS,
-  INITIAL_FACE_UP,
-  STRUCTURE_SIZE,
-} from '../structure/layouts.js';
-import type { Structure, StructureSlot, TakenSlot } from '../structure/types.js';
+import type { Age } from '../../ageCards/types.js';
+import { COVERED_BY, COVERS, INITIAL_FACE_UP, STRUCTURE_SIZE } from '../../structure/layouts.js';
+import type { Structure, StructureSlot, TakenSlot } from '../../structure/types.js';
 
 /** Ustawia `faceUp` wg schematu ery (setup na początku Ery). */
 export function applyInitialFaceUp(

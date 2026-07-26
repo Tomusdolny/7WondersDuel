@@ -1,9 +1,9 @@
-import { ALL_CARDS } from '../ageCards/cards.js';
-import type { Card, CardId } from '../ageCards/types.js';
-import { PROGRESS_TOKENS } from '../progressTokens/tokens.js';
-import type { ProgressToken, ProgressTokenId } from '../progressTokens/types.js';
-import { WONDER_CARDS } from '../wonders/wonders.js';
-import type { WonderCard, WonderId } from '../wonders/types.js';
+import { ALL_CARDS } from '../../ageCards/cards.js';
+import type { Card, CardId } from '../../ageCards/types.js';
+import { PROGRESS_TOKENS } from '../../progressTokens/tokens.js';
+import type { ProgressToken, ProgressTokenId } from '../../progressTokens/types.js';
+import { WONDER_CARDS } from '../../wonders/wonders.js';
+import type { WonderCard, WonderId } from '../../wonders/types.js';
 
 const CARDS_BY_ID = new Map<CardId, Card>(ALL_CARDS.map((c) => [c.id, c]));
 const WONDERS_BY_ID = new Map<WonderId, WonderCard>(WONDER_CARDS.map((w) => [w.id, w]));

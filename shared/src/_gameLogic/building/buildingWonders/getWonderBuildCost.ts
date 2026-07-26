@@ -1,13 +1,10 @@
-import type { PlayerId } from '../../state/player.js';
-import type { GameStateView } from '../../state/game.js';
-import type { WonderId } from '../../wonders/types.js';
+import type { PlayerId } from '../../../state/player.js';
+import type { GameStateView } from '../../../state/game.js';
+import type { WonderId } from '../../../wonders/types.js';
 import { getWonder } from '../catalog.js';
 import { minCoinCostForWonder } from './minCoinCostForWonder.js';
 
-
-export type BuildWonderResult =
-  | { ok: false }
-  | { ok: true; coins: number };
+export type BuildWonderResult = { ok: false } | { ok: true; coins: number };
 
 /**
  * Minimalny koszt monet budowy cuda gracza.

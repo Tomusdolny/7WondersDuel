@@ -1,5 +1,5 @@
-import { RESOURCES, type Resource } from '../resources.js';
-import type { PlayerState, ProductionSnapshot, TradeDiscountSnapshot } from '../state/player.js';
+import { RESOURCES, type Resource } from '../../resources.js';
+import type { PlayerState, ProductionSnapshot, TradeDiscountSnapshot } from '../../state/player.js';
 import { getCard, getWonder } from './catalog.js';
 
 /** Produkcja gracza z brązu/szarych + oneOf z żółtych i zbudowanych cudów. */

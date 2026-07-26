@@ -1,5 +1,5 @@
-import { RESOURCES, type Resource } from '../resources.js';
-import type { PlayerState, ProductionSnapshot } from '../state/player.js';
+import { RESOURCES, type Resource } from '../../resources.js';
+import type { PlayerState, ProductionSnapshot } from '../../state/player.js';
 import { getProgressToken } from './catalog.js';
 import { getProduction, getTradePrices } from './production.js';
 

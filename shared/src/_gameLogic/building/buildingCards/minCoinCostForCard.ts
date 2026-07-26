@@ -1,5 +1,5 @@
-import type { Card } from '../../ageCards/types.js';
-import type { PlayerState } from '../../state/player.js';
+import type { Card } from '../../../ageCards/types.js';
+import type { PlayerState } from '../../../state/player.js';
 import { getCard } from '../catalog.js';
 import { minCoinsForResources, progressCostReduction } from '../resourcePayment.js';
 
@@ -7,11 +7,7 @@ import { minCoinsForResources, progressCostReduction } from '../resourcePayment.
  * Minimalny koszt w monetach za zbudowanie karty ery
  * (stałe monety na karcie + optymalny handel), z łańcuchem i Masonry.
  */
-export function minCoinCostForCard(
-  card: Card,
-  player: PlayerState,
-  opponent: PlayerState,
-): number {
+export function minCoinCostForCard(card: Card, player: PlayerState, opponent: PlayerState): number {
   if (card.chain && playerHasChain(player, card.chain)) {
     return 0;
   }
