@@ -1,16 +1,10 @@
-import { WONDER_CARDS, type WonderId } from '@7ww/shared';
+import type { WonderId } from '@7ww/shared';
 import { sendCommand, useUiStore } from '../store/uiStore';
-
-function wonderCard(wonderId: WonderId) {
-  return WONDER_CARDS.find((wonder) => wonder.id === wonderId);
-}
-
-function formatCost(cost: Record<string, number | undefined>): string {
-  const parts = Object.entries(cost)
-    .filter(([, amount]) => amount)
-    .map(([resource, amount]) => `${amount} ${resource}`);
-  return parts.length > 0 ? parts.join(', ') : 'brak';
-}
+import { findWonder, formatResourceCost } from '../lib/cardLookup';
+import { StructurePyramid } from '../components/StructurePyramid';
+import { CityPanel } from '../components/CityPanel';
+import { ConflictTrack } from '../components/ConflictTrack';
+import { ProgressTokensBoard } from '../components/ProgressTokensBoard';
 
 function WonderDraft({
   offered,
@@ -25,17 +19,16 @@ function WonderDraft({
       {isMyTurn ? <p>Twoja kolej — wybierz cud.</p> : <p>Tura przeciwnika…</p>}
       <ul>
         {offered.map((wonderId) => {
-          const wonder = wonderCard(wonderId);
+          const wonder = findWonder(wonderId);
           return (
             <li key={wonderId}>
               <button
                 type="button"
                 disabled={!isMyTurn}
-                onClick={() =>
-                  sendCommand({ kind: 'selectWonder', wonderId })
-                }
+                onClick={() => sendCommand({ kind: 'selectWonder', wonderId })}
               >
-                {wonder?.name ?? wonderId} — koszt: {formatCost(wonder?.cost ?? {})} — {wonder?.vp ?? 0} VP
+                {wonder?.name ?? wonderId} — koszt:{' '}
+                {formatResourceCost(wonder?.cost ?? {})} — {wonder?.vp ?? 0} VP
               </button>
             </li>
           );
@@ -46,7 +39,7 @@ function WonderDraft({
 }
 
 export function GameScreen() {
-  const { gameView, playerId } = useUiStore();
+  const { gameView, playerId, lastRejection } = useUiStore();
 
   if (!gameView) {
     return (
@@ -57,42 +50,54 @@ export function GameScreen() {
     );
   }
 
-  const { phase, players } = gameView;
+  const {
+    phase,
+    players,
+    structure,
+    availableSlots,
+    legalActions,
+    conflictPosition,
+    militaryTokens,
+    progressOnBoard,
+  } = gameView;
   const isMyTurn = gameView.activePlayerId === playerId;
+  const [playerA, playerB] = players;
 
   return (
     <main>
       <h1>Gra</h1>
+      {lastRejection ? (
+        <p role="alert">
+          {lastRejection.message} ({lastRejection.code})
+        </p>
+      ) : null}
 
       {phase.kind === 'wonderDraft' ? (
         <WonderDraft offered={phase.offered} isMyTurn={isMyTurn} />
       ) : (
-        <p>Placeholder — plansza i tura.</p>
+        <StructurePyramid
+          structure={structure}
+          availableSlots={availableSlots}
+          legalActions={legalActions}
+          isMyTurn={isMyTurn}
+        />
       )}
 
-      <section>
-        <h2>Cuda graczy</h2>
-        {players.map((player) => (
-          <div key={player.id}>
-            <h3>{player.id === playerId ? 'Ty' : 'Przeciwnik'}</h3>
-            <ul>
-              {player.wonders.length === 0 ? (
-                <li>brak wybranych cudów</li>
-              ) : (
-                player.wonders.map((slot) => {
-                  const wonder = wonderCard(slot.wonderId);
-                  return (
-                    <li key={slot.wonderId}>
-                      {wonder?.name ?? slot.wonderId} —{' '}
-                      {slot.built ? 'zbudowany' : 'niezbudowany'}
-                    </li>
-                  );
-                })
-              )}
-            </ul>
-          </div>
-        ))}
-      </section>
+      <ConflictTrack
+        conflictPosition={conflictPosition}
+        militaryTokens={militaryTokens}
+      />
+
+      <ProgressTokensBoard progressOnBoard={progressOnBoard} />
+
+      <CityPanel
+        player={playerA}
+        label={playerA.id === playerId ? 'Ty' : 'Przeciwnik'}
+      />
+      <CityPanel
+        player={playerB}
+        label={playerB.id === playerId ? 'Ty' : 'Przeciwnik'}
+      />
     </main>
   );
 }
