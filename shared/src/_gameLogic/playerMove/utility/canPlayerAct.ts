@@ -1,5 +1,5 @@
-import type { PlayerId } from '../../state/player.js';
-import type { GamePhase } from '../../state/game.js';
+import type { PlayerId } from '../../../state/player.js';
+import type { GamePhase } from '../../../state/game.js';
 
 /** Czy gracz jest aktywny i partia nie jest zakończona. */
 export function canPlayerAct(

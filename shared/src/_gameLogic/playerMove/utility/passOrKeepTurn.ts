@@ -1,5 +1,5 @@
-import type { PlayerId } from '../../state/player.js';
-import type { GameState } from '../../state/game.js';
+import type { PlayerId } from '../../../state/player.js';
+import type { GameState } from '../../../state/game.js';
 
 /** Oddaje turę przeciwnikowi, chyba że `keepTurn` (extra turn). */
 export function passOrKeepTurn(

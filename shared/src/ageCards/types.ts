@@ -2,6 +2,10 @@ import type { Resource, ScienceSymbol } from '../resources.js';
 
 export type CardColor = 'brown' | 'grey' | 'blue' | 'green' | 'yellow' | 'red' | 'purple';
 
+export const AGE_DECK_SIZE = 23;
+export const STRUCTURE_CARD_COUNT = 20;
+export const GUILDS_IN_AGE_3 = 3;
+
 /**
  * Symbole łańcuchów (free construction).
  * Celowo inne niż Resource i ScienceSymbol.

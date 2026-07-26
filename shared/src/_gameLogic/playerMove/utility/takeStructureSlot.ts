@@ -1,6 +1,6 @@
-import type { CardId } from '../../ageCards/types.js';
-import type { GameState } from '../../state/game.js';
-import { revealAfterTake } from '../structure/structureFaceUp.js';
+import type { CardId } from '../../../ageCards/types.js';
+import type { GameState } from '../../../state/game.js';
+import { revealAfterTake } from '../../setup/structureFaceUp.js';
 
 /** Usuwa kartę ze slotu i odkrywa przykryte; zwraca cardId. */
 export function takeStructureSlot(

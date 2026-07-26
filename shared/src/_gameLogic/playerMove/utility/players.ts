@@ -1,5 +1,5 @@
-import type { PlayerId, PlayerState } from '../../state/player.js';
-import type { GameState } from '../../state/game.js';
+import type { PlayerId, PlayerState } from '../../../state/player.js';
+import type { GameState } from '../../../state/game.js';
 
 export function findPlayers(
   state: GameState,

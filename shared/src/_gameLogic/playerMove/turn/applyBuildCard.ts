@@ -1,16 +1,16 @@
-import type { ChainSymbol } from '../../ageCards/types.js';
-import type { PlayerId } from '../../state/player.js';
-import type { GameState } from '../../state/game.js';
-import { toGameStateView } from '../../_utility/toGameStateView.js';
-import { getStructureCardBuildCost } from '../building/buildingCards/getStructureCardBuildCost.js';
-import { getCard } from '../building/catalog.js';
-import { isSlotAccessible } from '../structure/isSlotAccessible.js';
-import { applyCardBuiltEffects } from './applyCardBuiltEffects.js';
-import { canPlayerAct } from './canPlayerAct.js';
-import { passOrKeepTurn } from './passOrKeepTurn.js';
-import { addCoins, findPlayers, withPlayers } from './players.js';
-import { takeStructureSlot } from './takeStructureSlot.js';
-import { err, ok, type ApplyResult } from './types.js';
+import type { ChainSymbol } from '../../../ageCards/types.js';
+import type { PlayerId } from '../../../state/player.js';
+import type { GameState } from '../../../state/game.js';
+import { toGameStateView } from '../../../_utility/toGameStateView.js';
+import { getStructureCardBuildCost } from '../../building/buildingCards/getStructureCardBuildCost.js';
+import { getCard } from '../../building/catalog.js';
+import { isSlotAccessible } from '../../utility/isSlotAccessible.js';
+import { applyCardBuiltEffects } from '../effects/applyCardBuiltEffects.js';
+import { canPlayerAct } from '../utility/canPlayerAct.js';
+import { passOrKeepTurn } from '../utility/passOrKeepTurn.js';
+import { addCoins, findPlayers, withPlayers } from '../utility/players.js';
+import { takeStructureSlot } from '../utility/takeStructureSlot.js';
+import { err, ok, type ApplyResult } from '../types.js';
 
 /**
  * Budowa karty ze struktury.

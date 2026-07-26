@@ -1,9 +1,9 @@
-import type { Card, CardColor, PurpleCard, YellowCard } from '../../ageCards/types.js';
-import type { PlayerId, PlayerState } from '../../state/player.js';
-import type { GameState } from '../../state/game.js';
-import { getCard, getProgressToken } from '../building/catalog.js';
+import type { Card, CardColor, PurpleCard, YellowCard } from '../../../ageCards/types.js';
+import type { PlayerId, PlayerState } from '../../../state/player.js';
+import type { GameState } from '../../../state/game.js';
+import { getCard, getProgressToken } from '../../building/catalog.js';
+import { addCoins, findPlayers, withPlayers } from '../utility/players.js';
 import { applyMilitaryShields, hasProgressEffect, redShieldsWithStrategy } from './military.js';
-import { addCoins, findPlayers, withPlayers } from './players.js';
 import { formsSciencePair, hasScienceVictory } from './science.js';
 
 export type CardEffectOutcome = {
@@ -15,6 +15,7 @@ export type CardEffectOutcome = {
 /**
  * Efekty po dodaniu karty do `buildings` (gracz już ma kartę w stanie).
  * `playerBefore` = stan sprzed dodania (do pary nauki / Urbanism).
+ * `keepTurn` — przekazywane do ewentualnego `awaitingEffectChoice`.
  */
 export function applyCardBuiltEffects(
   state: GameState,
@@ -22,6 +23,7 @@ export function applyCardBuiltEffects(
   card: Card,
   playerBefore: PlayerState,
   builtViaChain: boolean,
+  keepTurn = false,
 ): CardEffectOutcome {
   const found = findPlayers(state, playerId);
   if (!found) return { state, pending: false };
@@ -68,6 +70,7 @@ export function applyCardBuiltEffects(
           phase: {
             kind: 'awaitingEffectChoice',
             choice: { kind: 'chooseProgressToken', options: [...next.progressOnBoard] },
+            keepTurn,
           },
         };
         pending = true;

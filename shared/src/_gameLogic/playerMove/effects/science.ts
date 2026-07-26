@@ -1,6 +1,6 @@
-import type { ScienceSymbol } from '../../resources.js';
-import type { PlayerState } from '../../state/player.js';
-import { getCard, getProgressToken } from '../building/catalog.js';
+import type { ScienceSymbol } from '../../../resources.js';
+import type { PlayerState } from '../../../state/player.js';
+import { getCard, getProgressToken } from '../../building/catalog.js';
 
 export function getScienceSymbols(player: PlayerState): Set<ScienceSymbol> {
   const symbols = new Set<ScienceSymbol>();

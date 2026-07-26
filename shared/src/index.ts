@@ -53,8 +53,18 @@ export type {
   StructurePublic,
 } from './structure/types.js';
 
-export { applyInitialFaceUp, revealAfterTake } from './_gameLogic/structure/structureFaceUp.js';
+export { applyInitialFaceUp, revealAfterTake } from './_gameLogic/setup/structureFaceUp.js';
+export type { Rng } from './_utility/rng.js';
+export { createMathRng } from './_utility/rng.js';
 export { toGameStateView } from './_utility/toGameStateView.js';
+export { toPlayerView } from './_utility/toPlayerView.js';
+
+export { dealAgeCardIds } from './_gameLogic/setup/dealAgeCardIds.js';
+export { buildStructure } from './_gameLogic/setup/buildStructure.js';
+export { setupAge } from './_gameLogic/setup/setupAge.js';
+export { dealProgressTokens } from './_gameLogic/setup/dealProgressTokens.js';
+export type { CreateInitialGameStateParams } from './_gameLogic/setup/createInitialGameState.js';
+export { createInitialGameState } from './_gameLogic/setup/createInitialGameState.js';
 
 export type { BuildStructureCardResult } from './_gameLogic/building/buildingCards/getStructureCardBuildCost.js';
 export { getStructureCardBuildCost } from './_gameLogic/building/buildingCards/getStructureCardBuildCost.js';
@@ -62,11 +72,15 @@ export { getStructureCardBuildCost } from './_gameLogic/building/buildingCards/g
 export type { BuildWonderResult } from './_gameLogic/building/buildingWonders/getWonderBuildCost.js';
 export { getWonderBuildCost } from './_gameLogic/building/buildingWonders/getWonderBuildCost.js';
 
-export { canPlayerAct } from './_gameLogic/playerMove/canPlayerAct.js';
-export { isSlotAccessible } from './_gameLogic/structure/isSlotAccessible.js';
+export { canPlayerAct } from './_gameLogic/playerMove/utility/canPlayerAct.js';
+export { isSlotAccessible } from './_gameLogic/utility/isSlotAccessible.js';
 export { getDiscardCoins } from './_gameLogic/getDiscardCoins/getDiscardCoins.js';
 
 export type { ApplyError, ApplyResult } from './_gameLogic/playerMove/types.js';
-export { applyDiscardCard } from './_gameLogic/playerMove/applyDiscardCard.js';
-export { applyBuildCard } from './_gameLogic/playerMove/applyBuildCard.js';
-export { applyBuildWonder } from './_gameLogic/playerMove/applyBuildWonder.js';
+export { applyDiscardCard } from './_gameLogic/playerMove/turn/applyDiscardCard.js';
+export { applyBuildCard } from './_gameLogic/playerMove/turn/applyBuildCard.js';
+export { applyBuildWonder } from './_gameLogic/playerMove/turn/applyBuildWonder.js';
+export { applyChooseProgressToken } from './_gameLogic/playerMove/choice/applyChooseProgressToken.js';
+export { applyChooseProgressFromBox } from './_gameLogic/playerMove/choice/applyChooseProgressFromBox.js';
+export { applyDiscardOpponentCard } from './_gameLogic/playerMove/choice/applyDiscardOpponentCard.js';
+export { applyConstructFromDiscard } from './_gameLogic/playerMove/choice/applyConstructFromDiscard.js';

@@ -30,7 +30,12 @@ export type GamePhase =
       round: 1 | 2;
     }
   | { kind: 'playing' }
-  | { kind: 'awaitingEffectChoice'; choice: EffectPendingChoice }
+  | {
+      kind: 'awaitingEffectChoice';
+      choice: EffectPendingChoice;
+      /** Po wyborze: dodatkowa tura (cud / Theology), inaczej oddaj turę. */
+      keepTurn: boolean;
+    }
   | { kind: 'ended'; result: GameResult };
 
 /**
@@ -52,8 +57,7 @@ export interface GameState {
 
   players: readonly [PlayerState, PlayerState];
 
-  /** Piramida bieżącej ery (tylko niewzięte karty). */
-  // TODO: Move it to its own file and add a function to build the structure from the age number
+  /** Piramida bieżącej ery (tylko niewzięte karty). Budowana przez `setupAge` / `buildStructure`. */
   structure: Structure;
 
   /** Discard gry (budynki odrzucone za monety / efektami w trakcie partii). */

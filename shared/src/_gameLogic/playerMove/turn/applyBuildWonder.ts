@@ -1,16 +1,16 @@
-import type { PlayerId } from '../../state/player.js';
-import type { GameState } from '../../state/game.js';
-import type { WonderId } from '../../wonders/types.js';
-import { toGameStateView } from '../../_utility/toGameStateView.js';
-import { getWonderBuildCost } from '../building/buildingWonders/getWonderBuildCost.js';
-import { getWonder } from '../building/catalog.js';
-import { isSlotAccessible } from '../structure/isSlotAccessible.js';
-import { applyWonderBuiltEffects } from './applyWonderBuiltEffects.js';
-import { canPlayerAct } from './canPlayerAct.js';
-import { passOrKeepTurn } from './passOrKeepTurn.js';
-import { addCoins, findPlayers, withPlayers } from './players.js';
-import { takeStructureSlot } from './takeStructureSlot.js';
-import { err, ok, type ApplyResult } from './types.js';
+import type { PlayerId } from '../../../state/player.js';
+import type { GameState } from '../../../state/game.js';
+import type { WonderId } from '../../../wonders/types.js';
+import { toGameStateView } from '../../../_utility/toGameStateView.js';
+import { getWonderBuildCost } from '../../building/buildingWonders/getWonderBuildCost.js';
+import { getWonder } from '../../building/catalog.js';
+import { isSlotAccessible } from '../../utility/isSlotAccessible.js';
+import { applyWonderBuiltEffects } from '../effects/applyWonderBuiltEffects.js';
+import { canPlayerAct } from '../utility/canPlayerAct.js';
+import { passOrKeepTurn } from '../utility/passOrKeepTurn.js';
+import { addCoins, findPlayers, withPlayers } from '../utility/players.js';
+import { takeStructureSlot } from '../utility/takeStructureSlot.js';
+import { err, ok, type ApplyResult } from '../types.js';
 
 /**
  * Budowa cuda: karta ze struktury idzie na discard jako podkład.
@@ -42,9 +42,7 @@ export function applyBuildWonder(
   let player = addCoins(found.player, -costResult.coins);
   player = {
     ...player,
-    wonders: player.wonders.map((w) =>
-      w.wonderId === wonderId ? { ...w, built: true } : w,
-    ),
+    wonders: player.wonders.map((w) => (w.wonderId === wonderId ? { ...w, built: true } : w)),
   };
 
   let next: GameState = {

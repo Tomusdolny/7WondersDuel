@@ -6,7 +6,8 @@ export type ApplyError =
   | 'slotInaccessible'
   | 'cannotAfford'
   | 'wonderUnavailable'
-  | 'invalidPlayer';
+  | 'invalidPlayer'
+  | 'invalidChoice';
 
 export type ApplyResult = { ok: true; state: GameState } | { ok: false; error: ApplyError };
 

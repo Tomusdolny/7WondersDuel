@@ -1,9 +1,8 @@
-import type { PlayerId, PlayerState } from '../../state/player.js';
-import type { GameState } from '../../state/game.js';
-import { getProgressToken } from '../building/catalog.js';
-import { addCoins, findPlayers, withPlayers } from './players.js';
-
-const CAPITAL = 9;
+import type { PlayerId, PlayerState } from '../../../state/player.js';
+import type { GameState } from '../../../state/game.js';
+import { getProgressToken } from '../../building/catalog.js';
+import { addCoins, findPlayers, withPlayers } from '../utility/players.js';
+import { PLAYER_A_WIN, PLAYER_B_WIN } from '../../../militaryTokens/types.js';
 
 /**
  * Przesuwa pionek o `shields` w stronę stolicy przeciwnika.
@@ -21,8 +20,8 @@ export function applyMilitaryShields(
 
   const { playerIndex } = found;
   const from = state.conflictPosition;
-  const delta = playerIndex === 0 ? shields : -shields;
-  const to = clamp(from + delta, -CAPITAL, CAPITAL);
+  const delta = playerIndex === 0 ? -shields : shields;
+  const to = clamp(from + delta, PLAYER_A_WIN, PLAYER_B_WIN);
 
   let opponent = found.opponent;
   const remainingTokens = [];
@@ -41,12 +40,12 @@ export function applyMilitaryShields(
     militaryTokens: remainingTokens,
   };
 
-  if (playerIndex === 0 && to >= CAPITAL) {
+  if (playerIndex === 0 && to <= PLAYER_A_WIN) {
     next = {
       ...next,
       phase: { kind: 'ended', result: { kind: 'military', winnerId: attackerId } },
     };
-  } else if (playerIndex === 1 && to <= -CAPITAL) {
+  } else if (playerIndex === 1 && to >= PLAYER_B_WIN) {
     next = {
       ...next,
       phase: { kind: 'ended', result: { kind: 'military', winnerId: attackerId } },

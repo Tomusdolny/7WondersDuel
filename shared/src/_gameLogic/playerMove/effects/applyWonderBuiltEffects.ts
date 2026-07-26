@@ -1,9 +1,9 @@
-import type { PlayerId } from '../../state/player.js';
-import type { GameState } from '../../state/game.js';
-import type { WonderCard } from '../../wonders/types.js';
-import { getCard } from '../building/catalog.js';
+import type { PlayerId } from '../../../state/player.js';
+import type { GameState } from '../../../state/game.js';
+import type { WonderCard } from '../../../wonders/types.js';
+import { getCard } from '../../building/catalog.js';
+import { addCoins, findPlayers, withPlayers } from '../utility/players.js';
 import { applyMilitaryShields, hasProgressEffect } from './military.js';
-import { addCoins, findPlayers, withPlayers } from './players.js';
 
 export type WonderEffectOutcome = {
   state: GameState;
@@ -65,6 +65,7 @@ export function applyWonderBuiltEffects(
           phase: {
             kind: 'awaitingEffectChoice',
             choice: { kind: 'discardOpponentCard', color: effect.color },
+            keepTurn,
           },
         };
         pending = true;
@@ -78,6 +79,7 @@ export function applyWonderBuiltEffects(
           phase: {
             kind: 'awaitingEffectChoice',
             choice: { kind: 'constructFromDiscard' },
+            keepTurn,
           },
         };
         pending = true;
@@ -96,6 +98,7 @@ export function applyWonderBuiltEffects(
               options,
               keep: effect.keep,
             },
+            keepTurn,
           },
         };
         pending = true;

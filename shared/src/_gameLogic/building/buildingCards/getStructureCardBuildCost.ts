@@ -2,7 +2,7 @@ import type { PlayerId } from '../../../state/player.js';
 import type { GameStateView } from '../../../state/game.js';
 import { STRUCTURE_SIZE } from '../../../structure/layouts.js';
 import { getCard } from '../catalog.js';
-import { isSlotAccessible } from '../../structure/isSlotAccessible.js';
+import { isSlotAccessible } from '../../utility/isSlotAccessible.js';
 import { minCoinCostForCard } from './minCoinCostForCard.js';
 
 export type BuildStructureCardResult = { ok: false } | { ok: true; coins: number };
