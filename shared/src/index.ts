@@ -41,10 +41,12 @@ export type {
   TradeDiscountSnapshot,
 } from './state/player.js';
 export type {
-  TakenSlot,
-  StructureSlot,
   GameResult,
   EffectPendingChoice,
   GamePhase,
   GameState,
 } from './state/game.js';
+export type { TakenSlot, StructureSlot } from './structure/types.js';
+
+export type { Structure } from './utility/structureFaceUp.js';
+export { applyInitialFaceUp, revealAfterTake } from './utility/structureFaceUp.js';
