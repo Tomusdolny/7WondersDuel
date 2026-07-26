@@ -1,4 +1,5 @@
 export type { Resource, ScienceSymbol } from './resources.js';
+export { RESOURCES } from './resources.js';
 
 export type {
   Age,
@@ -56,5 +57,8 @@ export type {
   StructurePublic,
 } from './structure/types.js';
 
-export { applyInitialFaceUp, revealAfterTake } from './utility/structureFaceUp.js';
-export { toGameStateView } from './utility/toGameStateView.js';
+export { applyInitialFaceUp, revealAfterTake } from './_utility/structureFaceUp.js';
+export { toGameStateView } from './_utility/toGameStateView.js';
+
+export type { BuildStructureCardResult } from './_gameLogic/getStructureCardBuildCost.js';
+export { getStructureCardBuildCost } from './_gameLogic/getStructureCardBuildCost.js';
