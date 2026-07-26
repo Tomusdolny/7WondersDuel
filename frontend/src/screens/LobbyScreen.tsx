@@ -1,33 +1,8 @@
 import { useState } from 'react';
-import {
-  leaveRoom,
-  useUiStore,
-  type ConnectionStatus,
-} from '../store/uiStore';
-
-function connectionLabel(connection: ConnectionStatus): string {
-  switch (connection) {
-    case 'connecting':
-      return 'Łączenie…';
-    case 'connected':
-      return 'Połączono';
-    case 'disconnected':
-      return 'Rozłączono';
-    case 'waitingForOpponent':
-      return 'Oczekiwanie na przeciwnika…';
-    default:
-      return connection;
-  }
-}
+import { leaveRoom, useUiStore } from '../store/uiStore';
 
 export function LobbyScreen() {
-  const {
-    roomCode,
-    connection,
-    playerCount,
-    opponentConnected,
-    lastRejection,
-  } = useUiStore();
+  const { roomCode, playerCount, opponentConnected } = useUiStore();
   const [copyStatus, setCopyStatus] = useState<'idle' | 'ok' | 'error'>('idle');
 
   async function copyRoomCode() {
@@ -66,18 +41,11 @@ export function LobbyScreen() {
       </section>
 
       <section>
-        <p>{connectionLabel(connection)}</p>
         <p>
           Gracze: {playerCount ?? '—'} / 2 · przeciwnik:{' '}
           {opponentConnected ? 'online' : 'offline'}
         </p>
       </section>
-
-      {lastRejection ? (
-        <p role="alert">
-          {lastRejection.message} ({lastRejection.code})
-        </p>
-      ) : null}
 
       <nav>
         <button type="button" onClick={() => leaveRoom()}>

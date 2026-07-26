@@ -40,6 +40,8 @@ export type UiState = {
   gameView: GameStateView | null;
   gameEnded: GameEndedEvent | null;
   lastRejection: CommandRejectedEvent | null;
+  /** Rośnie przy każdym odrzuceniu — pozwala odróżnić powtórzony ten sam kod błędu. */
+  rejectionSeq: number;
 };
 
 type Listener = () => void;
@@ -59,6 +61,7 @@ let state: UiState = {
   gameView: null,
   gameEnded: null,
   lastRejection: null,
+  rejectionSeq: 0,
 };
 
 let wsStatus: WsConnectionStatus = 'disconnected';
@@ -168,7 +171,7 @@ function handleServerEvent(event: ServerEvent) {
       break;
     }
     case 'commandRejected': {
-      applyPartial({ lastRejection: event });
+      applyPartial({ lastRejection: event, rejectionSeq: state.rejectionSeq + 1 });
       break;
     }
   }
@@ -259,4 +262,8 @@ export function leaveRoom(): void {
 
 export function sendCommand(command: ClientCommand): void {
   ensureClient().send(command, state.roomId ?? undefined);
+}
+
+export function clearRejection(): void {
+  applyPartial({ lastRejection: null });
 }

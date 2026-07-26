@@ -4,13 +4,11 @@ import { LandingScreen } from './screens/LandingScreen';
 import { LobbyScreen } from './screens/LobbyScreen';
 import { GameScreen } from './screens/GameScreen';
 import { ResultScreen } from './screens/ResultScreen';
+import { ConnectionBanner } from './components/ConnectionBanner';
+import { Toast } from './components/Toast';
 
-export function App() {
+function CurrentScreen() {
   const { screen } = useUiStore();
-
-  useEffect(() => {
-    initClient();
-  }, []);
 
   switch (screen) {
     case 'landing':
@@ -22,4 +20,18 @@ export function App() {
     case 'result':
       return <ResultScreen />;
   }
+}
+
+export function App() {
+  useEffect(() => {
+    initClient();
+  }, []);
+
+  return (
+    <>
+      <ConnectionBanner />
+      <Toast />
+      <CurrentScreen />
+    </>
+  );
 }

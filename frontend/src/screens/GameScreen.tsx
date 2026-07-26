@@ -40,7 +40,7 @@ function WonderDraft({
 }
 
 export function GameScreen() {
-  const { gameView, playerId, lastRejection } = useUiStore();
+  const { gameView, playerId } = useUiStore();
 
   if (!gameView) {
     return (
@@ -68,11 +68,6 @@ export function GameScreen() {
   return (
     <main>
       <h1>Gra</h1>
-      {lastRejection ? (
-        <p role="alert">
-          {lastRejection.message} ({lastRejection.code})
-        </p>
-      ) : null}
 
       {phase.kind === 'wonderDraft' ? (
         <WonderDraft offered={phase.offered} isMyTurn={isMyTurn} />
