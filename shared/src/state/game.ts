@@ -4,7 +4,7 @@ import type { ProgressTokenId } from '../progressTokens/types.js';
 import type { WonderId } from '../wonders/types.js';
 import type { ConflictPosition } from '../militaryTokens/types.js';
 import type { MilitaryToken } from '../militaryTokens/types.js';
-import type { StructureSlot, TakenSlot } from '../structure/types.js';
+import type { Structure, StructurePublic } from '../structure/types.js';
 
 export type GameResult =
   | { kind: 'military'; winnerId: PlayerId }
@@ -54,7 +54,7 @@ export interface GameState {
 
   /** Piramida bieżącej ery (tylko niewzięte karty). */
   // TODO: Move it to its own file and add a function to build the structure from the age number
-  structure: (StructureSlot | TakenSlot)[];
+  structure: Structure;
 
   /** Discard gry (budynki odrzucone za monety / efektami w trakcie partii). */
   /** NEEDED */
@@ -82,3 +82,11 @@ export interface GameState {
    */
   wondersBuiltTotal: number;
 }
+
+/**
+ * Widok stanu dla klientów: jak `GameState`, ale piramida bez `cardId`
+ * na slotach face-down.
+ */
+export type GameStateView = Omit<GameState, 'structure'> & {
+  structure: StructurePublic;
+};

@@ -5,9 +5,7 @@ import {
   INITIAL_FACE_UP,
   STRUCTURE_SIZE,
 } from '../structure/layouts.js';
-import type { StructureSlot, TakenSlot } from '../structure/types.js';
-
-export type Structure = (StructureSlot | TakenSlot)[];
+import type { Structure, StructureSlot, TakenSlot } from '../structure/types.js';
 
 /** Ustawia `faceUp` wg schematu ery (setup na początku Ery). */
 export function applyInitialFaceUp(

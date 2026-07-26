@@ -45,8 +45,16 @@ export type {
   EffectPendingChoice,
   GamePhase,
   GameState,
+  GameStateView,
 } from './state/game.js';
-export type { TakenSlot, StructureSlot } from './structure/types.js';
+export type {
+  TakenSlot,
+  StructureSlot,
+  StructureSlotPublic,
+  FaceDownSlot,
+  Structure,
+  StructurePublic,
+} from './structure/types.js';
 
-export type { Structure } from './utility/structureFaceUp.js';
 export { applyInitialFaceUp, revealAfterTake } from './utility/structureFaceUp.js';
+export { toGameStateView } from './utility/toGameStateView.js';
