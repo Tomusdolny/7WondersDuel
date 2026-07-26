@@ -1,27 +1,18 @@
-import type { Card } from '../ageCards/types.js';
 import { RESOURCES, type Resource } from '../resources.js';
 import type { PlayerState, ProductionSnapshot } from '../state/player.js';
-import { getCard, getProgressToken } from './catalog.js';
+import { getProgressToken } from './catalog.js';
 import { getProduction, getTradePrices } from './production.js';
 
-/**
- * Minimalny koszt w monetach za zbudowanie karty ery
- * (stałe monety na karcie + optymalny handel), z łańcuchem i Masonry.
- */
-export function minCoinCostForCard(
-  card: Card,
+/** Minimalny koszt monet: stałe monety + handel po redukcji zasobów (Masonry/Architecture). */
+export function minCoinsForResources(
+  resourceCost: Partial<Record<Resource, number>>,
   player: PlayerState,
   opponent: PlayerState,
+  reduction: number,
+  coinsFixed: number,
 ): number {
-  if (card.chain && playerHasChain(player, card.chain)) {
-    return 0;
-  }
-
   const production = getProduction(player);
   const prices = getTradePrices(player, opponent);
-  const resourceCost = { ...(card.cost.resources ?? {}) };
-  const reduction = resourceCostReduction(player, card);
-  const coinsFixed = card.cost.coins ?? 0;
 
   if (reduction <= 0) {
     return coinsFixed + minTradeCoins(resourceCost, production, prices);
@@ -35,22 +26,12 @@ export function minCoinCostForCard(
   return coinsFixed + best;
 }
 
-function playerHasChain(player: PlayerState, chain: NonNullable<Card['chain']>): boolean {
-  for (const cardId of player.buildings) {
-    const owned = getCard(cardId);
-    if (owned?.chain === chain) return true;
-  }
-  return false;
-}
-
-/** Masonry: −2 dowolne zasoby przy budowie niebieskiej. */
-function resourceCostReduction(player: PlayerState, card: Card): number {
-  if (card.color !== 'blue') return 0;
+export function progressCostReduction(player: PlayerState, target: 'blue' | 'wonder'): number {
   for (const tokenId of player.progressTokens) {
     const token = getProgressToken(tokenId);
     if (!token) continue;
     for (const effect of token.effects) {
-      if (effect.kind === 'costReduction' && effect.target === 'blue') {
+      if (effect.kind === 'costReduction' && effect.target === target) {
         return effect.resources;
       }
     }
@@ -143,7 +124,6 @@ function minTradeCoins(
         remaining[r]!++;
       }
     }
-    // Zmarnowanie źródła (wybór zasobu, którego nie potrzebujemy).
     dfs(flexIndex + 1);
   }
 

@@ -60,5 +60,8 @@ export type {
 export { applyInitialFaceUp, revealAfterTake } from './_utility/structureFaceUp.js';
 export { toGameStateView } from './_utility/toGameStateView.js';
 
-export type { BuildStructureCardResult } from './_gameLogic/getStructureCardBuildCost.js';
-export { getStructureCardBuildCost } from './_gameLogic/getStructureCardBuildCost.js';
+export type { BuildStructureCardResult } from './_gameLogic/buildingCards/getStructureCardBuildCost.js';
+export { getStructureCardBuildCost } from './_gameLogic/buildingCards/getStructureCardBuildCost.js';
+
+export type { BuildWonderResult } from './_gameLogic/buildingWonders/getWonderBuildCost.js';
+export { getWonderBuildCost } from './_gameLogic/buildingWonders/getWonderBuildCost.js';

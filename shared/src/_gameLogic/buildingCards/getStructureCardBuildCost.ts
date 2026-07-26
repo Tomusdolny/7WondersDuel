@@ -1,10 +1,10 @@
-import type { Age } from '../ageCards/types.js';
-import type { PlayerId } from '../state/player.js';
-import type { GameStateView } from '../state/game.js';
-import { COVERED_BY, STRUCTURE_SIZE } from '../structure/layouts.js';
-import type { StructurePublic } from '../structure/types.js';
-import { getCard } from './catalog.js';
-import { minCoinCostForCard } from './minCoinCost.js';
+import type { Age } from '../../ageCards/types.js';
+import type { PlayerId } from '../../state/player.js';
+import type { GameStateView } from '../../state/game.js';
+import { COVERED_BY, STRUCTURE_SIZE } from '../../structure/layouts.js';
+import type { StructurePublic } from '../../structure/types.js';
+import { getCard } from '../catalog.js';
+import { minCoinCostForCard } from './minCoinCostForCard.js';
 
 export type BuildStructureCardResult =
   | { ok: false }
