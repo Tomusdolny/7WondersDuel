@@ -5,6 +5,7 @@ import { StructurePyramid } from '../components/StructurePyramid';
 import { CityPanel } from '../components/CityPanel';
 import { ConflictTrack } from '../components/ConflictTrack';
 import { ProgressTokensBoard } from '../components/ProgressTokensBoard';
+import { EffectChoice } from '../components/EffectChoice';
 
 function WonderDraft({
   offered,
@@ -59,6 +60,7 @@ export function GameScreen() {
     conflictPosition,
     militaryTokens,
     progressOnBoard,
+    discard,
   } = gameView;
   const isMyTurn = gameView.activePlayerId === playerId;
   const [playerA, playerB] = players;
@@ -74,6 +76,14 @@ export function GameScreen() {
 
       {phase.kind === 'wonderDraft' ? (
         <WonderDraft offered={phase.offered} isMyTurn={isMyTurn} />
+      ) : phase.kind === 'awaitingEffectChoice' ? (
+        <EffectChoice
+          choice={phase.choice}
+          players={players}
+          discard={discard}
+          playerId={playerId}
+          activePlayerId={gameView.activePlayerId}
+        />
       ) : (
         <StructurePyramid
           structure={structure}
