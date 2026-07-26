@@ -62,6 +62,11 @@ export { getStructureCardBuildCost } from './_gameLogic/building/buildingCards/g
 export type { BuildWonderResult } from './_gameLogic/building/buildingWonders/getWonderBuildCost.js';
 export { getWonderBuildCost } from './_gameLogic/building/buildingWonders/getWonderBuildCost.js';
 
-export { canPlayerAct } from './_gameLogic/playerActing/canPlayerAct.js';
+export { canPlayerAct } from './_gameLogic/playerMove/canPlayerAct.js';
 export { isSlotAccessible } from './_gameLogic/structure/isSlotAccessible.js';
 export { getDiscardCoins } from './_gameLogic/getDiscardCoins/getDiscardCoins.js';
+
+export type { ApplyError, ApplyResult } from './_gameLogic/playerMove/types.js';
+export { applyDiscardCard } from './_gameLogic/playerMove/applyDiscardCard.js';
+export { applyBuildCard } from './_gameLogic/playerMove/applyBuildCard.js';
+export { applyBuildWonder } from './_gameLogic/playerMove/applyBuildWonder.js';
