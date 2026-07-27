@@ -1,5 +1,5 @@
 import type { PlayerId } from '../../../state/player.js';
-import type { GameStateView } from '../../../state/game.js';
+import type { GameStatePublic } from '../../../state/game.js';
 import { STRUCTURE_SIZE } from '../../../structure/layouts.js';
 import { getCard } from '../catalog.js';
 import { isSlotAccessible } from '../../utility/isSlotAccessible.js';
@@ -14,7 +14,7 @@ export type BuildStructureCardResult =
  * Nie sprawdza tury ani skarbca — tylko dostępność (odkryta, nieprzykryta) i koszt.
  */
 export function getStructureCardBuildCost(
-  view: GameStateView,
+  view: GameStatePublic,
   playerId: PlayerId,
   slotIndex: number,
 ): BuildStructureCardResult {

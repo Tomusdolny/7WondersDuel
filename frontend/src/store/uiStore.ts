@@ -146,10 +146,10 @@ function handleServerEvent(event: ServerEvent) {
       break;
     }
     case 'gameStateView': {
-      const currentVersion = state.gameView?.stateVersion;
+      const currentVersion = state.gameView?.version;
       if (
         currentVersion !== undefined &&
-        event.view.stateVersion < currentVersion
+        event.view.version < currentVersion
       ) {
         return;
       }

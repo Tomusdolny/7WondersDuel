@@ -78,7 +78,7 @@ describe('wsClient', () => {
 
     const event: ServerEvent = {
       kind: 'commandRejected',
-      code: 'not_your_turn',
+      code: 'notYourTurn',
       message: 'Nie twoja tura',
     };
     socket.simulateMessage(
@@ -103,7 +103,7 @@ describe('wsClient', () => {
     socket.simulateMessage(
       JSON.stringify({
         protocolVersion: 999,
-        event: { kind: 'commandRejected', code: 'internal_error', message: 'x' },
+        event: { kind: 'commandRejected', code: 'internalError', message: 'x' },
       }),
     );
 

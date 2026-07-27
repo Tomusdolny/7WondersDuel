@@ -90,9 +90,29 @@ export interface GameState {
 }
 
 /**
- * Widok stanu dla klientów: jak `GameState`, ale piramida bez `cardId`
- * na slotach face-down.
+ * Stan z zamaskowaną piramidą (bez `cardId` na face-down).
+ * Używany w silniku kosztów / dostępności slotów.
  */
-export type GameStateView = Omit<GameState, 'structure'> & {
+export type GameStatePublic = Omit<GameState, 'structure'> & {
   structure: StructurePublic;
+};
+
+/** Legalna akcja na slocie piramidy (dla UI / walidacji). */
+export type LegalSlotAction = {
+  action:
+    | { kind: 'build' }
+    | { kind: 'discard' }
+    | { kind: 'buildWonder'; wonderId: WonderId };
+  /** Monety do zapłaty (0 przy discard). */
+  coinsCost: number;
+};
+
+/**
+ * Widok dla klienta WS (perspektywa gracza): maskuje `progressInBox`
+ * i dokłada legalne ruchy na turę odbiorcy.
+ */
+export type GameStateView = Omit<GameStatePublic, 'progressInBox'> & {
+  viewerId: PlayerId;
+  availableSlots: number[];
+  legalActions: Record<number, LegalSlotAction[]>;
 };

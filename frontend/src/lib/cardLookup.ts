@@ -1,7 +1,7 @@
 import {
-  ALL_CARDS,
-  WONDER_CARDS,
-  PROGRESS_TOKENS,
+  getCard,
+  getWonder,
+  getProgressToken,
   type Card,
   type CardId,
   type Cost,
@@ -13,17 +13,17 @@ import {
 } from '@7ww/shared';
 
 export function findCard(cardId: CardId): Card | undefined {
-  return ALL_CARDS.find((card) => card.id === cardId);
+  return getCard(cardId);
 }
 
 export function findWonder(wonderId: WonderId): WonderCard | undefined {
-  return WONDER_CARDS.find((wonder) => wonder.id === wonderId);
+  return getWonder(wonderId);
 }
 
 export function findProgressToken(
   tokenId: ProgressTokenId,
 ): ProgressToken | undefined {
-  return PROGRESS_TOKENS.find((token) => token.id === tokenId);
+  return getProgressToken(tokenId);
 }
 
 export function formatResourceCost(

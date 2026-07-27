@@ -1,5 +1,5 @@
 import type { PlayerId } from '../../../state/player.js';
-import type { GameStateView } from '../../../state/game.js';
+import type { GameStatePublic } from '../../../state/game.js';
 import type { WonderId } from '../../../wonders/types.js';
 import { getWonder } from '../catalog.js';
 import { minCoinCostForWonder } from './minCoinCostForWonder.js';
@@ -14,7 +14,7 @@ export type BuildWonderResult =
  * (posiadany, niezbudowany, limit 7 w partii) i koszt zasobów/handlu.
  */
 export function getWonderBuildCost(
-  view: GameStateView,
+  view: GameStatePublic,
   playerId: PlayerId,
   wonderId: WonderId,
 ): BuildWonderResult {

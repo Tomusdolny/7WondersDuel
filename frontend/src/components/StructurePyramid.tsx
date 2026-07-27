@@ -11,6 +11,10 @@ function actionLabel(action: LegalSlotAction['action']): string {
       return 'Odrzuć za monety';
     case 'buildWonder':
       return 'Zbuduj cud';
+    default: {
+      const _exhaustive: never = action;
+      return _exhaustive;
+    }
   }
 }
 
