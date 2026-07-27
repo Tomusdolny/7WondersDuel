@@ -62,6 +62,8 @@ export { toPlayerView } from './_utility/toPlayerView.js';
 export { dealAgeCardIds } from './_gameLogic/setup/dealAgeCardIds.js';
 export { buildStructure } from './_gameLogic/setup/buildStructure.js';
 export { setupAge } from './_gameLogic/setup/setupAge.js';
+export { checkEndAge } from './_gameLogic/setup/checkEndAge.js';
+export { applyChooseNextAgeStarter } from './_gameLogic/setup/applyChooseNextAgeStarter.js';
 export { dealProgressTokens } from './_gameLogic/setup/dealProgressTokens.js';
 export type { CreateInitialGameStateParams } from './_gameLogic/setup/createInitialGameState.js';
 export { createInitialGameState } from './_gameLogic/setup/createInitialGameState.js';
@@ -90,3 +92,18 @@ export { applyChooseProgressToken } from './_gameLogic/playerMove/choice/applyCh
 export { applyChooseProgressFromBox } from './_gameLogic/playerMove/choice/applyChooseProgressFromBox.js';
 export { applyDiscardOpponentCard } from './_gameLogic/playerMove/choice/applyDiscardOpponentCard.js';
 export { applyConstructFromDiscard } from './_gameLogic/playerMove/choice/applyConstructFromDiscard.js';
+
+export {
+  PROTOCOL_VERSION,
+  clientMessage,
+  serverMessage,
+} from './protocol/index.js';
+export type {
+  ProtocolVersion,
+  ClientMessage,
+  ClientMessageType,
+  ProtocolErrorCode,
+  ServerErrorCode,
+  ServerMessage,
+  ServerMessageType,
+} from './protocol/index.js';

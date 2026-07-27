@@ -1,7 +1,7 @@
 import type { EffectPendingChoice, GameState } from '../../../state/game.js';
 import type { PlayerId } from '../../../state/player.js';
 import { canPlayerAct } from './canPlayerAct.js';
-import { passOrKeepTurn } from './passOrKeepTurn.js';
+import { finishTurn } from './finishTurn.js';
 import { err, type ApplyError, type ApplyResult } from '../types.js';
 
 export function requirePendingChoice<K extends EffectPendingChoice['kind']>(
@@ -29,7 +29,7 @@ export function requirePendingChoice<K extends EffectPendingChoice['kind']>(
   };
 }
 
-/** Kończy wybór: wraca do `playing` i ewentualnie oddaje turę. */
+/** Kończy wybór: wraca do `playing` i ewentualnie oddaje turę / kończy erę. */
 export function resumeAfterChoice(
   state: GameState,
   playerId: PlayerId,
@@ -41,7 +41,7 @@ export function resumeAfterChoice(
     return state;
   }
   const playing = { ...state, phase: { kind: 'playing' as const } };
-  return passOrKeepTurn(playing, playerId, keepTurn);
+  return finishTurn(playing, playerId, keepTurn);
 }
 
 export function clearPendingToPlaying(state: GameState): GameState {

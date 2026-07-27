@@ -4,14 +4,14 @@ import { toGameStateView } from '../../../_utility/toGameStateView.js';
 import { getDiscardCoins } from '../../getDiscardCoins/getDiscardCoins.js';
 import { isSlotAccessible } from '../../utility/isSlotAccessible.js';
 import { canPlayerAct } from '../utility/canPlayerAct.js';
-import { passOrKeepTurn } from '../utility/passOrKeepTurn.js';
+import { finishTurn } from '../utility/finishTurn.js';
 import { addCoins, findPlayers, withPlayers } from '../utility/players.js';
 import { takeStructureSlot } from '../utility/takeStructureSlot.js';
 import { err, ok, type ApplyResult } from '../types.js';
 
 /**
  * Odrzucenie karty ze struktury za monety.
- * Aktualizuje strukturę, discard, skarbiec; oddaje turę.
+ * Aktualizuje strukturę, discard, skarbiec; oddaje turę / koniec ery.
  */
 export function applyDiscardCard(
   state: GameState,
@@ -35,6 +35,6 @@ export function applyDiscardCard(
     ...withPlayers(taken.state, player, found.opponent, found.playerIndex),
     discard: [...taken.state.discard, taken.cardId],
   };
-  next = passOrKeepTurn(next, playerId, false);
+  next = finishTurn(next, playerId, false);
   return ok(next);
 }

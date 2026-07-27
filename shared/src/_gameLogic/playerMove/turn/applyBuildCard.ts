@@ -7,7 +7,7 @@ import { getCard } from '../../building/catalog.js';
 import { isSlotAccessible } from '../../utility/isSlotAccessible.js';
 import { applyCardBuiltEffects } from '../effects/applyCardBuiltEffects.js';
 import { canPlayerAct } from '../utility/canPlayerAct.js';
-import { passOrKeepTurn } from '../utility/passOrKeepTurn.js';
+import { finishTurn } from '../utility/finishTurn.js';
 import { addCoins, findPlayers, withPlayers } from '../utility/players.js';
 import { takeStructureSlot } from '../utility/takeStructureSlot.js';
 import { err, ok, type ApplyResult } from '../types.js';
@@ -52,7 +52,7 @@ export function applyBuildCard(
   next = effects.state;
 
   if (next.phase.kind !== 'ended' && !effects.pending) {
-    next = passOrKeepTurn(next, playerId, false);
+    next = finishTurn(next, playerId, false);
   }
 
   return ok(next);
