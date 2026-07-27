@@ -1,18 +1,20 @@
+import http from 'node:http';
 import cors from 'cors';
 import express from 'express';
-
-const PORT = Number(process.env.PORT ?? 3001);
-const CORS_ORIGIN = process.env.CORS_ORIGIN ?? 'http://localhost:5173';
+import { config } from './config.js';
+import { healthHandler } from './http/health.js';
+import { attachWebSocketServer } from './ws/server.js';
 
 const app = express();
 
-app.use(cors({ origin: CORS_ORIGIN }));
+app.use(cors({ origin: config.corsOrigin }));
 app.use(express.json());
 
-app.get('/health', (_req, res) => {
-  res.json({ ok: true, service: '7ww-backend' });
-});
+app.get('/health', healthHandler);
 
-app.listen(PORT, () => {
-  console.log(`Backend listening on http://localhost:${PORT}`);
+const server = http.createServer(app);
+attachWebSocketServer(server);
+
+server.listen(config.port, () => {
+  console.log(`Backend listening on http://localhost:${config.port}`);
 });
