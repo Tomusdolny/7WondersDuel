@@ -172,3 +172,13 @@ export function handleDisconnect(connectionId: number): Room | undefined {
 export function connectedSeats(room: Room): PlayerSeat[] {
   return room.seats.filter((s) => s.connectionId !== null);
 }
+
+export function getSeatForConnection(
+  connectionId: number,
+): { room: Room; seat: PlayerSeat } | undefined {
+  const room = roomStore.getRoomForConnection(connectionId);
+  if (!room) return undefined;
+  const seat = findSeatByConnection(room, connectionId);
+  if (!seat) return undefined;
+  return { room, seat };
+}

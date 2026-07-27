@@ -1,5 +1,4 @@
-import type { PlayerId } from '@7ww/shared';
-import type { RoomStatus } from '@7ww/shared';
+import type { GameState, PlayerId, RoomStatus } from '@7ww/shared';
 
 export type PlayerSeat = {
   playerId: PlayerId;
@@ -13,4 +12,6 @@ export type Room = {
   code: string;
   status: RoomStatus;
   seats: PlayerSeat[];
+  /** Ustawiane po starcie partii (§3). */
+  gameState?: GameState;
 };
