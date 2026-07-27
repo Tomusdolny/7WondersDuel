@@ -1,4 +1,4 @@
-import type { GameState, GameStateView } from '../state/game.js';
+import type { GameState, GameStatePublic } from '../state/game.js';
 import type {
   FaceDownSlot,
   StructurePublic,
@@ -7,7 +7,7 @@ import type {
 } from '../structure/types.js';
 
 /** Maskuje `cardId` na slotach face-down oraz niewyłożone cuda draftu (`remaining`). */
-export function toGameStateView(state: GameState): GameStateView {
+export function toGameStatePublic(state: GameState): GameStatePublic {
   const structure = toStructurePublic(state.structure);
   if (state.phase.kind !== 'wonderDraft') {
     return { ...state, structure };
@@ -17,6 +17,11 @@ export function toGameStateView(state: GameState): GameStateView {
     structure,
     phase: { ...state.phase, remaining: [] },
   };
+}
+
+/** @deprecated Użyj `toGameStatePublic` — alias dla kompatybilności. */
+export function toGameStateView(state: GameState): GameStatePublic {
+  return toGameStatePublic(state);
 }
 
 function toStructurePublic(structure: GameState['structure']): StructurePublic {

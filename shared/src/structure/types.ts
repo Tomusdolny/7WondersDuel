@@ -25,3 +25,6 @@ export interface FaceDownSlot {
 export type Structure = (StructureSlot | TakenSlot)[];
 
 export type StructurePublic = (StructureSlotPublic | FaceDownSlot | TakenSlot)[];
+
+/** Slot w widoku klienta (odkryty lub zakryty; `null` = wzięty). */
+export type StructureSlotView = StructureSlotPublic | FaceDownSlot;

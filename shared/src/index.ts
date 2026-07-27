@@ -42,12 +42,15 @@ export type {
   EffectPendingChoice,
   GamePhase,
   GameState,
+  GameStatePublic,
   GameStateView,
+  LegalSlotAction,
 } from './state/game.js';
 export type {
   TakenSlot,
   StructureSlot,
   StructureSlotPublic,
+  StructureSlotView,
   FaceDownSlot,
   Structure,
   StructurePublic,
@@ -56,7 +59,7 @@ export type {
 export { applyInitialFaceUp, revealAfterTake } from './_gameLogic/setup/structureFaceUp.js';
 export type { Rng } from './_utility/rng.js';
 export { createMathRng } from './_utility/rng.js';
-export { toGameStateView } from './_utility/toGameStateView.js';
+export { toGameStatePublic, toGameStateView } from './_utility/toGameStateView.js';
 export { toPlayerView } from './_utility/toPlayerView.js';
 
 export { dealAgeCardIds } from './_gameLogic/setup/dealAgeCardIds.js';
@@ -80,9 +83,15 @@ export { getStructureCardBuildCost } from './_gameLogic/building/buildingCards/g
 export type { BuildWonderResult } from './_gameLogic/building/buildingWonders/getWonderBuildCost.js';
 export { getWonderBuildCost } from './_gameLogic/building/buildingWonders/getWonderBuildCost.js';
 
+export { getCard, getWonder, getProgressToken } from './_gameLogic/building/catalog.js';
+
 export { canPlayerAct } from './_gameLogic/playerMove/utility/canPlayerAct.js';
 export { isSlotAccessible } from './_gameLogic/utility/isSlotAccessible.js';
 export { getDiscardCoins } from './_gameLogic/getDiscardCoins/getDiscardCoins.js';
+export {
+  getAvailableSlots,
+  getLegalActions,
+} from './_gameLogic/playerMove/legalActions.js';
 
 export type { ApplyError, ApplyResult } from './_gameLogic/playerMove/types.js';
 export { applyDiscardCard } from './_gameLogic/playerMove/turn/applyDiscardCard.js';
@@ -100,10 +109,20 @@ export {
 } from './protocol/index.js';
 export type {
   ProtocolVersion,
+  TakeCardAction,
+  ClientCommand,
+  ClientCommandKind,
   ClientMessage,
-  ClientMessageType,
+  RoomStatus,
   ProtocolErrorCode,
+  LobbyErrorCode,
   ServerErrorCode,
+  PlayerScoreEntry,
+  RoomStateEvent,
+  GameStateViewEvent,
+  GameEndedEvent,
+  CommandRejectedEvent,
+  ServerEvent,
+  ServerEventKind,
   ServerMessage,
-  ServerMessageType,
 } from './protocol/index.js';

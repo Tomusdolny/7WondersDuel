@@ -1,15 +1,14 @@
-import type { GameResult, PlayerId, PlayerScoreBreakdown } from '@7ww/shared';
+import type { GameResult, PlayerId, ScoreBreakdown } from '@7ww/shared';
 import { leaveRoom, navigate, useUiStore } from '../store/uiStore';
 
-const SCORE_COLUMNS: { key: keyof PlayerScoreBreakdown; label: string }[] = [
-  { key: 'blue', label: 'Niebieskie' },
-  { key: 'green', label: 'Zielone' },
-  { key: 'yellow', label: 'Żółte' },
-  { key: 'purple', label: 'Fioletowe' },
+const SCORE_COLUMNS: { key: keyof ScoreBreakdown; label: string }[] = [
+  { key: 'buildings', label: 'Budynki' },
   { key: 'wonders', label: 'Cuda' },
   { key: 'progress', label: 'Postęp' },
+  { key: 'guilds', label: 'Gildie' },
+  { key: 'treasury', label: 'Skarbiec' },
   { key: 'military', label: 'Militarne' },
-  { key: 'coins', label: 'Monety' },
+  { key: 'blueVp', label: 'Niebieskie (TB)' },
 ];
 
 function playerLabel(id: PlayerId, viewerId: PlayerId | null): string {
@@ -56,7 +55,7 @@ export function ResultScreen() {
                 <tr key={score.playerId}>
                   <td>{playerLabel(score.playerId, playerId)}</td>
                   {SCORE_COLUMNS.map((column) => (
-                    <td key={column.key}>{score[column.key] ?? '—'}</td>
+                    <td key={column.key}>{score[column.key]}</td>
                   ))}
                   <td>{score.total}</td>
                 </tr>

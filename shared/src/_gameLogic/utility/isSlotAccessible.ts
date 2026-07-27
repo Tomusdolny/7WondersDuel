@@ -1,5 +1,5 @@
 import type { Age } from '../../ageCards/types.js';
-import type { GameStateView } from '../../state/game.js';
+import type { GameStatePublic } from '../../state/game.js';
 import { COVERED_BY, STRUCTURE_SIZE } from '../../structure/layouts.js';
 import type { StructurePublic } from '../../structure/types.js';
 
@@ -7,7 +7,10 @@ import type { StructurePublic } from '../../structure/types.js';
  * Slot dostępny do wzięcia: istnieje, odkryty, nic go nie przykrywa.
  * Nie sprawdza tury gracza.
  */
-export function isSlotAccessible(view: GameStateView, slotIndex: number): boolean {
+export function isSlotAccessible(
+  view: Pick<GameStatePublic, 'structure' | 'age'>,
+  slotIndex: number,
+): boolean {
   if (slotIndex < 0 || slotIndex >= STRUCTURE_SIZE) {
     return false;
   }

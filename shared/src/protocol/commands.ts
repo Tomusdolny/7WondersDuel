@@ -5,37 +5,41 @@ import type { WonderId } from '../wonders/types.js';
 import type { ProtocolVersion } from './version.js';
 import { PROTOCOL_VERSION } from './version.js';
 
-type Envelope<T extends string, P = Record<string, never>> = {
+/** Akcja na karcie ze struktury (build / discard / cud). */
+export type TakeCardAction =
+  | { kind: 'build' }
+  | { kind: 'discard' }
+  | { kind: 'buildWonder'; wonderId: WonderId };
+
+/** Komendy klienta → serwer (lobby + rozgrywka). */
+export type ClientCommand =
+  | { kind: 'createRoom' }
+  | { kind: 'joinRoom'; roomCode: string; playerToken?: string }
+  | { kind: 'selectWonder'; wonderId: WonderId }
+  | { kind: 'takeCard'; slotIndex: number; action: TakeCardAction }
+  | { kind: 'chooseProgressToken'; tokenId: ProgressTokenId }
+  | { kind: 'chooseProgressFromBox'; tokenId: ProgressTokenId }
+  | { kind: 'discardOpponentCard'; cardId: CardId }
+  | { kind: 'constructFromDiscard'; cardId: CardId }
+  | { kind: 'chooseNextAgeStarter'; playerId: PlayerId };
+
+export type ClientCommandKind = ClientCommand['kind'];
+
+/** Envelope WS: klient → serwer. */
+export type ClientMessage = {
   protocolVersion: ProtocolVersion;
-  type: T;
-} & P;
+  command: ClientCommand;
+  /** Wymagane dla komend rozgrywki po dołączeniu do pokoju. */
+  roomId?: string;
+};
 
-/** Komendy klienta → serwer (tylko rozgrywka). */
-export type ClientMessage =
-  | Envelope<'SelectWonder', { wonderId: WonderId }>
-  | Envelope<
-      'PlayCard',
-      {
-        action: 'build' | 'discard' | 'wonder';
-        slotIndex: number;
-        /** Wymagane gdy `action === 'wonder'`. */
-        wonderId?: WonderId;
-      }
-    >
-  | Envelope<'ChooseProgressToken', { tokenId: ProgressTokenId }>
-  | Envelope<'ChooseProgressFromBox', { tokenId: ProgressTokenId }>
-  | Envelope<'DiscardOpponentCard', { cardId: CardId }>
-  | Envelope<'ConstructFromDiscard', { cardId: CardId }>
-  | Envelope<'ChooseNextAgeStarter', { starterId: PlayerId }>;
-
-export type ClientMessageType = ClientMessage['type'];
-
-export function clientMessage<T extends ClientMessageType>(
-  type: T,
-  payload: Omit<Extract<ClientMessage, { type: T }>, 'protocolVersion' | 'type'>,
-): Extract<ClientMessage, { type: T }> {
-  return { protocolVersion: PROTOCOL_VERSION, type, ...payload } as Extract<
-    ClientMessage,
-    { type: T }
-  >;
+export function clientMessage(
+  command: ClientCommand,
+  roomId?: string,
+): ClientMessage {
+  return {
+    protocolVersion: PROTOCOL_VERSION,
+    command,
+    ...(roomId !== undefined ? { roomId } : {}),
+  };
 }

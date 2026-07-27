@@ -58,7 +58,7 @@ function makePlayer(id: string): PlayerState {
 
 function makeGameView(overrides: Partial<GameStateView> = {}): GameStateView {
   return {
-    stateVersion: 1,
+    version: 1,
     viewerId: 'p1',
     phase: { kind: 'playing' },
     age: 1,
@@ -130,22 +130,22 @@ describe('uiStore', () => {
     expect(store.getUiState().connection).toBe('connected');
   });
 
-  it('przyjmuje nowszy gameStateView i ignoruje starszy stateVersion', async () => {
+  it('przyjmuje nowszy gameStateView i ignoruje starszy version', async () => {
     const store = await import('./uiStore');
     store.initClient();
 
     emitEvent({
       kind: 'gameStateView',
       roomId: 'room-1',
-      view: makeGameView({ stateVersion: 2 }),
+      view: makeGameView({ version: 2 }),
     });
     emitEvent({
       kind: 'gameStateView',
       roomId: 'room-1',
-      view: makeGameView({ stateVersion: 1 }),
+      view: makeGameView({ version: 1 }),
     });
 
-    expect(store.getUiState().gameView?.stateVersion).toBe(2);
+    expect(store.getUiState().gameView?.version).toBe(2);
   });
 
   it('mapuje gameEnded na ekran wyniku', async () => {
@@ -171,18 +171,18 @@ describe('uiStore', () => {
 
     emitEvent({
       kind: 'commandRejected',
-      code: 'not_your_turn',
+      code: 'notYourTurn',
       message: 'Nie twoja tura',
     });
     emitEvent({
       kind: 'commandRejected',
-      code: 'not_your_turn',
+      code: 'notYourTurn',
       message: 'Nie twoja tura',
     });
 
     const state = store.getUiState();
     expect(state.rejectionSeq).toBe(2);
-    expect(state.lastRejection?.code).toBe('not_your_turn');
+    expect(state.lastRejection?.code).toBe('notYourTurn');
   });
 
   it('clearRejection czyści lastRejection bez ruszania rejectionSeq', async () => {
@@ -191,7 +191,7 @@ describe('uiStore', () => {
 
     emitEvent({
       kind: 'commandRejected',
-      code: 'illegal_move',
+      code: 'wrongPhase',
       message: 'Zły ruch',
     });
     store.clearRejection();

@@ -1,13 +1,21 @@
-import type { CardId, EffectPendingChoice, PlayerId, PlayerState } from '@7ww/shared';
+import type {
+  CardId,
+  EffectPendingChoice,
+  PlayerId,
+  PlayerState,
+  ProgressTokenId,
+} from '@7ww/shared';
 import { sendCommand } from '../store/uiStore';
 import { findCard, findProgressToken } from '../lib/cardLookup';
 
 function ChooseProgressToken({
   options,
   disabled,
+  fromBox,
 }: {
-  options: string[];
+  options: ProgressTokenId[];
   disabled: boolean;
+  fromBox: boolean;
 }) {
   return (
     <ul>
@@ -19,7 +27,11 @@ function ChooseProgressToken({
               type="button"
               disabled={disabled}
               onClick={() =>
-                sendCommand({ kind: 'chooseProgressToken', tokenId })
+                sendCommand(
+                  fromBox
+                    ? { kind: 'chooseProgressFromBox', tokenId }
+                    : { kind: 'chooseProgressToken', tokenId },
+                )
               }
             >
               {token?.name ?? tokenId}
@@ -156,6 +168,7 @@ export function EffectChoice({
           <ChooseProgressToken
             options={choice.options}
             disabled={!isMyChoice}
+            fromBox={choice.kind === 'chooseProgressFromBox'}
           />
         </section>
       );
