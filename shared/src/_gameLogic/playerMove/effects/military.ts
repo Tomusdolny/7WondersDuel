@@ -61,7 +61,11 @@ export function redShieldsWithStrategy(player: PlayerState, baseShields: number)
 
 export function hasProgressEffect(
   player: PlayerState,
-  kind: 'extraShieldOnFutureMilitary' | 'extraTurnOnFutureWonders' | 'coinsOnChainBuild',
+  kind:
+    | 'extraShieldOnFutureMilitary'
+    | 'extraTurnOnFutureWonders'
+    | 'coinsOnChainBuild'
+    | 'gainOpponentTradeSpend',
 ): boolean {
   for (const id of player.progressTokens) {
     const token = getProgressToken(id);

@@ -1,5 +1,6 @@
 import type { PlayerState } from '../../../state/player.js';
 import type { WonderCard } from '../../../wonders/types.js';
+import type { CoinCostBreakdown } from '../buildingCards/minCoinCostForCard.js';
 import { minCoinsForResources, progressCostReduction } from '../resourcePayment.js';
 
 /**
@@ -10,12 +11,13 @@ export function minCoinCostForWonder(
   wonder: WonderCard,
   player: PlayerState,
   opponent: PlayerState,
-): number {
-  return minCoinsForResources(
+): CoinCostBreakdown {
+  const coins = minCoinsForResources(
     wonder.cost,
     player,
     opponent,
     progressCostReduction(player, 'wonder'),
     0,
   );
+  return { coins, tradeCoins: coins };
 }

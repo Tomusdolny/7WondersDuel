@@ -6,6 +6,7 @@ import { getStructureCardBuildCost } from '../../building/buildingCards/getStruc
 import { getCard } from '../../building/catalog.js';
 import { isSlotAccessible } from '../../utility/isSlotAccessible.js';
 import { applyCardBuiltEffects } from '../effects/applyCardBuiltEffects.js';
+import { applyEconomyFromTrade } from '../effects/applyEconomyFromTrade.js';
 import { canPlayerAct } from '../utility/canPlayerAct.js';
 import { finishTurn } from '../utility/finishTurn.js';
 import { addCoins, findPlayers, withPlayers } from '../utility/players.js';
@@ -48,6 +49,7 @@ export function applyBuildCard(
   player = { ...player, buildings: [...player.buildings, taken.cardId] };
 
   let next = withPlayers(taken.state, player, found.opponent, found.playerIndex);
+  next = applyEconomyFromTrade(next, playerId, costResult.tradeCoins);
   const effects = applyCardBuiltEffects(next, playerId, card, playerBefore, builtViaChain);
   next = effects.state;
 

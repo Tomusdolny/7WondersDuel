@@ -5,10 +5,12 @@ import { toGameStateView } from '../../../_utility/toGameStateView.js';
 import { getWonderBuildCost } from '../../building/buildingWonders/getWonderBuildCost.js';
 import { getWonder } from '../../building/catalog.js';
 import { isSlotAccessible } from '../../utility/isSlotAccessible.js';
+import { applyEconomyFromTrade } from '../effects/applyEconomyFromTrade.js';
 import { applyWonderBuiltEffects } from '../effects/applyWonderBuiltEffects.js';
 import { canPlayerAct } from '../utility/canPlayerAct.js';
 import { finishTurn } from '../utility/finishTurn.js';
 import { addCoins, findPlayers, withPlayers } from '../utility/players.js';
+import { returnLastUnbuiltWonderToBox } from '../utility/returnLastUnbuiltWonderToBox.js';
 import { takeStructureSlot } from '../utility/takeStructureSlot.js';
 import { err, ok, type ApplyResult } from '../types.js';
 
@@ -50,6 +52,8 @@ export function applyBuildWonder(
     discard: [...taken.state.discard, taken.cardId],
     wondersBuiltTotal: taken.state.wondersBuiltTotal + 1,
   };
+  next = applyEconomyFromTrade(next, playerId, costResult.tradeCoins);
+  next = returnLastUnbuiltWonderToBox(next);
 
   const effects = applyWonderBuiltEffects(next, playerId, wonder);
   next = effects.state;

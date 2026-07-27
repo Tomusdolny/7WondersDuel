@@ -4,7 +4,9 @@ import type { WonderId } from '../../../wonders/types.js';
 import { getWonder } from '../catalog.js';
 import { minCoinCostForWonder } from './minCoinCostForWonder.js';
 
-export type BuildWonderResult = { ok: false } | { ok: true; coins: number };
+export type BuildWonderResult =
+  | { ok: false }
+  | { ok: true; coins: number; tradeCoins: number };
 
 /**
  * Minimalny koszt monet budowy cuda gracza.
@@ -36,5 +38,6 @@ export function getWonderBuildCost(
     return { ok: false };
   }
 
-  return { ok: true, coins: minCoinCostForWonder(wonder, player, opponent) };
+  const cost = minCoinCostForWonder(wonder, player, opponent);
+  return { ok: true, coins: cost.coins, tradeCoins: cost.tradeCoins };
 }

@@ -5,7 +5,9 @@ import { getCard } from '../catalog.js';
 import { isSlotAccessible } from '../../utility/isSlotAccessible.js';
 import { minCoinCostForCard } from './minCoinCostForCard.js';
 
-export type BuildStructureCardResult = { ok: false } | { ok: true; coins: number };
+export type BuildStructureCardResult =
+  | { ok: false }
+  | { ok: true; coins: number; tradeCoins: number };
 
 /**
  * Minimalny koszt monet budowy karty ze slotu struktury.
@@ -40,5 +42,6 @@ export function getStructureCardBuildCost(
     return { ok: false };
   }
 
-  return { ok: true, coins: minCoinCostForCard(card, player, opponent) };
+  const cost = minCoinCostForCard(card, player, opponent);
+  return { ok: true, coins: cost.coins, tradeCoins: cost.tradeCoins };
 }
