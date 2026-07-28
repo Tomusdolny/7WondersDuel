@@ -26,7 +26,7 @@ export type WsClient = {
 const RECONNECT_DELAY_MS = 1000;
 
 function resolveUrl(explicit?: string): string {
-  const url = explicit ?? import.meta.env.VITE_WS_URL;
+  const url = explicit ?? import.meta.env.VITE_WS_URL ?? 'ws://localhost:3001';
   if (typeof url !== 'string' || url.length === 0) {
     throw new Error('Brak VITE_WS_URL — ustaw URL WebSocket w env.');
   }

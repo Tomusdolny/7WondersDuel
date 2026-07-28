@@ -24,7 +24,11 @@ function CurrentScreen() {
 
 export function App() {
   useEffect(() => {
-    initClient();
+    try {
+      initClient();
+    } catch (error) {
+      console.error('Nie udało się zainicjalizować klienta WS', error);
+    }
   }, []);
 
   return (
