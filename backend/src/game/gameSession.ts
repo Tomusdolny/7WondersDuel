@@ -78,3 +78,18 @@ export function buildScoreEntries(state: GameState): PlayerScoreEntry[] {
     ...breakdown[player.id]!,
   }));
 }
+
+/** Walkower: wygrywa przeciwnik rozłączonego gracza. */
+export function resignByDisconnect(
+  state: GameState,
+  disconnectedPlayerId: PlayerId,
+): GameState | null {
+  if (state.phase.kind === 'ended') return null;
+  const winner = state.players.find((p) => p.id !== disconnectedPlayerId);
+  if (!winner) return null;
+  return {
+    ...state,
+    version: state.version + 1,
+    phase: { kind: 'ended', result: { kind: 'resign', winnerId: winner.id } },
+  };
+}

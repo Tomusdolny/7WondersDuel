@@ -28,6 +28,20 @@ export const roomStore = {
     roomsByCode.set(room.code, room);
   },
 
+  remove(roomId: string): Room | undefined {
+    const room = roomsById.get(roomId);
+    if (!room) return undefined;
+    for (const seat of room.seats) {
+      if (seat.connectionId !== null) {
+        connectionRoom.delete(seat.connectionId);
+        seat.connectionId = null;
+      }
+    }
+    roomsById.delete(room.id);
+    roomsByCode.delete(room.code);
+    return room;
+  },
+
   bindConnection(connectionId: number, roomId: string): void {
     connectionRoom.set(connectionId, roomId);
   },

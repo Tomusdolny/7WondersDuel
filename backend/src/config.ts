@@ -14,4 +14,5 @@ export const config = {
   maxRooms: envInt('MAX_ROOMS', 100),
   roomIdleTimeoutMs: envInt('ROOM_IDLE_TIMEOUT_MS', 30 * 60 * 1000),
   disconnectGraceMs: envInt('DISCONNECT_GRACE_MS', 60 * 1000),
+  wsPingIntervalMs: envInt('WS_PING_INTERVAL_MS', 30 * 1000),
 } as const;

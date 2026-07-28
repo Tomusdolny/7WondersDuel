@@ -42,7 +42,11 @@ Nazwy plików mogą się lekko różnić — ważny podział warstw.
 
 ---
 
+
+
 ## Kolejność implementacji
+
+
 
 ### 0. Kontrakt WS lobby (shared, jeśli jeszcze brak)
 
@@ -51,6 +55,8 @@ Nazwy plików mogą się lekko różnić — ważny podział warstw.
 - Spójność z `protocolVersion`; kody błędów lobby (`roomFull`, `roomNotFound`, `invalidToken`, …).
 - Doprecyzować nazewnictwo względem frontu (`ClientCommand` / `ServerEvent` vs obecne `ClientMessage` / `ServerMessage`).
 
+
+
 ### 1. Szkielet serwera
 
 - Zachować Express + CORS z env; rozszerzyć `.env.example` (`PORT`, `CORS_ORIGIN`, limity pokoi, timeouty disconnect).
@@ -58,12 +64,16 @@ Nazwy plików mogą się lekko różnić — ważny podział warstw.
 - Healthcheck: `{ ok, service }` (+ później `protocolVersion` / build id).
 - Zależność runtime: `@7ww/shared` już w `package.json`.
 
+
+
 ### 2. Lobby / pokoje
 
 - `CreateRoom` → kod pokoju, `playerToken` + `playerId` dla hosta, status `waiting`.
 - `JoinRoom` po kodzie → drugi gracz; odrzut 3+ (`roomFull`).
 - Reconnect: ten sam `playerToken` → ponowne przypisanie gniazda, bez resetu partii.
 - Przejście `waiting` → `in_game` gdy 2 graczy gotowych (start sesji gry).
+
+
 
 ### 3. Sesja gry i orkiestracja
 
@@ -73,11 +83,15 @@ Nazwy plików mogą się lekko różnić — ważny podział warstw.
 - Sukces → nowy stan + emit widoków; błąd → `Error` / `CommandRejected` z `ApplyError` / kodem protokołu.
 - Faza `ended` → event końca (powód zwycięstwa + punktacja, jeśli w kontrakcie).
 
+
+
 ### 4. Kolejka i spójność
 
 - Jedna kolejka (mutex) komend na `roomId` — brak równoległych mutate stanu.
 - Po apply: `version` z silnika; klient ignoruje starsze wersje (umowa z frontem).
 - Walidacja envelope na granicy WS: `protocolVersion`, kształt payloadu; nieznana komenda → błąd protokołu.
+
+
 
 ### 5. Obecność i timeouty
 
@@ -85,10 +99,14 @@ Nazwy plików mogą się lekko różnić — ważny podział warstw.
 - Disconnect: pokój czeka z limitem czasu; po timeoutcie MVP: auto-resign / zakończenie partii (polityka do ustalenia w implementacji, spójna z frontem).
 - Log statusu połączeń bez treści ruchów wrażliwych.
 
+
+
 ### 6. Obserwowalność
 
 - Logi strukturalne: `roomId`, `playerId` (nie token), `version`, typ komendy, wynik ok/error.
 - Prosty licznik aktywnych pokoi (log lub endpoint wewnętrzny — bez auth w MVP lokalnym).
+
+
 
 ### 7. Testy
 
@@ -98,12 +116,16 @@ Nazwy plików mogą się lekko różnić — ważny podział warstw.
 
 ---
 
+
+
 ## Definition of Done (backend MVP)
 
 - Pełna partia „headless” przez WS (test/skrypt) zgodnie z regułami podstawowymi z shared.
 - Create/join po kodzie, reconnect po `playerToken`, odrzucenie 3. gracza.
 - Nielegalne komendy → błąd z kodem; stan obu widoków spójny względem `version`.
 - Brak persystencji dyskowej wymaganej do DoD; restart serwera gubi pokoje (akceptowalne w MVP).
+
+
 
 ## Poza zakresem
 
@@ -112,3 +134,4 @@ Nazwy plików mogą się lekko różnić — ważny podział warstw.
 - Pantheon / Agora.
 - Design UI; implementacja frontendu (osobny plan `02-frontend-plan.md`).
 - Produkcyjny deploy / Docker (faza release w `01-realization-plan.md`).
+

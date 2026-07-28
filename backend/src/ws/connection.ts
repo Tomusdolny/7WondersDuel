@@ -5,8 +5,9 @@ import {
   unregisterConnection,
   type WsConnection,
 } from './connectionRegistry.js';
-import { handleConnectionClosed, handleRawMessage } from './router.js';
+import { markAlive } from './heartbeat.js';
 import { sendRejected } from './protocol.js';
+import { handleConnectionClosed, handleRawMessage } from './router.js';
 
 export type { WsConnection };
 
@@ -15,12 +16,18 @@ let nextConnectionId = 1;
 export function attachConnection(socket: WebSocket, _req: IncomingMessage): WsConnection {
   const conn: WsConnection = { id: nextConnectionId++, socket };
   registerConnection(conn);
+  markAlive(socket);
+
+  socket.on('pong', () => {
+    markAlive(socket);
+  });
 
   socket.on('message', (data, isBinary) => {
     if (isBinary) {
       sendRejected(socket, 'invalidPayload');
       return;
     }
+    markAlive(socket);
     handleRawMessage(conn, data);
   });
 

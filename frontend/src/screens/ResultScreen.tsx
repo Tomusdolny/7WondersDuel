@@ -28,6 +28,8 @@ function resultSummary(
       return result.winnerId === 'tie'
         ? 'Remis punktowy'
         : `Zwycięstwo cywilne — ${playerLabel(result.winnerId, viewerId)}`;
+    case 'resign':
+      return `Walkower — ${playerLabel(result.winnerId, viewerId)}`;
   }
 }
 

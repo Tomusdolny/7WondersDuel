@@ -10,6 +10,7 @@ import {
 import { enqueueRoomTask } from '../game/commandQueue.js';
 import { applyGameCommand, startGameSession } from '../game/gameSession.js';
 import { normalizeRoomCode } from '../rooms/codes.js';
+import { onSeatDisconnected, onSeatReconnected } from '../rooms/presence.js';
 import {
   createRoom,
   getSeatForConnection,
@@ -26,6 +27,7 @@ import {
 } from './protocol.js';
 
 function afterLobbyJoin(room: Room, seatPlayerId: string, isReconnect: boolean): void {
+  onSeatReconnected(room, seatPlayerId);
   broadcastRoomState(room);
 
   const shouldStart =
@@ -52,6 +54,14 @@ function afterLobbyJoin(room: Room, seatPlayerId: string, isReconnect: boolean):
   }
 }
 
+function noteDisconnect(
+  result: { room: Room; playerId: string } | undefined,
+): void {
+  if (!result) return;
+  broadcastRoomState(result.room);
+  onSeatDisconnected(result.room, result.playerId);
+}
+
 /** Odłącza z bieżącego pokoju w jego kolejce, potem `then`. */
 function withPreviousRoomReleased(conn: WsConnection, then: () => void): void {
   const seated = getSeatForConnection(conn.id);
@@ -61,10 +71,7 @@ function withPreviousRoomReleased(conn: WsConnection, then: () => void): void {
   }
 
   enqueueRoomTask(seated.room.id, () => {
-    const detached = handleDisconnect(conn.id);
-    if (detached) {
-      broadcastRoomState(detached);
-    }
+    noteDisconnect(handleDisconnect(conn.id));
     then();
   });
 }
@@ -195,9 +202,6 @@ export function handleConnectionClosed(conn: WsConnection): void {
   }
 
   enqueueRoomTask(seated.room.id, () => {
-    const detached = handleDisconnect(conn.id);
-    if (detached) {
-      broadcastRoomState(detached);
-    }
+    noteDisconnect(handleDisconnect(conn.id));
   });
 }

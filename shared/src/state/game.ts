@@ -9,7 +9,9 @@ import type { Structure, StructurePublic } from '../structure/types.js';
 export type GameResult =
   | { kind: 'military'; winnerId: PlayerId }
   | { kind: 'science'; winnerId: PlayerId }
-  | { kind: 'civilian'; winnerId: PlayerId | 'tie'; scores: Record<PlayerId, number> };
+  | { kind: 'civilian'; winnerId: PlayerId | 'tie'; scores: Record<PlayerId, number> }
+  /** Przeciwnik rozłączony dłużej niż grace (serwer). */
+  | { kind: 'resign'; winnerId: PlayerId };
 
 /**
  * Wybór wymuszony efektem / regułą — gra czeka na decyzję `activePlayerId`

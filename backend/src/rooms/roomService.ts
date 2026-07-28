@@ -1,5 +1,10 @@
 import { randomUUID } from 'node:crypto';
-import type { LobbyErrorCode, ProtocolErrorCode, RoomStateEvent } from '@7ww/shared';
+import type {
+  LobbyErrorCode,
+  PlayerId,
+  ProtocolErrorCode,
+  RoomStateEvent,
+} from '@7ww/shared';
 import { config } from '../config.js';
 import { generateRoomCode, normalizeRoomCode } from './codes.js';
 import { roomStore } from './roomStore.js';
@@ -157,16 +162,19 @@ export function joinRoom(
   };
 }
 
-export function handleDisconnect(connectionId: number): Room | undefined {
+export function handleDisconnect(
+  connectionId: number,
+): { room: Room; playerId: PlayerId } | undefined {
   const room = roomStore.getRoomForConnection(connectionId);
   const playerId = room
     ? room.seats.find((s) => s.connectionId === connectionId)?.playerId
     : undefined;
   const detached = detachConnection(connectionId);
-  if (detached) {
-    console.log(`[lobby] disconnect roomId=${detached.id} playerId=${playerId ?? '?'}`);
+  if (!detached || playerId === undefined) {
+    return undefined;
   }
-  return detached;
+  console.log(`[lobby] disconnect roomId=${detached.id} playerId=${playerId}`);
+  return { room: detached, playerId };
 }
 
 export function connectedSeats(room: Room): PlayerSeat[] {
