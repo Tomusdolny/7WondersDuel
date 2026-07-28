@@ -126,6 +126,30 @@ function handleConnectionChange(status: WsConnectionStatus) {
   applyPartial({}); // puste bo zawsze wywołuje derive connection
 }
 
+function screenForRoomStatus(status: RoomStatus): Screen {
+  if (status === 'in_game') {
+    return 'game';
+  }
+  if (status === 'finished') {
+    return 'result';
+  }
+  return 'lobby';
+}
+
+function isLobbyJoinRejection(event: CommandRejectedEvent): boolean {
+  if (event.refKind === 'createRoom' || event.refKind === 'joinRoom') {
+    return true;
+  }
+  return (
+    state.screen === 'lobby' &&
+    state.roomStatus === null &&
+    (event.code === 'roomNotFound' ||
+      event.code === 'roomFull' ||
+      event.code === 'invalidToken' ||
+      event.code === 'internalError')
+  );
+}
+
 function handleServerEvent(event: ServerEvent) {
   switch (event.kind) {
     case 'roomState': {
@@ -134,7 +158,7 @@ function handleServerEvent(event: ServerEvent) {
         playerToken: event.playerToken,
       });
       applyPartial({
-        screen: event.status === 'in_game' ? 'game' : 'lobby',
+        screen: screenForRoomStatus(event.status),
         playerToken: event.playerToken,
         playerId: event.playerId,
         roomCode: event.roomCode,
@@ -153,10 +177,11 @@ function handleServerEvent(event: ServerEvent) {
       ) {
         return;
       }
+      const ended = event.view.phase.kind === 'ended';
       applyPartial({
-        screen: 'game',
+        screen: ended ? 'result' : 'game',
         roomId: event.roomId,
-        roomStatus: 'in_game',
+        roomStatus: ended ? 'finished' : 'in_game',
         gameView: event.view,
       });
       break;
@@ -171,7 +196,30 @@ function handleServerEvent(event: ServerEvent) {
       break;
     }
     case 'commandRejected': {
-      applyPartial({ lastRejection: event, rejectionSeq: state.rejectionSeq + 1 });
+      if (isLobbyJoinRejection(event)) {
+        clearGuestSession();
+        client?.disconnect();
+        wsStatus = 'disconnected';
+        applyPartial({
+          screen: 'landing',
+          playerToken: null,
+          playerId: null,
+          roomCode: null,
+          roomId: null,
+          roomStatus: null,
+          opponentConnected: false,
+          playerCount: null,
+          gameView: null,
+          gameEnded: null,
+          lastRejection: event,
+          rejectionSeq: state.rejectionSeq + 1,
+        });
+        break;
+      }
+      applyPartial({
+        lastRejection: event,
+        rejectionSeq: state.rejectionSeq + 1,
+      });
       break;
     }
   }

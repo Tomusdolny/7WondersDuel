@@ -165,6 +165,61 @@ describe('uiStore', () => {
     expect(state.gameEnded?.result.kind).toBe('military');
   });
 
+  it('mapuje roomState finished na ekran wyniku (nie lobby)', async () => {
+    const store = await import('./uiStore');
+    store.initClient();
+    connectionChange('connected');
+
+    emitEvent({
+      kind: 'roomState',
+      roomId: 'room-1',
+      roomCode: 'ABCD',
+      status: 'finished',
+      playerToken: 'token-1',
+      playerId: 'p1',
+      opponentConnected: true,
+      playerCount: 2,
+    });
+
+    expect(store.getUiState().screen).toBe('result');
+    expect(store.getUiState().roomStatus).toBe('finished');
+  });
+
+  it('mapuje gameStateView z fazą ended na ekran wyniku', async () => {
+    const store = await import('./uiStore');
+    store.initClient();
+
+    emitEvent({
+      kind: 'gameStateView',
+      roomId: 'room-1',
+      view: makeGameView({
+        phase: { kind: 'ended', result: { kind: 'science', winnerId: 'p2' } },
+      }),
+    });
+
+    const state = store.getUiState();
+    expect(state.screen).toBe('result');
+    expect(state.roomStatus).toBe('finished');
+  });
+
+  it('po odrzuceniu create/join wraca na landing z toastem', async () => {
+    const store = await import('./uiStore');
+    store.initClient();
+    store.joinRoom('ABCD');
+
+    emitEvent({
+      kind: 'commandRejected',
+      code: 'roomNotFound',
+      refKind: 'joinRoom',
+    });
+
+    const state = store.getUiState();
+    expect(state.screen).toBe('landing');
+    expect(state.roomCode).toBeNull();
+    expect(state.lastRejection?.code).toBe('roomNotFound');
+    expect(disconnectMock).toHaveBeenCalled();
+  });
+
   it('zwiększa rejectionSeq przy każdym commandRejected', async () => {
     const store = await import('./uiStore');
     store.initClient();

@@ -1,16 +1,35 @@
 import { useState } from 'react';
-import type { LegalSlotAction, StructureSlotView, TakenSlot } from '@7ww/shared';
+import type {
+  LegalSlotAction,
+  PlayerState,
+  StructureSlotView,
+  TakenSlot,
+} from '@7ww/shared';
+import { getDiscardCoins } from '@7ww/shared';
 import { sendCommand } from '../store/uiStore';
-import { findCard, formatCardCost } from '../lib/cardLookup';
+import { findCard, findWonder, formatCardCost } from '../lib/cardLookup';
 
-function actionLabel(action: LegalSlotAction['action']): string {
+function actionLabel(
+  action: LegalSlotAction['action'],
+  coinsCost: number,
+  viewer: PlayerState | null,
+): string {
   switch (action.kind) {
     case 'build':
-      return 'Zbuduj';
-    case 'discard':
-      return 'Odrzuć za monety';
-    case 'buildWonder':
-      return 'Zbuduj cud';
+      return coinsCost > 0
+        ? `Zbuduj — koszt: ${coinsCost} monet`
+        : 'Zbuduj — darmowa';
+    case 'discard': {
+      const gain = viewer ? getDiscardCoins(viewer) : 2;
+      return `Odrzuć za ${gain} monet`;
+    }
+    case 'buildWonder': {
+      const wonder = findWonder(action.wonderId);
+      const name = wonder?.name ?? action.wonderId;
+      return coinsCost > 0
+        ? `Zbuduj cud: ${name} — koszt: ${coinsCost} monet`
+        : `Zbuduj cud: ${name}`;
+    }
     default: {
       const _exhaustive: never = action;
       return _exhaustive;
@@ -21,10 +40,12 @@ function actionLabel(action: LegalSlotAction['action']): string {
 function SlotActions({
   slotIndex,
   actions,
+  viewer,
   onClose,
 }: {
   slotIndex: number;
   actions: LegalSlotAction[];
+  viewer: PlayerState | null;
   onClose: () => void;
 }) {
   return (
@@ -43,7 +64,7 @@ function SlotActions({
                 onClose();
               }}
             >
-              {actionLabel(legal.action)} — koszt: {legal.coinsCost} monet
+              {actionLabel(legal.action, legal.coinsCost, viewer)}
             </button>
           </li>
         ))}
@@ -60,11 +81,13 @@ export function StructurePyramid({
   availableSlots,
   legalActions,
   isMyTurn,
+  viewer,
 }: {
   structure: (StructureSlotView | TakenSlot)[];
   availableSlots: number[];
   legalActions: Record<number, LegalSlotAction[]>;
   isMyTurn: boolean;
+  viewer: PlayerState | null;
 }) {
   const [openSlot, setOpenSlot] = useState<number | null>(null);
 
@@ -97,6 +120,7 @@ export function StructurePyramid({
                 <SlotActions
                   slotIndex={slot.index}
                   actions={actions}
+                  viewer={viewer}
                   onClose={() => setOpenSlot(null)}
                 />
               ) : null}

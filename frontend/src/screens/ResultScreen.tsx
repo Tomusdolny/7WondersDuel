@@ -1,5 +1,6 @@
 import type { GameResult, PlayerId, ScoreBreakdown } from '@7ww/shared';
-import { leaveRoom, navigate, useUiStore } from '../store/uiStore';
+import { leaveRoom, useUiStore } from '../store/uiStore';
+import { playerLabel } from '../lib/playerLabel';
 
 const SCORE_COLUMNS: { key: keyof ScoreBreakdown; label: string }[] = [
   { key: 'buildings', label: 'Budynki' },
@@ -10,10 +11,6 @@ const SCORE_COLUMNS: { key: keyof ScoreBreakdown; label: string }[] = [
   { key: 'military', label: 'Militarne' },
   { key: 'blueVp', label: 'Niebieskie (TB)' },
 ];
-
-function playerLabel(id: PlayerId, viewerId: PlayerId | null): string {
-  return id === viewerId ? 'Ty' : 'Przeciwnik';
-}
 
 function resultSummary(
   result: GameResult,
@@ -66,12 +63,9 @@ export function ResultScreen() {
           </table>
         </>
       ) : (
-        <p>Brak wyniku z serwera.</p>
+        <p>Oczekiwanie na wynik z serwera…</p>
       )}
       <nav>
-        <button type="button" onClick={() => navigate('lobby')}>
-          Wróć do lobby
-        </button>
         <button type="button" onClick={() => leaveRoom()}>
           Powrót do menu
         </button>

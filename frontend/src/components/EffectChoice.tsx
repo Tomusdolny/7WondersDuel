@@ -7,6 +7,7 @@ import type {
 } from '@7ww/shared';
 import { sendCommand } from '../store/uiStore';
 import { findCard, findProgressToken } from '../lib/cardLookup';
+import { playerLabel } from '../lib/playerLabel';
 
 function ChooseProgressToken({
   options,
@@ -118,9 +119,11 @@ function ConstructFromDiscard({
 
 function ChooseNextAgeStarter({
   players,
+  viewerId,
   disabled,
 }: {
   players: readonly PlayerState[];
+  viewerId: PlayerId | null;
   disabled: boolean;
 }) {
   return (
@@ -134,7 +137,7 @@ function ChooseNextAgeStarter({
               sendCommand({ kind: 'chooseNextAgeStarter', playerId: player.id })
             }
           >
-            {player.id}
+            {playerLabel(player.id, viewerId)}
           </button>
         </li>
       ))}
@@ -203,7 +206,11 @@ export function EffectChoice({
         <section>
           <h2>Kto zaczyna kolejną erę?</h2>
           {isMyChoice ? null : <p>Przeciwnik wybiera…</p>}
-          <ChooseNextAgeStarter players={players} disabled={!isMyChoice} />
+          <ChooseNextAgeStarter
+            players={players}
+            viewerId={playerId}
+            disabled={!isMyChoice}
+          />
         </section>
       );
     }

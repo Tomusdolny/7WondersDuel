@@ -1,5 +1,10 @@
 import type { PlayerState } from '@7ww/shared';
-import { findCard, findWonder, formatResourceCost } from '../lib/cardLookup';
+import {
+  findCard,
+  findProgressToken,
+  findWonder,
+  formatResourceCost,
+} from '../lib/cardLookup';
 
 export function CityPanel({
   player,
@@ -46,6 +51,18 @@ export function CityPanel({
                     })`}
               </li>
             );
+          })}
+        </ul>
+      )}
+
+      <h3>Żetony postępu</h3>
+      {player.progressTokens.length === 0 ? (
+        <p>brak</p>
+      ) : (
+        <ul>
+          {player.progressTokens.map((tokenId) => {
+            const token = findProgressToken(tokenId);
+            return <li key={tokenId}>{token?.name ?? tokenId}</li>;
           })}
         </ul>
       )}

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { rejectionMessage } from '../lib/rejectionMessage';
 import { clearRejection, useUiStore } from '../store/uiStore';
 
 const AUTO_DISMISS_MS = 5000;
@@ -21,7 +22,7 @@ export function Toast() {
   return (
     <div role="alert">
       <p>
-        {lastRejection.message} ({lastRejection.code})
+        {rejectionMessage(lastRejection)} ({lastRejection.code})
       </p>
       <button type="button" onClick={() => clearRejection()}>
         Zamknij
