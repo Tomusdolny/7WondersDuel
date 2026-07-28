@@ -46,10 +46,102 @@ const COMMAND_KINDS = new Set<ClientCommandKind>([
   'chooseNextAgeStarter',
 ]);
 
-function isClientCommand(value: unknown): value is ClientCommand {
-  if (typeof value !== 'object' || value === null) return false;
+const GAME_COMMAND_KINDS = new Set<ClientCommandKind>([
+  'selectWonder',
+  'takeCard',
+  'chooseProgressToken',
+  'chooseProgressFromBox',
+  'discardOpponentCard',
+  'constructFromDiscard',
+  'chooseNextAgeStarter',
+]);
+
+export function isGameCommandKind(kind: ClientCommandKind): boolean {
+  return GAME_COMMAND_KINDS.has(kind);
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0;
+}
+
+function isSlotIndex(value: unknown): value is number {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 0;
+}
+
+/** `null` = invalidPayload, `'unknown'` = unknownCommand. */
+function parseCommand(value: unknown): ClientCommand | 'unknown' | null {
+  if (typeof value !== 'object' || value === null) return null;
   const kind = (value as { kind?: unknown }).kind;
-  return typeof kind === 'string' && COMMAND_KINDS.has(kind as ClientCommandKind);
+  if (typeof kind !== 'string') return null;
+  if (!COMMAND_KINDS.has(kind as ClientCommandKind)) return 'unknown';
+
+  const cmd = value as Record<string, unknown>;
+
+  switch (kind as ClientCommandKind) {
+    case 'createRoom':
+      return { kind: 'createRoom' };
+    case 'joinRoom': {
+      if (!isNonEmptyString(cmd.roomCode)) return null;
+      if (cmd.playerToken !== undefined && !isNonEmptyString(cmd.playerToken)) {
+        return null;
+      }
+      return {
+        kind: 'joinRoom',
+        roomCode: cmd.roomCode,
+        ...(cmd.playerToken !== undefined ? { playerToken: cmd.playerToken } : {}),
+      };
+    }
+    case 'selectWonder': {
+      if (!isNonEmptyString(cmd.wonderId)) return null;
+      return { kind: 'selectWonder', wonderId: cmd.wonderId };
+    }
+    case 'takeCard': {
+      if (!isSlotIndex(cmd.slotIndex)) return null;
+      const action = cmd.action;
+      if (typeof action !== 'object' || action === null) return null;
+      const actionKind = (action as { kind?: unknown }).kind;
+      if (actionKind === 'build') {
+        return { kind: 'takeCard', slotIndex: cmd.slotIndex, action: { kind: 'build' } };
+      }
+      if (actionKind === 'discard') {
+        return {
+          kind: 'takeCard',
+          slotIndex: cmd.slotIndex,
+          action: { kind: 'discard' },
+        };
+      }
+      if (actionKind === 'buildWonder') {
+        const wonderId = (action as { wonderId?: unknown }).wonderId;
+        if (!isNonEmptyString(wonderId)) return null;
+        return {
+          kind: 'takeCard',
+          slotIndex: cmd.slotIndex,
+          action: { kind: 'buildWonder', wonderId },
+        };
+      }
+      return null;
+    }
+    case 'chooseProgressToken': {
+      if (!isNonEmptyString(cmd.tokenId)) return null;
+      return { kind: 'chooseProgressToken', tokenId: cmd.tokenId };
+    }
+    case 'chooseProgressFromBox': {
+      if (!isNonEmptyString(cmd.tokenId)) return null;
+      return { kind: 'chooseProgressFromBox', tokenId: cmd.tokenId };
+    }
+    case 'discardOpponentCard': {
+      if (!isNonEmptyString(cmd.cardId)) return null;
+      return { kind: 'discardOpponentCard', cardId: cmd.cardId };
+    }
+    case 'constructFromDiscard': {
+      if (!isNonEmptyString(cmd.cardId)) return null;
+      return { kind: 'constructFromDiscard', cardId: cmd.cardId };
+    }
+    case 'chooseNextAgeStarter': {
+      if (!isNonEmptyString(cmd.playerId)) return null;
+      return { kind: 'chooseNextAgeStarter', playerId: cmd.playerId };
+    }
+  }
 }
 
 export type ParseResult =
@@ -68,40 +160,35 @@ export function parseClientMessage(raw: string): ParseResult {
     return { ok: false, code: 'invalidPayload' };
   }
 
-  const msg = parsed as Partial<ClientMessage>;
+  const msg = parsed as Record<string, unknown>;
   if (msg.protocolVersion !== PROTOCOL_VERSION) {
     return { ok: false, code: 'protocolMismatch' };
   }
 
-  if (!isClientCommand(msg.command)) {
-    const kind = (msg.command as { kind?: unknown } | undefined)?.kind;
-    if (typeof kind === 'string' && !COMMAND_KINDS.has(kind as ClientCommandKind)) {
-      return { ok: false, code: 'unknownCommand' };
-    }
+  const command = parseCommand(msg.command);
+  if (command === 'unknown') {
+    return { ok: false, code: 'unknownCommand' };
+  }
+  if (command === null) {
     return { ok: false, code: 'invalidPayload' };
   }
 
   if (msg.roomId !== undefined && typeof msg.roomId !== 'string') {
     return { ok: false, code: 'invalidPayload' };
   }
+  if (typeof msg.roomId === 'string' && msg.roomId.length === 0) {
+    return { ok: false, code: 'invalidPayload' };
+  }
 
-  if (msg.command.kind === 'joinRoom') {
-    if (typeof msg.command.roomCode !== 'string') {
-      return { ok: false, code: 'invalidPayload' };
-    }
-    if (
-      msg.command.playerToken !== undefined &&
-      typeof msg.command.playerToken !== 'string'
-    ) {
-      return { ok: false, code: 'invalidPayload' };
-    }
+  if (isGameCommandKind(command.kind) && typeof msg.roomId !== 'string') {
+    return { ok: false, code: 'invalidPayload' };
   }
 
   return {
     ok: true,
     message: {
       protocolVersion: PROTOCOL_VERSION,
-      command: msg.command,
+      command,
       ...(typeof msg.roomId === 'string' ? { roomId: msg.roomId } : {}),
     },
   };

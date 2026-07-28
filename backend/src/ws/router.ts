@@ -9,12 +9,14 @@ import {
 } from '../game/broadcast.js';
 import { enqueueRoomTask } from '../game/commandQueue.js';
 import { applyGameCommand, startGameSession } from '../game/gameSession.js';
+import { normalizeRoomCode } from '../rooms/codes.js';
 import {
   createRoom,
   getSeatForConnection,
   handleDisconnect,
   joinRoom,
 } from '../rooms/roomService.js';
+import { roomStore } from '../rooms/roomStore.js';
 import type { Room } from '../rooms/types.js';
 import type { WsConnection } from './connectionRegistry.js';
 import {
@@ -50,6 +52,72 @@ function afterLobbyJoin(room: Room, seatPlayerId: string, isReconnect: boolean):
   }
 }
 
+/** Odłącza z bieżącego pokoju w jego kolejce, potem `then`. */
+function withPreviousRoomReleased(conn: WsConnection, then: () => void): void {
+  const seated = getSeatForConnection(conn.id);
+  if (!seated) {
+    then();
+    return;
+  }
+
+  enqueueRoomTask(seated.room.id, () => {
+    const detached = handleDisconnect(conn.id);
+    if (detached) {
+      broadcastRoomState(detached);
+    }
+    then();
+  });
+}
+
+function handleCreateRoom(conn: WsConnection): void {
+  withPreviousRoomReleased(conn, () => {
+    const result = createRoom(conn.id);
+    if (!result.ok) {
+      sendRejected(conn.socket, result.code, {
+        message: result.message,
+        refKind: 'createRoom',
+      });
+      return;
+    }
+    broadcastRoomState(result.value.room);
+  });
+}
+
+function handleJoinRoom(
+  conn: WsConnection,
+  roomCode: string,
+  playerToken?: string,
+): void {
+  const code = normalizeRoomCode(roomCode);
+  const target = roomStore.getByCode(code);
+  if (!target) {
+    sendRejected(conn.socket, 'roomNotFound', { refKind: 'joinRoom' });
+    return;
+  }
+
+  const runJoin = () => {
+    enqueueRoomTask(target.id, () => {
+      const result = joinRoom(conn.id, roomCode, playerToken);
+      if (!result.ok) {
+        sendRejected(conn.socket, result.code, { refKind: 'joinRoom' });
+        return;
+      }
+      afterLobbyJoin(
+        result.value.room,
+        result.value.seat.playerId,
+        playerToken !== undefined,
+      );
+    });
+  };
+
+  const seated = getSeatForConnection(conn.id);
+  if (seated && seated.room.id !== target.id) {
+    withPreviousRoomReleased(conn, runJoin);
+  } else {
+    runJoin();
+  }
+}
+
 function handleGameCommand(conn: WsConnection, message: ClientMessage): void {
   const seated = getSeatForConnection(conn.id);
   if (!seated) {
@@ -58,7 +126,7 @@ function handleGameCommand(conn: WsConnection, message: ClientMessage): void {
   }
 
   const { room } = seated;
-  if (message.roomId !== undefined && message.roomId !== room.id) {
+  if (message.roomId !== room.id) {
     sendRejected(conn.socket, 'notInRoom', { refKind: message.command.kind });
     return;
   }
@@ -108,46 +176,28 @@ export function handleRawMessage(conn: WsConnection, data: RawData): void {
   const { command } = parsed.message;
 
   switch (command.kind) {
-    case 'createRoom': {
-      const result = createRoom(conn.id);
-      if (!result.ok) {
-        sendRejected(conn.socket, result.code, {
-          message: result.message,
-          refKind: command.kind,
-        });
-        return;
-      }
-      if (result.value.previousRoom) {
-        broadcastRoomState(result.value.previousRoom);
-      }
-      broadcastRoomState(result.value.room);
+    case 'createRoom':
+      handleCreateRoom(conn);
       return;
-    }
-    case 'joinRoom': {
-      const result = joinRoom(conn.id, command.roomCode, command.playerToken);
-      if (!result.ok) {
-        sendRejected(conn.socket, result.code, { refKind: command.kind });
-        return;
-      }
-      if (result.value.previousRoom) {
-        broadcastRoomState(result.value.previousRoom);
-      }
-      afterLobbyJoin(
-        result.value.room,
-        result.value.seat.playerId,
-        command.playerToken !== undefined,
-      );
+    case 'joinRoom':
+      handleJoinRoom(conn, command.roomCode, command.playerToken);
       return;
-    }
-    default: {
+    default:
       handleGameCommand(conn, parsed.message);
-    }
   }
 }
 
 export function handleConnectionClosed(conn: WsConnection): void {
-  const room = handleDisconnect(conn.id);
-  if (room) {
-    broadcastRoomState(room);
+  const seated = getSeatForConnection(conn.id);
+  if (!seated) {
+    handleDisconnect(conn.id);
+    return;
   }
+
+  enqueueRoomTask(seated.room.id, () => {
+    const detached = handleDisconnect(conn.id);
+    if (detached) {
+      broadcastRoomState(detached);
+    }
+  });
 }

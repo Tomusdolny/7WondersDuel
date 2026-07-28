@@ -6,6 +6,7 @@ import {
   type WsConnection,
 } from './connectionRegistry.js';
 import { handleConnectionClosed, handleRawMessage } from './router.js';
+import { sendRejected } from './protocol.js';
 
 export type { WsConnection };
 
@@ -15,7 +16,11 @@ export function attachConnection(socket: WebSocket, _req: IncomingMessage): WsCo
   const conn: WsConnection = { id: nextConnectionId++, socket };
   registerConnection(conn);
 
-  socket.on('message', (data) => {
+  socket.on('message', (data, isBinary) => {
+    if (isBinary) {
+      sendRejected(socket, 'invalidPayload');
+      return;
+    }
     handleRawMessage(conn, data);
   });
 
