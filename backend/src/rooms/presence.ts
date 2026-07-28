@@ -3,6 +3,7 @@ import { config } from '../config.js';
 import { publishGameState } from '../game/broadcast.js';
 import { enqueueRoomTask } from '../game/commandQueue.js';
 import { resignByDisconnect } from '../game/gameSession.js';
+import { log } from '../logging.js';
 import { getConnection } from '../ws/connectionRegistry.js';
 import { connectedSeats } from './roomService.js';
 import { roomStore } from './roomStore.js';
@@ -71,7 +72,7 @@ function scheduleGrace(roomId: string, playerId: PlayerId): void {
 }
 
 function destroyRoom(room: Room, reason: string): void {
-  console.log(`[presence] roomRemoved roomId=${room.id} reason=${reason}`);
+  log('presence.roomRemoved', { roomId: room.id, reason });
   clearRoomPresenceTimers(room.id);
   const sockets = room.seats
     .map((seat) =>
@@ -93,9 +94,11 @@ function handleGraceTimeout(roomId: string, playerId: PlayerId): void {
     return;
   }
 
-  console.log(
-    `[presence] graceTimeout roomId=${roomId} playerId=${playerId} status=${room.status}`,
-  );
+  log('presence.graceTimeout', {
+    roomId,
+    playerId,
+    status: room.status,
+  });
 
   if (
     room.status === 'in_game' &&
@@ -127,7 +130,7 @@ function handleIdleTimeout(roomId: string): void {
 
 /** Po odpięciu socketu od seata. */
 export function onSeatDisconnected(room: Room, playerId: PlayerId): void {
-  console.log(`[presence] disconnect roomId=${room.id} playerId=${playerId}`);
+  log('presence.disconnect', { roomId: room.id, playerId });
   scheduleGrace(room.id, playerId);
   if (connectedSeats(room).length === 0) {
     scheduleIdle(room.id);
@@ -136,7 +139,7 @@ export function onSeatDisconnected(room: Room, playerId: PlayerId): void {
 
 /** Po ponownym przypisaniu gniazda (reconnect). */
 export function onSeatReconnected(room: Room, playerId: PlayerId): void {
-  console.log(`[presence] reconnect roomId=${room.id} playerId=${playerId}`);
+  log('presence.reconnect', { roomId: room.id, playerId });
   clearGrace(room.id, playerId);
   clearIdle(room.id);
 }

@@ -8,6 +8,7 @@ import {
   serverMessage,
 } from '@7ww/shared';
 import type { RawData, WebSocket } from 'ws';
+import { log } from '../logging.js';
 
 export function rawDataToString(data: RawData): string {
   if (typeof data === 'string') return data;
@@ -24,8 +25,20 @@ export function sendEvent(socket: WebSocket, event: ServerEvent): void {
 export function sendRejected(
   socket: WebSocket,
   code: ServerErrorCode,
-  options?: { message?: string; refKind?: ClientCommandKind },
+  options?: {
+    message?: string;
+    refKind?: ClientCommandKind;
+    roomId?: string;
+    playerId?: string;
+  },
 ): void {
+  log('command.rejected', {
+    code,
+    refKind: options?.refKind,
+    message: options?.message,
+    roomId: options?.roomId,
+    playerId: options?.playerId,
+  });
   sendEvent(socket, {
     kind: 'commandRejected',
     code,

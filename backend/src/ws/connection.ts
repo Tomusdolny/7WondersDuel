@@ -1,5 +1,6 @@
 import type { IncomingMessage } from 'node:http';
 import type { WebSocket } from 'ws';
+import { log } from '../logging.js';
 import {
   registerConnection,
   unregisterConnection,
@@ -17,6 +18,7 @@ export function attachConnection(socket: WebSocket, _req: IncomingMessage): WsCo
   const conn: WsConnection = { id: nextConnectionId++, socket };
   registerConnection(conn);
   markAlive(socket);
+  log('ws.open', { connId: conn.id });
 
   socket.on('pong', () => {
     markAlive(socket);
@@ -35,13 +37,20 @@ export function attachConnection(socket: WebSocket, _req: IncomingMessage): WsCo
     handleConnectionClosed(conn);
     unregisterConnection(conn.id);
     const reasonText = reason.toString('utf8');
-    console.log(`[ws] conn=${conn.id} close code=${code} reason=${reasonText || '-'}`);
+    log('ws.close', {
+      connId: conn.id,
+      code,
+      reason: reasonText || undefined,
+    });
   });
 
   socket.on('error', (err) => {
-    console.error(`[ws] conn=${conn.id} error`, err);
+    log(
+      'ws.error',
+      { connId: conn.id, message: err instanceof Error ? err.message : String(err) },
+      'error',
+    );
   });
 
-  console.log(`[ws] conn=${conn.id} open`);
   return conn;
 }

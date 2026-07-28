@@ -9,6 +9,7 @@ import {
 } from '../game/broadcast.js';
 import { enqueueRoomTask } from '../game/commandQueue.js';
 import { applyGameCommand, startGameSession } from '../game/gameSession.js';
+import { log } from '../logging.js';
 import { normalizeRoomCode } from '../rooms/codes.js';
 import { onSeatDisconnected, onSeatReconnected } from '../rooms/presence.js';
 import {
@@ -160,14 +161,21 @@ function handleGameCommand(conn: WsConnection, message: ClientMessage): void {
       message.command,
     );
     if (!result.ok) {
-      sendRejected(conn.socket, result.error, { refKind: message.command.kind });
+      sendRejected(conn.socket, result.error, {
+        refKind: message.command.kind,
+        roomId: live.room.id,
+        playerId: live.seat.playerId,
+      });
       return;
     }
 
-    console.log(
-      `[game] roomId=${live.room.id} playerId=${live.seat.playerId} ` +
-        `cmd=${message.command.kind} version=${result.state.version}`,
-    );
+    log('game.command', {
+      roomId: live.room.id,
+      playerId: live.seat.playerId,
+      cmd: message.command.kind,
+      ok: true,
+      version: result.state.version,
+    });
     publishGameState(live.room, result.state);
   });
 }

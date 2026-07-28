@@ -1,5 +1,6 @@
 import type { WebSocket, WebSocketServer } from 'ws';
 import { config } from '../config.js';
+import { log } from '../logging.js';
 
 const alive = new WeakMap<WebSocket, boolean>();
 
@@ -12,7 +13,7 @@ export function startHeartbeat(wss: WebSocketServer): () => void {
   const timer = setInterval(() => {
     for (const socket of wss.clients) {
       if (alive.get(socket) === false) {
-        console.log('[presence] heartbeat terminate (no pong)');
+        log('presence.heartbeatTerminate', {});
         socket.terminate();
         continue;
       }

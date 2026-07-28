@@ -18,6 +18,7 @@ import {
   type PlayerScoreEntry,
   type Rng,
 } from '@7ww/shared';
+import { log } from '../logging.js';
 import type { Room } from '../rooms/types.js';
 
 const rng: Rng = createMathRng();
@@ -31,7 +32,7 @@ export function startGameSession(room: Room): GameState {
   const state = createInitialGameState({ playerIds, rng });
   room.gameState = state;
   room.status = 'in_game';
-  console.log(`[game] start roomId=${room.id} version=${state.version}`);
+  log('game.start', { roomId: room.id, version: state.version });
   return state;
 }
 

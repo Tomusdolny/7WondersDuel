@@ -1,3 +1,5 @@
+import { log } from '../logging.js';
+
 const tails = new Map<string, Promise<void>>();
 
 /**
@@ -11,7 +13,14 @@ export function enqueueRoomTask(roomId: string, task: () => void): Promise<void>
       task();
     })
     .catch((err: unknown) => {
-      console.error(`[queue] roomId=${roomId}`, err);
+      log(
+        'queue.error',
+        {
+          roomId,
+          message: err instanceof Error ? err.message : String(err),
+        },
+        'error',
+      );
     })
     .finally(() => {
       if (tails.get(roomId) === next) {

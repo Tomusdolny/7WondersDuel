@@ -6,6 +6,7 @@ import type {
   RoomStateEvent,
 } from '@7ww/shared';
 import { config } from '../config.js';
+import { log } from '../logging.js';
 import { generateRoomCode, normalizeRoomCode } from './codes.js';
 import { roomStore } from './roomStore.js';
 import type { PlayerSeat, Room } from './types.js';
@@ -95,7 +96,7 @@ export function createRoom(
   roomStore.add(room);
   roomStore.bindConnection(connectionId, room.id);
 
-  console.log(`[lobby] createRoom roomId=${room.id} playerId=${seat.playerId}`);
+  log('lobby.createRoom', { roomId: room.id, playerId: seat.playerId });
   return {
     ok: true,
     value: {
@@ -133,7 +134,7 @@ export function joinRoom(
     }
     seat.connectionId = connectionId;
     roomStore.bindConnection(connectionId, room.id);
-    console.log(`[lobby] reconnect roomId=${room.id} playerId=${seat.playerId}`);
+    log('lobby.reconnect', { roomId: room.id, playerId: seat.playerId });
     return {
       ok: true,
       value: {
@@ -151,7 +152,7 @@ export function joinRoom(
   const seat = newSeat(connectionId);
   room.seats.push(seat);
   roomStore.bindConnection(connectionId, room.id);
-  console.log(`[lobby] joinRoom roomId=${room.id} playerId=${seat.playerId}`);
+  log('lobby.joinRoom', { roomId: room.id, playerId: seat.playerId });
   return {
     ok: true,
     value: {
@@ -173,7 +174,6 @@ export function handleDisconnect(
   if (!detached || playerId === undefined) {
     return undefined;
   }
-  console.log(`[lobby] disconnect roomId=${detached.id} playerId=${playerId}`);
   return { room: detached, playerId };
 }
 
