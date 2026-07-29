@@ -9,9 +9,14 @@
   "scripts": {
     "build": "npm run build -w @7ww/shared && npm run build -w @7ww/backend && npm run build -w @7ww/frontend",
     "build:shared": "npm run build -w @7ww/shared",
+    "dev": "npm run build:shared && concurrently -n backend,frontend -c blue,green \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "npm run dev -w @7ww/backend",
     "dev:frontend": "npm run dev -w @7ww/frontend",
     "typecheck": "npm run typecheck -w @7ww/shared && npm run typecheck -w @7ww/backend && npm run typecheck -w @7ww/frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.4",
+    "sharp": "^0.35.3"
   },
   "engines": {
     "node": ">=20"

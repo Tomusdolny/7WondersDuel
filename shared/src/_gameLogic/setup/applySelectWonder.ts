@@ -1,20 +1,23 @@
 import type { GameState } from '../../state/game.js';
 import type { PlayerId, PlayerWonderSlot } from '../../state/player.js';
 import type { WonderId } from '../../wonders/types.js';
+import type { Rng } from '../../_utility/rng.js';
 import type { ApplyResult } from '../playerMove/types.js';
 import { err, ok } from '../playerMove/types.js';
 import { canPlayerAct } from '../playerMove/utility/canPlayerAct.js';
 import { findPlayers, withPlayers } from '../playerMove/utility/players.js';
 import { WONDERS_OFFERED_PER_ROUND, ROUND_PICK_ORDER } from '../../wonders/types.js';
+import { setupAge } from './setupAge.js';
 
 /**
  * Wybór cuda w drafcie. Po 4. picku rundy 1 → kolejne 4 z `remaining` (BAAB).
- * Po 4. picku rundy 2 → `playing`; starter Ery I = gracze[1] (B).
+ * Po 4. picku rundy 2 → `setupAge` Ery I; starter = gracze[1] (B).
  */
 export function applySelectWonder(
   state: GameState,
   playerId: PlayerId,
   wonderId: WonderId,
+  rng: Rng,
 ): ApplyResult {
   if (state.phase.kind !== 'wonderDraft') {
     return err('wrongPhase');
@@ -43,17 +46,19 @@ export function applySelectWonder(
     ...found.player,
     wonders: [...found.player.wonders, slot],
   };
-  let next = withPlayers(state, player, found.opponent, found.playerIndex);
+  const next = withPlayers(state, player, found.opponent, found.playerIndex);
   const nextOffered = offered.filter((id) => id !== wonderId);
 
   if (nextOffered.length > 0) {
-    const nextPickIndex = ROUND_PICK_ORDER[round][WONDERS_OFFERED_PER_ROUND - nextOffered.length]!;
+    const nextPickIndex =
+      ROUND_PICK_ORDER[round][WONDERS_OFFERED_PER_ROUND - nextOffered.length]!;
     const nextPlayer = next.players[nextPickIndex];
     if (!nextPlayer) {
       return err('invalidPlayer');
     }
     return ok({
       ...next,
+      version: next.version + 1,
       phase: { kind: 'wonderDraft', offered: nextOffered, round, remaining },
       activePlayerId: nextPlayer.id,
     });
@@ -64,6 +69,7 @@ export function applySelectWonder(
     const remaining2 = remaining.slice(WONDERS_OFFERED_PER_ROUND);
     return ok({
       ...next,
+      version: next.version + 1,
       phase: {
         kind: 'wonderDraft',
         offered: offered2,
@@ -74,9 +80,9 @@ export function applySelectWonder(
     });
   }
 
-  return ok({
-    ...next,
-    phase: { kind: 'playing' },
-    activePlayerId: next.players[1].id,
-  });
+  const ageStarter = next.players[1];
+  if (!ageStarter) {
+    return err('invalidPlayer');
+  }
+  return ok(setupAge(next, 1, ageStarter.id, rng));
 }

@@ -3,9 +3,10 @@ import {
   findCard,
   findProgressToken,
   findWonder,
-  formatResourceCost,
 } from '../lib/cardLookup';
 import { cardColorHex } from '../lib/cardColors';
+import { WonderFace } from './WonderFace';
+import { ProgressTokenFace } from './ProgressTokenFace';
 import { Panel } from './ui/Panel';
 import styles from './CityPanel.module.css';
 
@@ -52,12 +53,15 @@ export function CityPanel({
             const wonder = findWonder(slot.wonderId);
             return (
               <li key={slot.wonderId} className={styles.wonderItem}>
-                <span>{wonder?.name ?? slot.wonderId}</span>
-                <span className={slot.built ? styles.built : styles.unbuilt}>
-                  {slot.built
-                    ? 'zbudowany'
-                    : `koszt: ${wonder ? formatResourceCost(wonder.cost) : '?'}`}
-                </span>
+                {wonder ? (
+                  <WonderFace
+                    wonder={wonder}
+                    size="summary"
+                    built={slot.built}
+                  />
+                ) : (
+                  <span>{slot.wonderId}</span>
+                )}
               </li>
             );
           })}
@@ -71,7 +75,15 @@ export function CityPanel({
         <ul className={styles.tokenList}>
           {player.progressTokens.map((tokenId) => {
             const token = findProgressToken(tokenId);
-            return <li key={tokenId}>{token?.name ?? tokenId}</li>;
+            return (
+              <li key={tokenId}>
+                {token ? (
+                  <ProgressTokenFace token={token} size="player" />
+                ) : (
+                  <span>{tokenId}</span>
+                )}
+              </li>
+            );
           })}
         </ul>
       )}

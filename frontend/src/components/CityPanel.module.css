@@ -40,27 +40,26 @@
   flex-shrink: 0;
 }
 
-.wonderList,
-.tokenList {
+.wonderList {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: var(--space-xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .wonderItem {
   display: flex;
-  justify-content: space-between;
-  gap: var(--space-sm);
-  font-size: 0.9rem;
 }
 
-.built {
-  color: var(--color-success);
-  font-weight: 600;
-}
-
-.unbuilt {
-  color: var(--color-text-muted);
+.tokenList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .empty {

@@ -1,0 +1,27 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.img {
+  display: block;
+  object-fit: contain;
+  user-select: none;
+}
+
+.sm .img {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.md .img {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.lg .img {
+  width: 1.9rem;
+  height: 1.9rem;
+}

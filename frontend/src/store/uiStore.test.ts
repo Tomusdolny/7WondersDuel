@@ -13,6 +13,8 @@ vi.mock('../net/guestSession', () => ({
   getGuestSession: () => guestSessionValue,
   setGuestSession: vi.fn(),
   clearGuestSession: vi.fn(),
+  getStoredNickname: () => null,
+  setStoredNickname: vi.fn(),
 }));
 
 const sendMock = vi.fn();

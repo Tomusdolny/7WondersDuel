@@ -1,73 +1,98 @@
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: var(--space-md);
+.board {
+  background-color: rgba(242, 232, 213, 0.92);
+  border: 3px solid var(--color-panel-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-md);
+  color: var(--color-text-on-light);
+  box-shadow: var(--shadow-soft);
+  overflow: auto;
+  min-height: 320px;
+}
+
+.title {
+  margin: 0 0 var(--space-sm) 0;
+  color: var(--color-secondary);
+  font-size: 1.05rem;
+}
+
+.pyramid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0 2rem;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0.25rem;
+  position: relative;
+  margin-top: -2.6rem;
+}
+
+.row:first-child {
+  margin-top: 0;
+}
+
+.rowGap {
+  gap: 3rem;
 }
 
 .slot {
   position: relative;
-  background-color: var(--color-cream);
-  border: 2px solid var(--color-panel-border);
-  border-radius: var(--radius-card-sm);
-  padding: var(--space-sm) var(--space-md);
-  min-height: 92px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-xs);
-  color: var(--color-ink);
+  flex-shrink: 0;
+  width: 4.6rem;
+  min-height: 7.1rem;
 }
 
 .slotTaken {
-  background-color: rgba(139, 116, 96, 0.15);
-  border-style: dashed;
-  color: var(--color-text-muted);
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  width: 4.6rem;
+  height: 7.1rem;
+  border: 2px dashed rgba(58, 46, 38, 0.25);
+  border-radius: 6px;
+  background-color: rgba(58, 46, 38, 0.06);
 }
 
-.slotFaceDown {
-  background: repeating-linear-gradient(
-    135deg,
-    var(--color-terracotta-dark),
-    var(--color-terracotta-dark) 8px,
-    var(--color-terracotta) 8px,
-    var(--color-terracotta) 16px
-  );
-  color: var(--color-text-on-dark);
-  border-color: var(--color-terracotta-darker);
+.empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-style: italic;
 }
 
 .slotAvailable {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(43, 111, 119, 0.25);
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
-.cardName {
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.cardCost {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+.pickButton {
+  position: absolute;
+  left: 50%;
+  bottom: -0.35rem;
+  transform: translateX(-50%);
+  z-index: 2;
+  padding: 0.25em 0.7em !important;
+  font-size: 0.7rem !important;
+  white-space: nowrap;
 }
 
 .actions {
   position: absolute;
-  top: calc(100% + var(--space-xs));
-  left: 0;
-  right: 0;
-  z-index: 10;
+  top: calc(100% + 0.4rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  min-width: 12rem;
   background-color: var(--color-panel-bg);
   border: 3px solid var(--color-panel-border);
   border-radius: var(--radius-card-sm);
   padding: var(--space-md);
   box-shadow: var(--shadow-lift);
+  color: var(--color-text-on-light);
 }
 
 .actionsList {

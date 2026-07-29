@@ -5,6 +5,10 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-lg);
+  background-image: url('/images/lobby-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .card {

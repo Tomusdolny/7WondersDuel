@@ -59,7 +59,7 @@ export function LobbyScreen() {
               opponentConnected ? styles.online : styles.offline
             }`}
           >
-            przeciwnik {opponentConnected ? 'online' : 'offline'}
+            {opponentConnected ? 'przeciwnik online' : 'oczekiwanie na przeciwnika'}
           </span>
         </section>
 

@@ -8,6 +8,8 @@ import type {
 import { sendCommand } from '../store/uiStore';
 import { findCard, findProgressToken } from '../lib/cardLookup';
 import { playerLabel } from '../lib/playerLabel';
+import { CardFace } from './CardFace';
+import { ProgressTokenFace } from './ProgressTokenFace';
 import { Button } from './ui/Button';
 import { Panel } from './ui/Panel';
 import styles from './EffectChoice.module.css';
@@ -27,9 +29,11 @@ function ChooseProgressToken({
         const token = findProgressToken(tokenId);
         return (
           <li key={tokenId}>
-            <Button
+            <button
               type="button"
               disabled={disabled}
+              className={styles.tokenPick}
+              aria-label={token?.name ?? tokenId}
               onClick={() =>
                 sendCommand(
                   fromBox
@@ -38,8 +42,12 @@ function ChooseProgressToken({
                 )
               }
             >
-              {token?.name ?? tokenId}
-            </Button>
+              {token ? (
+                <ProgressTokenFace token={token} size="choice" />
+              ) : (
+                <span>{tokenId}</span>
+              )}
+            </button>
           </li>
         );
       })}
@@ -70,16 +78,16 @@ function DiscardOpponentCard({
           const card = findCard(cardId);
           return (
             <li key={cardId}>
-              <Button
+              <button
                 type="button"
-                variant="secondary"
+                className={styles.cardPick}
                 disabled={disabled}
                 onClick={() =>
                   sendCommand({ kind: 'discardOpponentCard', cardId })
                 }
               >
-                {card?.name ?? cardId}
-              </Button>
+                {card ? <CardFace card={card} size="summary" /> : cardId}
+              </button>
             </li>
           );
         })
@@ -104,15 +112,16 @@ function ConstructFromDiscard({
           const card = findCard(cardId);
           return (
             <li key={cardId}>
-              <Button
+              <button
                 type="button"
+                className={styles.cardPick}
                 disabled={disabled}
                 onClick={() =>
                   sendCommand({ kind: 'constructFromDiscard', cardId })
                 }
               >
-                {card?.name ?? cardId}
-              </Button>
+                {card ? <CardFace card={card} size="summary" /> : cardId}
+              </button>
             </li>
           );
         })

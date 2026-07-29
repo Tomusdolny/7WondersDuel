@@ -1,5 +1,6 @@
 import type { ProgressTokenId } from '@7ww/shared';
 import { findProgressToken } from '../lib/cardLookup';
+import { ProgressTokenFace } from './ProgressTokenFace';
 import { Panel } from './ui/Panel';
 import styles from './ProgressTokensBoard.module.css';
 
@@ -19,7 +20,11 @@ export function ProgressTokensBoard({
             const token = findProgressToken(tokenId);
             return (
               <li key={tokenId} className={styles.token}>
-                {token?.name ?? tokenId}
+                {token ? (
+                  <ProgressTokenFace token={token} size="board" />
+                ) : (
+                  <span>{tokenId}</span>
+                )}
               </li>
             );
           })}

@@ -11,7 +11,9 @@ import type {
 import {
   clearGuestSession,
   getGuestSession,
+  getStoredNickname,
   setGuestSession,
+  setStoredNickname,
 } from '../net/guestSession';
 import {
   createWsClient,
@@ -32,6 +34,7 @@ export type UiState = {
   connection: ConnectionStatus;
   playerToken: string | null;
   playerId: PlayerId | null;
+  nickname: string | null;
   roomCode: string | null;
   roomId: string | null;
   roomStatus: RoomStatus | null;
@@ -53,6 +56,7 @@ let state: UiState = {
   connection: 'disconnected',
   playerToken: session?.playerToken ?? null,
   playerId: null,
+  nickname: getStoredNickname(),
   roomCode: session?.roomCode ?? null,
   roomId: null,
   roomStatus: null,
@@ -243,6 +247,18 @@ export function initClient(): void {
   if (getGuestSession()) {
     client.connect();
   }
+}
+
+export function setNickname(nickname: string): void {
+  const trimmed = nickname.trim();
+  if (!trimmed) {
+    throw new Error('Nickname nie może być pusty.');
+  }
+  if (trimmed.length > 20) {
+    throw new Error('Nickname może mieć max. 20 znaków.');
+  }
+  setStoredNickname(trimmed);
+  applyPartial({ nickname: trimmed });
 }
 
 export function createRoom(): void {
