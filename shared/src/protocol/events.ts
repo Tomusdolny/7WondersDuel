@@ -35,6 +35,8 @@ export type RoomStateEvent = {
   playerId: PlayerId;
   opponentConnected: boolean;
   playerCount: 1 | 2;
+  /** Nicki wszystkich obsadzonych miejsc w pokoju, wg playerId. */
+  nicknames: Record<PlayerId, string>;
 };
 
 export type GameStateViewEvent = {

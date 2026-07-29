@@ -6,12 +6,14 @@ import styles from './ProgressTokensBoard.module.css';
 
 export function ProgressTokensBoard({
   progressOnBoard,
+  borderColor,
 }: {
   progressOnBoard: ProgressTokenId[];
+  borderColor?: string;
 }) {
   return (
-    <Panel compact>
-      <h2>Żetony postępu (plansza)</h2>
+    <Panel compact style={borderColor ? { borderColor } : undefined}>
+      <h2>Żetony postępu</h2>
       {progressOnBoard.length === 0 ? (
         <p className={styles.empty}>brak — wszystkie zabrane</p>
       ) : (

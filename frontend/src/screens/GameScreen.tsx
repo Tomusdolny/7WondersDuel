@@ -1,10 +1,14 @@
-import type { CardId, PlayerState, WonderId } from '@7ww/shared';
-import { sendCommand, useUiStore } from '../store/uiStore';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import type { CardId, PlayerColor, PlayerState, WonderId } from '@7ww/shared';
+import { scoreCivilian } from '@7ww/shared';
+import { leaveRoom, sendCommand, setNickname, useUiStore } from '../store/uiStore';
 import {
   findCard,
   findProgressToken,
   findWonder,
 } from '../lib/cardLookup';
+import { PLAYER_COLOR_HEX } from '../lib/playerColors';
 import { StructurePyramid } from '../components/StructurePyramid';
 import { ConflictTrack } from '../components/ConflictTrack';
 import { ProgressTokensBoard } from '../components/ProgressTokensBoard';
@@ -13,9 +17,79 @@ import { CardFace } from '../components/CardFace';
 import { WonderFace } from '../components/WonderFace';
 import { ProgressTokenFace } from '../components/ProgressTokenFace';
 import { Panel } from '../components/ui/Panel';
+import { Button } from '../components/ui/Button';
+import { Modal } from '../components/ui/Modal';
 import styles from './GameScreen.module.css';
 
 const WONDER_SLOTS = 4;
+
+function HelpModalContent() {
+  return (
+    <>
+      <p>
+        Skrócony przewodnik po interfejsie gry pojawi się tutaj wkrótce —
+        obejmie zasady piramidy, budowy cudów, toru konfliktu i żetonów
+        postępu.
+      </p>
+      <p className={styles.emptyHint}>Treść: wkrótce.</p>
+    </>
+  );
+}
+
+function SettingsModalContent({ onClose }: { onClose: () => void }) {
+  const { nickname } = useUiStore();
+  const [draft, setDraft] = useState(nickname ?? '');
+  const [error, setError] = useState<string | null>(null);
+
+  function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    try {
+      setNickname(draft);
+      setError(null);
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : 'Nie udało się zapisać nicku.',
+      );
+    }
+  }
+
+  return (
+    <>
+      <form className={styles.settingsForm} onSubmit={handleSubmit}>
+        <label className={styles.settingsLabel} htmlFor="nickname-input">
+          Twój nickname
+        </label>
+        <div className={styles.settingsRow}>
+          <input
+            id="nickname-input"
+            className={styles.settingsInput}
+            type="text"
+            maxLength={20}
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+          />
+          <Button type="submit" variant="secondary">
+            Zapisz
+          </Button>
+        </div>
+        {error ? <p className={styles.settingsError}>{error}</p> : null}
+      </form>
+      <Button
+        type="button"
+        variant="danger"
+        className={styles.settingsLeaveButton}
+        onClick={() => {
+          onClose();
+          leaveRoom();
+        }}
+      >
+        Opuść grę
+      </Button>
+    </>
+  );
+}
 
 function WonderDraft({
   offered,
@@ -54,9 +128,15 @@ function WonderDraft({
   );
 }
 
-function DiscardPile({ discard }: { discard: CardId[] }) {
+function DiscardPile({
+  discard,
+  borderColor,
+}: {
+  discard: CardId[];
+  borderColor: string;
+}) {
   return (
-    <Panel compact>
+    <Panel compact style={{ borderColor }}>
       <h2>Discard ({discard.length})</h2>
       {discard.length === 0 ? (
         <p className={styles.emptyHint}>pusty</p>
@@ -80,7 +160,13 @@ function DiscardPile({ discard }: { discard: CardId[] }) {
   );
 }
 
-function WonderGrid({ player }: { player: PlayerState }) {
+function WonderGrid({
+  player,
+  buildableWonderIds,
+}: {
+  player: PlayerState;
+  buildableWonderIds?: ReadonlySet<WonderId>;
+}) {
   const slots = Array.from({ length: WONDER_SLOTS }, (_, index) => {
     return player.wonders[index] ?? null;
   });
@@ -98,13 +184,25 @@ function WonderGrid({ player }: { player: PlayerState }) {
           );
         }
         const wonder = findWonder(slot.wonderId);
+        const isBuildable =
+          !slot.built && buildableWonderIds?.has(slot.wonderId);
         return (
-          <div key={slot.wonderId} className={styles.wonderSlot}>
+          <div
+            key={slot.wonderId}
+            className={`${styles.wonderSlot} ${
+              isBuildable ? styles.wonderSlotBuildable : ''
+            }`}
+          >
             {wonder ? (
               <WonderFace wonder={wonder} size="board" built={slot.built} />
             ) : (
               <span>{slot.wonderId}</span>
             )}
+            {isBuildable ? (
+              <span className={styles.wonderBuildableBadge}>
+                Można zbudować
+              </span>
+            ) : null}
           </div>
         );
       })}
@@ -115,14 +213,76 @@ function WonderGrid({ player }: { player: PlayerState }) {
 function PlayerBar({
   nickname,
   coins,
+  score,
+  color,
 }: {
   nickname: string;
   coins: number;
+  score: number;
+  color: PlayerColor;
 }) {
+  const colorClass =
+    color === 'orange' ? styles.playerBarOrange : styles.playerBarBlue;
   return (
-    <div className={styles.playerBar}>
+    <div className={`${styles.playerBar} ${colorClass}`}>
+      <span className={styles.playerColorDot} aria-hidden />
       <p className={styles.playerName}>{nickname}</p>
-      <span className={styles.playerScore}>{coins} monet</span>
+      <span className={styles.playerStats}>
+        <span className={styles.playerScoreValue}>{score} pkt</span>
+        <span className={styles.playerCoinsValue}>{coins} monet</span>
+      </span>
+    </div>
+  );
+}
+
+function groupBuildingsByColor(
+  buildings: CardId[],
+): { color: string; cardIds: CardId[] }[] {
+  const groups = new Map<string, CardId[]>();
+  for (const cardId of buildings) {
+    const color = findCard(cardId)?.color ?? 'unknown';
+    const group = groups.get(color);
+    if (group) {
+      group.push(cardId);
+    } else {
+      groups.set(color, [cardId]);
+    }
+  }
+  return Array.from(groups.entries()).map(([color, cardIds]) => ({
+    color,
+    cardIds,
+  }));
+}
+
+function playerColorClass(
+  color: PlayerColor,
+  classes: { orange: string | undefined; blue: string | undefined },
+): string {
+  return (color === 'orange' ? classes.orange : classes.blue) ?? '';
+}
+
+function CardColorStack({ cardIds }: { cardIds: CardId[] }) {
+  return (
+    <div
+      className={styles.cardColorStack}
+      style={{ height: `calc(4.9rem + ${(cardIds.length - 1) * 1.1}rem)` }}
+    >
+      {cardIds.map((cardId, index) => {
+        const card = findCard(cardId);
+        return (
+          <div
+            key={cardId}
+            className={styles.cardStackItem}
+            style={{ top: `${index * 1.1}rem`, zIndex: index + 1 }}
+          >
+            {card ? (
+              <CardFace card={card} size="summary" />
+            ) : (
+              <span>{cardId}</span>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -130,30 +290,28 @@ function PlayerBar({
 function CardSummary({
   title,
   buildings,
+  color,
 }: {
   title: string;
   buildings: CardId[];
+  color: PlayerColor;
 }) {
+  const groups = groupBuildingsByColor(buildings);
+  const summaryColorClass = playerColorClass(color, {
+    orange: styles.cardSummaryOrange,
+    blue: styles.cardSummaryBlue,
+  });
   return (
-    <div className={styles.cardSummary}>
+    <div className={`${styles.cardSummary} ${summaryColorClass}`}>
       <p className={styles.cardSummaryTitle}>{title}</p>
       {buildings.length === 0 ? (
         <p className={styles.emptyHint}>brak kart</p>
       ) : (
-        <ul className={styles.cardStrip}>
-          {buildings.map((cardId) => {
-            const card = findCard(cardId);
-            return (
-              <li key={cardId}>
-                {card ? (
-                  <CardFace card={card} size="summary" />
-                ) : (
-                  <span>{cardId}</span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+        <div className={styles.cardStrip}>
+          {groups.map((group) => (
+            <CardColorStack key={group.color} cardIds={group.cardIds} />
+          ))}
+        </div>
       )}
     </div>
   );
@@ -162,12 +320,18 @@ function CardSummary({
 function PlayerProgressTokens({
   label,
   tokenIds,
+  color,
 }: {
   label: string;
   tokenIds: PlayerState['progressTokens'];
+  color: PlayerColor;
 }) {
+  const tokenGroupColorClass = playerColorClass(color, {
+    orange: styles.playerTokenGroupOrange,
+    blue: styles.playerTokenGroupBlue,
+  });
   return (
-    <div className={styles.playerTokenGroup}>
+    <div className={`${styles.playerTokenGroup} ${tokenGroupColorClass}`}>
       <h3>{label}</h3>
       {tokenIds.length === 0 ? (
         <p className={styles.emptyHint}>brak</p>
@@ -199,7 +363,9 @@ function turnStatus(phaseKind: string, isMyTurn: boolean): string {
 }
 
 export function GameScreen() {
-  const { gameView, playerId, nickname } = useUiStore();
+  const { gameView, playerId, nickname, nicknames } = useUiStore();
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   if (!gameView) {
     return (
@@ -232,12 +398,24 @@ export function GameScreen() {
   const opponent =
     players.find((player) => player.id !== me.id) ?? players[1];
   const myNickname = nickname?.trim() || 'Ty';
-  const opponentNickname = 'Przeciwnik';
+  const opponentNickname = nicknames[opponent.id]?.trim() || 'Przeciwnik';
+  const activePlayer =
+    players.find((player) => player.id === gameView.activePlayerId) ?? me;
+  const myColorHex = PLAYER_COLOR_HEX[me.color];
+  const scores = scoreCivilian(gameView).scores;
+  const buildableWonderIds = new Set<WonderId>();
+  for (const actions of Object.values(legalActions)) {
+    for (const legal of actions) {
+      if (legal.action.kind === 'buildWonder') {
+        buildableWonderIds.add(legal.action.wonderId);
+      }
+    }
+  }
 
   return (
     <main className={styles.screen}>
       <div className={styles.content}>
-      <Panel as="div" className={styles.topBar}>
+      <Panel as="div" className={styles.topBar} style={{ borderColor: myColorHex }}>
         <h1 className={styles.topBarTitle}>Gra</h1>
         <div className={styles.statusInfo}>
           <span>Era {age}</span>
@@ -246,6 +424,7 @@ export function GameScreen() {
             className={`${styles.turnBadge} ${
               isMyTurn ? styles.myTurn : styles.opponentTurn
             }`}
+            style={{ borderLeftColor: PLAYER_COLOR_HEX[activePlayer.color] }}
           >
             {turnStatus(phase.kind, isMyTurn)}
           </span>
@@ -256,7 +435,7 @@ export function GameScreen() {
             className={styles.iconButton}
             aria-label="Pomoc"
             title="Pomoc"
-            onClick={() => {}}
+            onClick={() => setHelpOpen(true)}
           >
             ?
           </button>
@@ -265,7 +444,7 @@ export function GameScreen() {
             className={styles.iconButton}
             aria-label="Ustawienia"
             title="Ustawienia"
-            onClick={() => {}}
+            onClick={() => setSettingsOpen(true)}
           >
             {'\u2699'}
           </button>
@@ -275,25 +454,38 @@ export function GameScreen() {
       <div className={styles.board}>
         <aside className={styles.leftColumn}>
           <WonderGrid player={opponent} />
-          <PlayerBar nickname={opponentNickname} coins={opponent.coins} />
+          <PlayerBar
+            nickname={opponentNickname}
+            coins={opponent.coins}
+            score={scores[opponent.id] ?? 0}
+            color={opponent.color}
+          />
           <div className={styles.playerTokens}>
             <PlayerProgressTokens
               label="Żetony przeciwnika"
               tokenIds={opponent.progressTokens}
+              color={opponent.color}
             />
             <PlayerProgressTokens
               label="Twoje żetony"
               tokenIds={me.progressTokens}
+              color={me.color}
             />
           </div>
-          <PlayerBar nickname={myNickname} coins={me.coins} />
-          <WonderGrid player={me} />
+          <PlayerBar
+            nickname={myNickname}
+            coins={me.coins}
+            score={scores[me.id] ?? 0}
+            color={me.color}
+          />
+          <WonderGrid player={me} buildableWonderIds={buildableWonderIds} />
         </aside>
 
         <section className={styles.centerColumn}>
           <CardSummary
             title="Skrót kart przeciwnika"
             buildings={opponent.buildings}
+            color={opponent.color}
           />
 
           {phase.kind === 'wonderDraft' ? (
@@ -323,24 +515,43 @@ export function GameScreen() {
             </div>
           )}
 
-          <CardSummary title="Skrót Twoich kart" buildings={me.buildings} />
+          <CardSummary
+            title="Skrót Twoich kart"
+            buildings={me.buildings}
+            color={me.color}
+          />
         </section>
 
         <aside className={styles.rightColumn}>
           <div className={styles.rightStack}>
-            <ProgressTokensBoard progressOnBoard={progressOnBoard} />
+            <ProgressTokensBoard
+              progressOnBoard={progressOnBoard}
+              borderColor={myColorHex}
+            />
             <ConflictTrack
               conflictPosition={conflictPosition}
               militaryTokens={militaryTokens}
               playerAId={players[0].id}
               playerBId={players[1].id}
+              playerAColor={players[0].color}
+              playerBColor={players[1].color}
               viewerId={playerId}
             />
-            <DiscardPile discard={discard} />
+            <DiscardPile discard={discard} borderColor={myColorHex} />
           </div>
         </aside>
       </div>
       </div>
+      {helpOpen ? (
+        <Modal title="Pomoc" onClose={() => setHelpOpen(false)}>
+          <HelpModalContent />
+        </Modal>
+      ) : null}
+      {settingsOpen ? (
+        <Modal title="Ustawienia" onClose={() => setSettingsOpen(false)}>
+          <SettingsModalContent onClose={() => setSettingsOpen(false)} />
+        </Modal>
+      ) : null}
     </main>
   );
 }

@@ -40,6 +40,8 @@ export type UiState = {
   roomStatus: RoomStatus | null;
   opponentConnected: boolean;
   playerCount: 1 | 2 | null;
+  /** Nicki graczy w pokoju wg playerId (dostarczane przez roomState). */
+  nicknames: Record<PlayerId, string>;
   gameView: GameStateView | null;
   gameEnded: GameEndedEvent | null;
   lastRejection: CommandRejectedEvent | null;
@@ -62,6 +64,7 @@ let state: UiState = {
   roomStatus: null,
   opponentConnected: false,
   playerCount: null,
+  nicknames: {},
   gameView: null,
   gameEnded: null,
   lastRejection: null,
@@ -170,6 +173,7 @@ function handleServerEvent(event: ServerEvent) {
         roomStatus: event.status,
         opponentConnected: event.opponentConnected,
         playerCount: event.playerCount,
+        nicknames: event.nicknames,
       });
       break;
     }
@@ -213,6 +217,7 @@ function handleServerEvent(event: ServerEvent) {
           roomStatus: null,
           opponentConnected: false,
           playerCount: null,
+          nicknames: {},
           gameView: null,
           gameEnded: null,
           lastRejection: event,
@@ -272,13 +277,14 @@ export function createRoom(): void {
     roomStatus: null,
     opponentConnected: false,
     playerCount: null,
+    nicknames: {},
     gameView: null,
     gameEnded: null,
     lastRejection: null,
   });
   const ws = ensureClient();
   ws.connect();
-  ws.send({ kind: 'createRoom' });
+  ws.send({ kind: 'createRoom', ...(state.nickname ? { nickname: state.nickname } : {}) });
 }
 
 export function joinRoom(roomCode: string): void {
@@ -296,13 +302,18 @@ export function joinRoom(roomCode: string): void {
     roomStatus: null,
     opponentConnected: false,
     playerCount: null,
+    nicknames: {},
     gameView: null,
     gameEnded: null,
     lastRejection: null,
   });
   const ws = ensureClient();
   ws.connect();
-  ws.send({ kind: 'joinRoom', roomCode: code });
+  ws.send({
+    kind: 'joinRoom',
+    roomCode: code,
+    ...(state.nickname ? { nickname: state.nickname } : {}),
+  });
 }
 
 export function leaveRoom(): void {
@@ -318,6 +329,7 @@ export function leaveRoom(): void {
     roomStatus: null,
     opponentConnected: false,
     playerCount: null,
+    nicknames: {},
     gameView: null,
     gameEnded: null,
     lastRejection: null,

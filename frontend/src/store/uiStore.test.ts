@@ -55,7 +55,14 @@ function connectionChange(status: WsConnectionStatus) {
 }
 
 function makePlayer(id: string): PlayerState {
-  return { id, coins: 7, buildings: [], wonders: [], progressTokens: [] };
+  return {
+    id,
+    color: id === 'p1' ? 'orange' : 'blue',
+    coins: 7,
+    buildings: [],
+    wonders: [],
+    progressTokens: [],
+  };
 }
 
 function makeGameView(overrides: Partial<GameStateView> = {}): GameStateView {
@@ -103,6 +110,7 @@ describe('uiStore', () => {
       playerId: 'p1',
       opponentConnected: false,
       playerCount: 1,
+      nicknames: { p1: 'Gracz' },
     });
 
     const state = store.getUiState();
@@ -126,6 +134,7 @@ describe('uiStore', () => {
       playerId: 'p1',
       opponentConnected: true,
       playerCount: 2,
+      nicknames: { p1: 'Gracz', p2: 'Rywal' },
     });
 
     expect(store.getUiState().screen).toBe('game');
@@ -181,6 +190,7 @@ describe('uiStore', () => {
       playerId: 'p1',
       opponentConnected: true,
       playerCount: 2,
+      nicknames: { p1: 'Gracz', p2: 'Rywal' },
     });
 
     expect(store.getUiState().screen).toBe('result');

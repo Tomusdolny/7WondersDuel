@@ -5,17 +5,10 @@
 
 .track {
   position: relative;
-  height: 14px;
+  height: 20px;
   border-radius: var(--radius-pill);
-  background: linear-gradient(
-    90deg,
-    var(--color-accent) 0%,
-    var(--color-plaster) 48%,
-    var(--color-plaster) 52%,
-    var(--color-secondary) 100%
-  );
   border: 2px solid var(--color-panel-border);
-  margin: var(--space-md) 0;
+  margin: var(--space-lg) 0 var(--space-md);
 }
 
 .zeroMark {
@@ -38,19 +31,50 @@
   box-shadow: var(--shadow-soft);
   transform: translate(-50%, -50%);
   transition: left var(--transition-fast);
+  z-index: 2;
 }
 
-.tokenList {
+.thresholdMarker {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--color-warning);
+  border: 2px solid var(--color-cream);
+  box-shadow: var(--shadow-soft);
+  transform: translate(-50%, -50%);
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  z-index: 1;
 }
 
-.tokenChip {
-  font-size: 0.8rem;
-  padding: 0.2em 0.6em;
-  border-radius: var(--radius-pill);
-  background-color: rgba(168, 50, 31, 0.1);
+.thresholdValue {
+  position: absolute;
+  top: -1.35rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  font-weight: 700;
   color: var(--color-secondary);
-  border: 1px solid rgba(168, 50, 31, 0.2);
+  white-space: nowrap;
+}
+
+.capitalMarker {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 3px;
+  background-color: var(--color-danger);
+  opacity: 0.6;
+  transform: translateX(-50%);
+}
+
+.emptyHint {
+  color: var(--color-text-muted);
+  font-style: italic;
+  font-size: 0.85rem;
+  margin: var(--space-sm) 0 0;
 }

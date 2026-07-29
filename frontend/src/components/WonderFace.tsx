@@ -1,10 +1,24 @@
 import type { WonderCard, WonderId } from '@7ww/shared';
+import { formatResourceCost } from '../lib/cardLookup';
+import { Tooltip } from './ui/Tooltip';
 import styles from './WonderFace.module.css';
 
 type WonderFaceSize = 'board' | 'draft' | 'summary';
 
 export function wonderImageSrc(wonderId: WonderId): string {
   return `/images/wonders/${wonderId}.png`;
+}
+
+function WonderTooltipContent({ wonder }: { wonder: WonderCard }) {
+  return (
+    <>
+      <strong>{wonder.name}</strong>
+      <br />
+      Koszt: {formatResourceCost(wonder.cost)}
+      <br />
+      <em>Opis cudu — wkrótce</em>
+    </>
+  );
 }
 
 export function WonderFace({
@@ -34,12 +48,16 @@ export function WonderFace({
     .join(' ');
 
   return (
-    <img
-      className={classes}
-      src={wonderImageSrc(wonder.id)}
-      alt={wonder.name}
-      title={wonder.name}
-      draggable={false}
-    />
+    <Tooltip
+      content={<WonderTooltipContent wonder={wonder} />}
+      fullWidth={size === 'board'}
+    >
+      <img
+        className={classes}
+        src={wonderImageSrc(wonder.id)}
+        alt={wonder.name}
+        draggable={false}
+      />
+    </Tooltip>
   );
 }

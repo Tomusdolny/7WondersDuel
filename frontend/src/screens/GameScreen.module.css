@@ -55,6 +55,7 @@
   align-items: center;
   padding: 0.25em 0.8em;
   border-radius: var(--radius-pill);
+  border-left: 4px solid transparent;
   font-weight: 700;
 }
 
@@ -154,6 +155,7 @@
 }
 
 .wonderSlot {
+  position: relative;
   min-height: 0;
   padding: 0;
   border: none;
@@ -163,6 +165,27 @@
   display: flex;
   align-items: stretch;
   overflow: hidden;
+}
+
+.wonderSlotBuildable {
+  outline: 3px solid var(--color-success);
+  outline-offset: 2px;
+  border-radius: var(--radius-card-sm);
+}
+
+.wonderBuildableBadge {
+  position: absolute;
+  left: 50%;
+  bottom: 0.3rem;
+  transform: translateX(-50%);
+  padding: 0.15em 0.55em;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-success);
+  color: var(--color-text-on-dark);
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: var(--shadow-soft);
 }
 
 .wonderSlotEmpty {
@@ -195,13 +218,36 @@
 .playerBar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
-  border: 2px solid var(--color-terracotta);
   border-radius: var(--radius-card-sm);
-  background-color: rgba(201, 106, 63, 0.12);
   color: var(--color-ink);
+}
+
+.playerBarOrange {
+  border: 2px solid var(--color-player-orange);
+  background-color: var(--color-player-orange-bg);
+}
+
+.playerBarBlue {
+  border: 2px solid var(--color-player-blue);
+  background-color: var(--color-player-blue-bg);
+}
+
+.playerColorDot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: currentColor;
+}
+
+.playerBarOrange .playerColorDot {
+  color: var(--color-player-orange);
+}
+
+.playerBarBlue .playerColorDot {
+  color: var(--color-player-blue);
 }
 
 .playerName {
@@ -211,10 +257,25 @@
   font-size: 1rem;
 }
 
-.playerScore {
-  font-weight: 700;
-  color: var(--color-secondary);
+.playerStats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
   white-space: nowrap;
+  margin-left: auto;
+}
+
+.playerScoreValue {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-secondary);
+}
+
+.playerCoinsValue {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
 }
 
 .playerTokens {
@@ -228,15 +289,33 @@
   flex: 1;
   min-width: 0;
   padding: var(--space-sm);
-  border: 2px solid var(--color-accent-active);
+  border: 2px solid var(--color-panel-border);
   border-radius: var(--radius-card-sm);
-  background-color: rgba(43, 111, 119, 0.08);
+  background-color: var(--color-panel-bg);
 }
 
 .playerTokenGroup h3 {
   font-size: 0.75rem;
   margin: 0 0 var(--space-xs) 0;
-  color: var(--color-accent-active);
+  color: var(--color-secondary);
+}
+
+.playerTokenGroupOrange {
+  border-color: var(--color-player-orange);
+  background-color: var(--color-player-orange-bg);
+}
+
+.playerTokenGroupOrange h3 {
+  color: var(--color-player-orange);
+}
+
+.playerTokenGroupBlue {
+  border-color: var(--color-player-blue);
+  background-color: var(--color-player-blue-bg);
+}
+
+.playerTokenGroupBlue h3 {
+  color: var(--color-player-blue);
 }
 
 .tokenChip {
@@ -252,26 +331,57 @@
 
 .cardSummary {
   padding: var(--space-sm) var(--space-md);
-  border: 2px solid var(--color-success);
+  border: 2px solid var(--color-panel-border);
   border-radius: var(--radius-card-sm);
-  background-color: rgba(58, 122, 79, 0.08);
+  background-color: var(--color-panel-bg);
   color: var(--color-ink);
 }
 
 .cardSummaryTitle {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--color-success);
+  color: var(--color-secondary);
   margin: 0 0 var(--space-xs) 0;
+}
+
+.cardSummaryOrange {
+  border-color: var(--color-player-orange);
+  background-color: var(--color-player-orange-bg);
+}
+
+.cardSummaryOrange .cardSummaryTitle {
+  color: var(--color-player-orange);
+}
+
+.cardSummaryBlue {
+  border-color: var(--color-player-blue);
+  background-color: var(--color-player-blue-bg);
+}
+
+.cardSummaryBlue .cardSummaryTitle {
+  color: var(--color-player-blue);
 }
 
 .cardStrip {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
+  align-items: flex-start;
+  gap: var(--space-sm);
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.cardColorStack {
+  position: relative;
+  width: 3.2rem;
+  flex-shrink: 0;
+}
+
+.cardStackItem {
+  position: absolute;
+  left: 0;
+  right: 0;
 }
 
 .tokenIcons {
@@ -297,6 +407,45 @@
 
 .pyramidArea > * {
   flex: 1;
+}
+
+.settingsForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.settingsLabel {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-secondary);
+}
+
+.settingsRow {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.settingsInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5em 0.7em;
+  border-radius: var(--radius-card-sm);
+  border: 2px solid var(--color-panel-border);
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-size: 0.9rem;
+}
+
+.settingsError {
+  color: var(--color-danger);
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.settingsLeaveButton {
+  width: 100%;
 }
 
 .draftList {

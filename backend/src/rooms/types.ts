@@ -3,6 +3,7 @@ import type { GameState, PlayerId, RoomStatus } from '@7ww/shared';
 export type PlayerSeat = {
   playerId: PlayerId;
   playerToken: string;
+  nickname: string;
   /** `null` gdy gracz rozłączony (seat i token zostają). */
   connectionId: number | null;
 };

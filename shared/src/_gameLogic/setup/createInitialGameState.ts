@@ -24,13 +24,14 @@ export function createInitialGameState(params: CreateInitialGameStateParams): Ga
   }
 
   const { progressOnBoard, progressInBox } = dealProgressTokens(params.rng);
+  const [colorA, colorB] = params.rng.shuffle(['orange', 'blue'] as const);
 
   const base: GameState = {
     version: 0,
     phase: { kind: 'playing' },
     age: 1,
     activePlayerId: idA,
-    players: [emptyPlayer(idA), emptyPlayer(idB)],
+    players: [emptyPlayer(idA, colorA!), emptyPlayer(idB, colorB!)],
     structure: [],
     discard: [],
     progressOnBoard,
@@ -43,9 +44,10 @@ export function createInitialGameState(params: CreateInitialGameStateParams): Ga
   return startWonderDraft(base, params.rng);
 }
 
-function emptyPlayer(id: PlayerId): PlayerState {
+function emptyPlayer(id: PlayerId, color: PlayerState['color']): PlayerState {
   return {
     id,
+    color,
     coins: STARTING_COINS,
     buildings: [],
     wonders: [],

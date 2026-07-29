@@ -1,10 +1,24 @@
 import type { Card, CardId } from '@7ww/shared';
+import { formatCardCost } from '../lib/cardLookup';
+import { Tooltip } from './ui/Tooltip';
 import styles from './CardFace.module.css';
 
 type CardFaceSize = 'pyramid' | 'summary';
 
 export function cardImageSrc(cardId: CardId): string {
   return `/images/cards/${cardId}.png`;
+}
+
+function CardTooltipContent({ card }: { card: Card }) {
+  return (
+    <>
+      <strong>{card.name}</strong>
+      <br />
+      Koszt: {formatCardCost(card.cost)}
+      <br />
+      <em>Opis karty — wkrótce</em>
+    </>
+  );
 }
 
 export function CardFace({
@@ -20,13 +34,14 @@ export function CardFace({
   const classes = [styles.card, sizeClass, className].filter(Boolean).join(' ');
 
   return (
-    <img
-      className={classes}
-      src={cardImageSrc(card.id)}
-      alt={card.name}
-      title={card.name}
-      draggable={false}
-    />
+    <Tooltip content={<CardTooltipContent card={card} />}>
+      <img
+        className={classes}
+        src={cardImageSrc(card.id)}
+        alt={card.name}
+        draggable={false}
+      />
+    </Tooltip>
   );
 }
 
