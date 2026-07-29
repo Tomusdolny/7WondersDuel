@@ -6,6 +6,9 @@ import { CityPanel } from '../components/CityPanel';
 import { ConflictTrack } from '../components/ConflictTrack';
 import { ProgressTokensBoard } from '../components/ProgressTokensBoard';
 import { EffectChoice } from '../components/EffectChoice';
+import { Button } from '../components/ui/Button';
+import { Panel } from '../components/ui/Panel';
+import styles from './GameScreen.module.css';
 
 function WonderDraft({
   offered,
@@ -15,7 +18,7 @@ function WonderDraft({
   isMyTurn: boolean;
 }) {
   return (
-    <section>
+    <Panel>
       <h2>Draft cudów</h2>
       {isMyTurn ? <p>Twoja kolej — wybierz cud.</p> : <p>Tura przeciwnika…</p>}
       <ul>
@@ -23,25 +26,25 @@ function WonderDraft({
           const wonder = findWonder(wonderId);
           return (
             <li key={wonderId}>
-              <button
+              <Button
                 type="button"
                 disabled={!isMyTurn}
                 onClick={() => sendCommand({ kind: 'selectWonder', wonderId })}
               >
                 {wonder?.name ?? wonderId} — koszt:{' '}
                 {formatResourceCost(wonder?.cost ?? {})} — {wonder?.vp ?? 0} VP
-              </button>
+              </Button>
             </li>
           );
         })}
       </ul>
-    </section>
+    </Panel>
   );
 }
 
 function DiscardPile({ discard }: { discard: CardId[] }) {
   return (
-    <section>
+    <Panel compact>
       <h2>Discard ({discard.length})</h2>
       {discard.length === 0 ? (
         <p>pusty</p>
@@ -53,7 +56,7 @@ function DiscardPile({ discard }: { discard: CardId[] }) {
           })}
         </ul>
       )}
-    </section>
+    </Panel>
   );
 }
 
@@ -72,9 +75,11 @@ export function GameScreen() {
 
   if (!gameView) {
     return (
-      <main>
-        <h1>Gra</h1>
-        <p>Ładowanie stanu partii…</p>
+      <main className={styles.screen}>
+        <Panel as="div" className={styles.statusBar}>
+          <h1>Gra</h1>
+          <p>Ładowanie stanu partii…</p>
+        </Panel>
       </main>
     );
   }
@@ -97,56 +102,74 @@ export function GameScreen() {
   const viewer = players.find((player) => player.id === playerId) ?? null;
 
   return (
-    <main>
-      <h1>Gra</h1>
+    <main className={styles.screen}>
+      <Panel as="div" className={styles.statusBar}>
+        <h1>Gra</h1>
+        <div className={styles.statusInfo}>
+          <span>Era {age}</span>
+          <span>Cuda w partii: {wondersBuiltTotal}/7</span>
+          <span
+            className={`${styles.turnBadge} ${
+              isMyTurn ? styles.myTurn : styles.opponentTurn
+            }`}
+          >
+            {turnStatus(phase.kind, isMyTurn)}
+          </span>
+        </div>
+      </Panel>
 
-      <p>
-        Era {age} · Cuda w partii: {wondersBuiltTotal}/7 ·{' '}
-        {turnStatus(phase.kind, isMyTurn)}
-      </p>
+      <div className={styles.mainGrid}>
+        <div className={styles.boardColumn}>
+          {phase.kind === 'wonderDraft' ? (
+            <WonderDraft offered={phase.offered} isMyTurn={isMyTurn} />
+          ) : phase.kind === 'awaitingEffectChoice' ? (
+            <EffectChoice
+              choice={phase.choice}
+              players={players}
+              discard={discard}
+              playerId={playerId}
+              activePlayerId={gameView.activePlayerId}
+            />
+          ) : phase.kind === 'ended' ? (
+            <Panel>
+              <p>Oczekiwanie na wynik końcowy…</p>
+            </Panel>
+          ) : (
+            <StructurePyramid
+              structure={structure}
+              availableSlots={availableSlots}
+              legalActions={legalActions}
+              isMyTurn={isMyTurn}
+              viewer={viewer}
+            />
+          )}
+        </div>
 
-      {phase.kind === 'wonderDraft' ? (
-        <WonderDraft offered={phase.offered} isMyTurn={isMyTurn} />
-      ) : phase.kind === 'awaitingEffectChoice' ? (
-        <EffectChoice
-          choice={phase.choice}
-          players={players}
-          discard={discard}
-          playerId={playerId}
-          activePlayerId={gameView.activePlayerId}
+        <div className={styles.infoColumn}>
+          <ConflictTrack
+            conflictPosition={conflictPosition}
+            militaryTokens={militaryTokens}
+            playerAId={playerA.id}
+            playerBId={playerB.id}
+            viewerId={playerId}
+          />
+
+          <ProgressTokensBoard progressOnBoard={progressOnBoard} />
+
+          <DiscardPile discard={discard} />
+        </div>
+      </div>
+
+      <div className={styles.cityRow}>
+        <CityPanel
+          player={playerA}
+          label={playerA.id === playerId ? 'Ty' : 'Przeciwnik'}
         />
-      ) : phase.kind === 'ended' ? (
-        <p>Oczekiwanie na wynik końcowy…</p>
-      ) : (
-        <StructurePyramid
-          structure={structure}
-          availableSlots={availableSlots}
-          legalActions={legalActions}
-          isMyTurn={isMyTurn}
-          viewer={viewer}
+        <CityPanel
+          player={playerB}
+          label={playerB.id === playerId ? 'Ty' : 'Przeciwnik'}
         />
-      )}
-
-      <ConflictTrack
-        conflictPosition={conflictPosition}
-        militaryTokens={militaryTokens}
-        playerAId={playerA.id}
-        playerBId={playerB.id}
-        viewerId={playerId}
-      />
-
-      <ProgressTokensBoard progressOnBoard={progressOnBoard} />
-
-      <DiscardPile discard={discard} />
-
-      <CityPanel
-        player={playerA}
-        label={playerA.id === playerId ? 'Ty' : 'Przeciwnik'}
-      />
-      <CityPanel
-        player={playerB}
-        label={playerB.id === playerId ? 'Ty' : 'Przeciwnik'}
-      />
+      </div>
     </main>
   );
 }

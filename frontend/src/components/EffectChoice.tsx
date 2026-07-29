@@ -8,6 +8,9 @@ import type {
 import { sendCommand } from '../store/uiStore';
 import { findCard, findProgressToken } from '../lib/cardLookup';
 import { playerLabel } from '../lib/playerLabel';
+import { Button } from './ui/Button';
+import { Panel } from './ui/Panel';
+import styles from './EffectChoice.module.css';
 
 function ChooseProgressToken({
   options,
@@ -19,12 +22,12 @@ function ChooseProgressToken({
   fromBox: boolean;
 }) {
   return (
-    <ul>
+    <ul className={styles.optionList}>
       {options.map((tokenId) => {
         const token = findProgressToken(tokenId);
         return (
           <li key={tokenId}>
-            <button
+            <Button
               type="button"
               disabled={disabled}
               onClick={() =>
@@ -36,7 +39,7 @@ function ChooseProgressToken({
               }
             >
               {token?.name ?? tokenId}
-            </button>
+            </Button>
           </li>
         );
       })}
@@ -59,23 +62,24 @@ function DiscardOpponentCard({
   });
 
   return (
-    <ul>
+    <ul className={styles.optionList}>
       {candidates.length === 0 ? (
-        <li>brak kart tego koloru u przeciwnika</li>
+        <li className={styles.emptyNote}>brak kart tego koloru u przeciwnika</li>
       ) : (
         candidates.map((cardId) => {
           const card = findCard(cardId);
           return (
             <li key={cardId}>
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 disabled={disabled}
                 onClick={() =>
                   sendCommand({ kind: 'discardOpponentCard', cardId })
                 }
               >
                 {card?.name ?? cardId}
-              </button>
+              </Button>
             </li>
           );
         })
@@ -92,15 +96,15 @@ function ConstructFromDiscard({
   disabled: boolean;
 }) {
   return (
-    <ul>
+    <ul className={styles.optionList}>
       {discard.length === 0 ? (
-        <li>brak kart w discardzie</li>
+        <li className={styles.emptyNote}>brak kart w discardzie</li>
       ) : (
         discard.map((cardId) => {
           const card = findCard(cardId);
           return (
             <li key={cardId}>
-              <button
+              <Button
                 type="button"
                 disabled={disabled}
                 onClick={() =>
@@ -108,7 +112,7 @@ function ConstructFromDiscard({
                 }
               >
                 {card?.name ?? cardId}
-              </button>
+              </Button>
             </li>
           );
         })
@@ -127,10 +131,10 @@ function ChooseNextAgeStarter({
   disabled: boolean;
 }) {
   return (
-    <ul>
+    <ul className={styles.optionList}>
       {players.map((player) => (
         <li key={player.id}>
-          <button
+          <Button
             type="button"
             disabled={disabled}
             onClick={() =>
@@ -138,7 +142,7 @@ function ChooseNextAgeStarter({
             }
           >
             {playerLabel(player.id, viewerId)}
-          </button>
+          </Button>
         </li>
       ))}
     </ul>
@@ -165,53 +169,61 @@ export function EffectChoice({
     case 'chooseProgressFromBox': {
       const isMyChoice = playerId === activePlayerId;
       return (
-        <section>
+        <Panel className={styles.panel}>
           <h2>Wybierz żeton postępu</h2>
-          {isMyChoice ? null : <p>Przeciwnik wybiera…</p>}
+          {isMyChoice ? null : (
+            <p className={styles.waiting}>Przeciwnik wybiera…</p>
+          )}
           <ChooseProgressToken
             options={choice.options}
             disabled={!isMyChoice}
             fromBox={choice.kind === 'chooseProgressFromBox'}
           />
-        </section>
+        </Panel>
       );
     }
     case 'discardOpponentCard': {
       const isMyChoice = playerId === activePlayerId;
       return (
-        <section>
+        <Panel className={styles.panel}>
           <h2>Odrzuć kartę przeciwnika</h2>
-          {isMyChoice ? null : <p>Przeciwnik wybiera…</p>}
+          {isMyChoice ? null : (
+            <p className={styles.waiting}>Przeciwnik wybiera…</p>
+          )}
           <DiscardOpponentCard
             color={choice.color}
             opponentBuildings={opponent?.buildings ?? []}
             disabled={!isMyChoice}
           />
-        </section>
+        </Panel>
       );
     }
     case 'constructFromDiscard': {
       const isMyChoice = playerId === activePlayerId;
       return (
-        <section>
+        <Panel className={styles.panel}>
           <h2>Zbuduj kartę z discardu</h2>
-          {isMyChoice ? null : <p>Przeciwnik wybiera…</p>}
+          {isMyChoice ? null : (
+            <p className={styles.waiting}>Przeciwnik wybiera…</p>
+          )}
           <ConstructFromDiscard discard={discard} disabled={!isMyChoice} />
-        </section>
+        </Panel>
       );
     }
     case 'chooseNextAgeStarter': {
       const isMyChoice = playerId === choice.chooserId;
       return (
-        <section>
+        <Panel className={styles.panel}>
           <h2>Kto zaczyna kolejną erę?</h2>
-          {isMyChoice ? null : <p>Przeciwnik wybiera…</p>}
+          {isMyChoice ? null : (
+            <p className={styles.waiting}>Przeciwnik wybiera…</p>
+          )}
           <ChooseNextAgeStarter
             players={players}
             viewerId={playerId}
             disabled={!isMyChoice}
           />
-        </section>
+        </Panel>
       );
     }
   }

@@ -1,0 +1,83 @@
+.screen {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.card {
+  width: min(440px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  text-align: center;
+}
+
+.codeRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.code {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-secondary);
+  background-color: var(--color-cream);
+  border: 2px dashed var(--color-panel-border);
+  border-radius: var(--radius-card-sm);
+  padding: 0.3em 0.6em;
+}
+
+.copyStatus {
+  font-weight: 600;
+}
+
+.copyStatus.ok {
+  color: var(--color-success);
+}
+
+.copyStatus.error {
+  color: var(--color-danger);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  color: var(--color-text-on-light);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-weight: 700;
+  padding: 0.3em 0.9em;
+  border-radius: var(--radius-pill);
+}
+
+.badge.online {
+  background-color: rgba(58, 122, 79, 0.15);
+  color: var(--color-success);
+}
+
+.badge.offline {
+  background-color: rgba(168, 50, 31, 0.12);
+  color: var(--color-danger);
+}
+
+.badge::before {
+  content: '';
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background-color: currentColor;
+}

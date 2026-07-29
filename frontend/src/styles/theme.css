@@ -1,0 +1,112 @@
+:root {
+  --font-heading: 'Bitter', Georgia, serif;
+  --font-body: 'Nunito Sans', system-ui, sans-serif;
+
+  /* Kolory bazowe */
+  --color-terracotta: #c96a3f;
+  --color-terracotta-dark: #8f4326;
+  --color-terracotta-darker: #6e3019;
+  --color-plaster: #e8ddc8;
+  --color-parchment: #f2e8d5;
+  --color-ink: #3a2e26;
+  --color-cream: #f2e8d5;
+
+  /* Akcenty */
+  --color-accent: #2b6f77;
+  --color-accent-hover: #3a8f93;
+  --color-accent-active: #21565c;
+  --color-secondary: #8f4326;
+  --color-secondary-hover: #a8532f;
+  --color-secondary-active: #733419;
+
+  /* Stan/semantyka */
+  --color-danger: #a8321f;
+  --color-danger-hover: #c23f29;
+  --color-success: #3a7a4f;
+  --color-warning: #c9922f;
+
+  /* Tekst */
+  --color-text-on-light: var(--color-ink);
+  --color-text-on-dark: var(--color-cream);
+  --color-text-muted: #6b5d4f;
+
+  /* Tło aplikacji (poza landingiem) */
+  --gradient-app-bg: linear-gradient(
+    160deg,
+    var(--color-terracotta) 0%,
+    var(--color-terracotta-dark) 100%
+  );
+
+  /* Panele */
+  --color-panel-bg: var(--color-parchment);
+  --color-panel-border: var(--color-terracotta);
+
+  /* Promienie */
+  --radius-pill: 999px;
+  --radius-card: 16px;
+  --radius-card-sm: 12px;
+
+  /* Cienie */
+  --shadow-soft: 0 4px 12px rgba(58, 46, 38, 0.25);
+  --shadow-lift: 0 6px 16px rgba(58, 46, 38, 0.3);
+  --shadow-inset: inset 0 1px 2px rgba(58, 46, 38, 0.15);
+
+  /* Odstępy */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Przejścia */
+  --transition-fast: 120ms ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text-on-dark);
+  background: var(--gradient-app-bg);
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  margin: 0 0 var(--space-sm) 0;
+}
+
+p {
+  margin: 0 0 var(--space-sm) 0;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}

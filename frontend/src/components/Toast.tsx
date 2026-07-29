@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { rejectionMessage } from '../lib/rejectionMessage';
 import { clearRejection, useUiStore } from '../store/uiStore';
+import styles from './Toast.module.css';
 
 const AUTO_DISMISS_MS = 5000;
 
@@ -20,11 +21,15 @@ export function Toast() {
   }
 
   return (
-    <div role="alert">
-      <p>
+    <div role="alert" className={styles.toast}>
+      <p className={styles.message}>
         {rejectionMessage(lastRejection)} ({lastRejection.code})
       </p>
-      <button type="button" onClick={() => clearRejection()}>
+      <button
+        type="button"
+        className={styles.closeButton}
+        onClick={() => clearRejection()}
+      >
         Zamknij
       </button>
     </div>

@@ -1,0 +1,81 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-md);
+}
+
+.slot {
+  position: relative;
+  background-color: var(--color-cream);
+  border: 2px solid var(--color-panel-border);
+  border-radius: var(--radius-card-sm);
+  padding: var(--space-sm) var(--space-md);
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  color: var(--color-ink);
+}
+
+.slotTaken {
+  background-color: rgba(139, 116, 96, 0.15);
+  border-style: dashed;
+  color: var(--color-text-muted);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.slotFaceDown {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--color-terracotta-dark),
+    var(--color-terracotta-dark) 8px,
+    var(--color-terracotta) 8px,
+    var(--color-terracotta) 16px
+  );
+  color: var(--color-text-on-dark);
+  border-color: var(--color-terracotta-darker);
+}
+
+.slotAvailable {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(43, 111, 119, 0.25);
+}
+
+.cardName {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.cardCost {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  position: absolute;
+  top: calc(100% + var(--space-xs));
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  background-color: var(--color-panel-bg);
+  border: 3px solid var(--color-panel-border);
+  border-radius: var(--radius-card-sm);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-lift);
+}
+
+.actionsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.actionsList button {
+  width: 100%;
+}

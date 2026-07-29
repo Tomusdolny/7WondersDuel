@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { leaveRoom, useUiStore } from '../store/uiStore';
+import { Button } from '../components/ui/Button';
+import { Panel } from '../components/ui/Panel';
+import styles from './LobbyScreen.module.css';
 
 export function LobbyScreen() {
   const { roomCode, playerCount, opponentConnected } = useUiStore();
@@ -19,39 +22,53 @@ export function LobbyScreen() {
   }
 
   return (
-    <main>
-      <h1>Lobby</h1>
+    <main className={styles.screen}>
+      <Panel className={styles.card}>
+        <h1>Lobby</h1>
 
-      <section>
-        <h2>Kod pokoju</h2>
-        {roomCode ? (
-          <p>
-            <code>{roomCode}</code>{' '}
-            <button type="button" onClick={() => void copyRoomCode()}>
-              Kopiuj
-            </button>
-            {copyStatus === 'ok' ? <span> Skopiowano</span> : null}
-            {copyStatus === 'error' ? (
-              <span role="alert"> Nie udało się skopiować</span>
-            ) : null}
-          </p>
-        ) : (
-          <p>Oczekiwanie na kod z serwera…</p>
-        )}
-      </section>
+        <section>
+          <h2>Kod pokoju</h2>
+          {roomCode ? (
+            <div className={styles.codeRow}>
+              <code className={styles.code}>{roomCode}</code>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => void copyRoomCode()}
+              >
+                Kopiuj
+              </Button>
+            </div>
+          ) : (
+            <p>Oczekiwanie na kod z serwera…</p>
+          )}
+          {copyStatus === 'ok' ? (
+            <p className={`${styles.copyStatus} ${styles.ok}`}>Skopiowano</p>
+          ) : null}
+          {copyStatus === 'error' ? (
+            <p role="alert" className={`${styles.copyStatus} ${styles.error}`}>
+              Nie udało się skopiować
+            </p>
+          ) : null}
+        </section>
 
-      <section>
-        <p>
-          Gracze: {playerCount ?? '—'} / 2 · przeciwnik:{' '}
-          {opponentConnected ? 'online' : 'offline'}
-        </p>
-      </section>
+        <section className={styles.status}>
+          <span>Gracze: {playerCount ?? '—'} / 2</span>
+          <span
+            className={`${styles.badge} ${
+              opponentConnected ? styles.online : styles.offline
+            }`}
+          >
+            przeciwnik {opponentConnected ? 'online' : 'offline'}
+          </span>
+        </section>
 
-      <nav>
-        <button type="button" onClick={() => leaveRoom()}>
-          Opuść pokój
-        </button>
-      </nav>
+        <nav>
+          <Button type="button" variant="ghost" onClick={() => leaveRoom()}>
+            Opuść pokój
+          </Button>
+        </nav>
+      </Panel>
     </main>
   );
 }

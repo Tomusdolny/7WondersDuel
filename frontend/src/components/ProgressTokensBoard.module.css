@@ -1,0 +1,20 @@
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.token {
+  padding: 0.35em 0.9em;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-cream);
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent-active);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.empty {
+  color: var(--color-text-muted);
+  font-style: italic;
+}

@@ -1,0 +1,23 @@
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  text-align: center;
+  padding: var(--space-sm) var(--space-md);
+  font-weight: 700;
+  color: var(--color-text-on-dark);
+}
+
+.connecting {
+  background-color: var(--color-warning);
+}
+
+.disconnected {
+  background-color: var(--color-danger);
+}
+
+.waitingForOpponent {
+  background-color: var(--color-accent);
+}

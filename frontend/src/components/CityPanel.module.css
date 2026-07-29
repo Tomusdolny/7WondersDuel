@@ -1,0 +1,70 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.coins {
+  font-weight: 700;
+  color: var(--color-secondary);
+}
+
+.groupTitle {
+  font-size: 0.95rem;
+  color: var(--color-secondary);
+  margin-top: var(--space-md);
+}
+
+.buildingList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.buildingChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.85rem;
+  padding: 0.2em 0.6em;
+  border-radius: var(--radius-pill);
+  background-color: rgba(58, 46, 38, 0.06);
+  border: 1px solid rgba(58, 46, 38, 0.12);
+}
+
+.colorDot {
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.wonderList,
+.tokenList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.wonderItem {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  font-size: 0.9rem;
+}
+
+.built {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.unbuilt {
+  color: var(--color-text-muted);
+}
+
+.empty {
+  color: var(--color-text-muted);
+  font-style: italic;
+  font-size: 0.9rem;
+}

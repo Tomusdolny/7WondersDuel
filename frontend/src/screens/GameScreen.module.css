@@ -1,0 +1,90 @@
+.screen {
+  min-height: 100vh;
+  width: 100%;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.statusBar h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--color-secondary);
+}
+
+.statusInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  color: var(--color-text-on-light);
+  font-weight: 600;
+}
+
+.turnBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 0.3em 0.9em;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+}
+
+.turnBadge.myTurn {
+  background-color: rgba(43, 111, 119, 0.15);
+  color: var(--color-accent);
+}
+
+.turnBadge.opponentTurn {
+  background-color: rgba(139, 116, 96, 0.15);
+  color: var(--color-text-muted);
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.boardColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.infoColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.cityRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 700px) {
+  .cityRow {
+    grid-template-columns: 1fr;
+  }
+}

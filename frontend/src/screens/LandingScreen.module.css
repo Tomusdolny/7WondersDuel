@@ -1,0 +1,93 @@
+.screen {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  background-image: url('/images/menu-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card {
+  width: min(480px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  background-color: rgba(242, 232, 213, 0.94);
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: var(--color-secondary);
+  margin-bottom: 0;
+}
+
+.subtitle {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  text-align: left;
+}
+
+.section h2 {
+  font-size: 1.1rem;
+  color: var(--color-secondary);
+  text-align: center;
+}
+
+.joinForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-weight: 600;
+  color: var(--color-text-on-light);
+}
+
+.input {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.6em 0.9em;
+  border: 2px solid var(--color-panel-border);
+  border-radius: var(--radius-card-sm);
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  text-transform: uppercase;
+}
+
+.input:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.error {
+  color: var(--color-danger);
+  font-weight: 600;
+  margin: 0;
+}
+
+.divider {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-panel-border),
+    transparent
+  );
+  border: none;
+  margin: 0;
+}

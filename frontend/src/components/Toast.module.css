@@ -1,0 +1,38 @@
+.toast {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  max-width: min(420px, calc(100vw - 2 * var(--space-lg)));
+  background-color: var(--color-danger);
+  color: var(--color-text-on-dark);
+  border: 2px solid var(--color-terracotta-darker);
+  border-radius: var(--radius-card-sm);
+  padding: var(--space-md) var(--space-lg);
+  box-shadow: var(--shadow-lift);
+}
+
+.message {
+  margin: 0;
+  font-weight: 600;
+  flex: 1;
+}
+
+.closeButton {
+  background: none;
+  border: 2px solid rgba(242, 232, 213, 0.5);
+  color: inherit;
+  border-radius: var(--radius-pill);
+  padding: 0.3em 0.9em;
+  cursor: pointer;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast);
+}
+
+.closeButton:hover {
+  background-color: rgba(242, 232, 213, 0.15);
+}

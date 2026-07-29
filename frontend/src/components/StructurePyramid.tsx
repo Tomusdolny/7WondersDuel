@@ -8,6 +8,9 @@ import type {
 import { getDiscardCoins } from '@7ww/shared';
 import { sendCommand } from '../store/uiStore';
 import { findCard, findWonder, formatCardCost } from '../lib/cardLookup';
+import { Button } from './ui/Button';
+import { Panel } from './ui/Panel';
+import styles from './StructurePyramid.module.css';
 
 function actionLabel(
   action: LegalSlotAction['action'],
@@ -49,11 +52,11 @@ function SlotActions({
   onClose: () => void;
 }) {
   return (
-    <div>
-      <ul>
+    <div className={styles.actions}>
+      <ul className={styles.actionsList}>
         {actions.map((legal, index) => (
           <li key={index}>
-            <button
+            <Button
               type="button"
               onClick={() => {
                 sendCommand({
@@ -65,13 +68,13 @@ function SlotActions({
               }}
             >
               {actionLabel(legal.action, legal.coinsCost, viewer)}
-            </button>
+            </Button>
           </li>
         ))}
       </ul>
-      <button type="button" onClick={onClose}>
+      <Button type="button" variant="ghost" onClick={onClose}>
         Anuluj
-      </button>
+      </Button>
     </div>
   );
 }
@@ -92,29 +95,51 @@ export function StructurePyramid({
   const [openSlot, setOpenSlot] = useState<number | null>(null);
 
   return (
-    <section>
+    <Panel>
       <h2>Piramida</h2>
-      <ul>
+      <div className={styles.grid}>
         {structure.map((slot, index) => {
           if (slot === null) {
-            return <li key={index}>slot {index}: wzięty</li>;
+            return (
+              <div key={index} className={`${styles.slot} ${styles.slotTaken}`}>
+                wzięty
+              </div>
+            );
           }
           const isAvailable = availableSlots.includes(slot.index);
           const actions = legalActions[slot.index];
           const card = slot.faceUp ? findCard(slot.cardId) : undefined;
 
+          const slotClasses = [
+            styles.slot,
+            !slot.faceUp ? styles.slotFaceDown : null,
+            isAvailable ? styles.slotAvailable : null,
+          ]
+            .filter(Boolean)
+            .join(' ');
+
           return (
-            <li key={index}>
-              slot {slot.index}:{' '}
-              {slot.faceUp
-                ? `${card?.name ?? slot.cardId} (koszt: ${
-                    card ? formatCardCost(card.cost) : '?'
-                  })`
-                : 'zakryta karta'}
+            <div key={index} className={slotClasses}>
+              {slot.faceUp ? (
+                <>
+                  <span className={styles.cardName}>
+                    {card?.name ?? slot.cardId}
+                  </span>
+                  <span className={styles.cardCost}>
+                    koszt: {card ? formatCardCost(card.cost) : '?'}
+                  </span>
+                </>
+              ) : (
+                <span className={styles.cardName}>zakryta karta</span>
+              )}
               {isAvailable && isMyTurn && actions ? (
-                <button type="button" onClick={() => setOpenSlot(slot.index)}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setOpenSlot(slot.index)}
+                >
                   Wybierz
-                </button>
+                </Button>
               ) : null}
               {openSlot === slot.index && actions ? (
                 <SlotActions
@@ -124,10 +149,10 @@ export function StructurePyramid({
                   onClose={() => setOpenSlot(null)}
                 />
               ) : null}
-            </li>
+            </div>
           );
         })}
-      </ul>
-    </section>
+      </div>
+    </Panel>
   );
 }

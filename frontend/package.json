@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@7ww/shared": "*",
+    "@fontsource/bitter": "^5.3.0",
+    "@fontsource/nunito-sans": "^5.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

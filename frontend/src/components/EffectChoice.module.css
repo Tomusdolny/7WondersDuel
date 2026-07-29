@@ -1,0 +1,27 @@
+.panel {
+  border-color: var(--color-accent);
+}
+
+.waiting {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.optionList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.optionList li {
+  display: flex;
+}
+
+.optionList button {
+  width: 100%;
+}
+
+.emptyNote {
+  color: var(--color-text-muted);
+  font-style: italic;
+}

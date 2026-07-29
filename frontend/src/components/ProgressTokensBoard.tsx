@@ -1,5 +1,7 @@
 import type { ProgressTokenId } from '@7ww/shared';
 import { findProgressToken } from '../lib/cardLookup';
+import { Panel } from './ui/Panel';
+import styles from './ProgressTokensBoard.module.css';
 
 export function ProgressTokensBoard({
   progressOnBoard,
@@ -7,18 +9,22 @@ export function ProgressTokensBoard({
   progressOnBoard: ProgressTokenId[];
 }) {
   return (
-    <section>
+    <Panel compact>
       <h2>Żetony postępu (plansza)</h2>
       {progressOnBoard.length === 0 ? (
-        <p>brak — wszystkie zabrane</p>
+        <p className={styles.empty}>brak — wszystkie zabrane</p>
       ) : (
-        <ul>
+        <ul className={styles.grid}>
           {progressOnBoard.map((tokenId) => {
             const token = findProgressToken(tokenId);
-            return <li key={tokenId}>{token?.name ?? tokenId}</li>;
+            return (
+              <li key={tokenId} className={styles.token}>
+                {token?.name ?? tokenId}
+              </li>
+            );
           })}
         </ul>
       )}
-    </section>
+    </Panel>
   );
 }
