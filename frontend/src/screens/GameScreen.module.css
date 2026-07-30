@@ -56,17 +56,8 @@
   padding: 0.25em 0.8em;
   border-radius: var(--radius-pill);
   border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
   font-weight: 700;
-}
-
-.turnBadge.myTurn {
-  background-color: rgba(43, 111, 119, 0.15);
-  color: var(--color-accent);
-}
-
-.turnBadge.opponentTurn {
-  background-color: rgba(139, 116, 96, 0.15);
-  color: var(--color-text-muted);
 }
 
 .topActions {

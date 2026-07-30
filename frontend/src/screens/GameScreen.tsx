@@ -402,6 +402,11 @@ export function GameScreen() {
   const activePlayer =
     players.find((player) => player.id === gameView.activePlayerId) ?? me;
   const myColorHex = PLAYER_COLOR_HEX[me.color];
+  const activeColorHex = PLAYER_COLOR_HEX[activePlayer.color];
+  const activeBadgeBackground =
+    activePlayer.color === 'orange'
+      ? 'rgba(201, 106, 63, 0.18)'
+      : 'rgba(43, 111, 119, 0.15)';
   const scores = scoreCivilian(gameView).scores;
   const buildableWonderIds = new Set<WonderId>();
   for (const actions of Object.values(legalActions)) {
@@ -421,10 +426,13 @@ export function GameScreen() {
           <span>Era {age}</span>
           <span>Cuda: {wondersBuiltTotal}/7</span>
           <span
-            className={`${styles.turnBadge} ${
-              isMyTurn ? styles.myTurn : styles.opponentTurn
-            }`}
-            style={{ borderLeftColor: PLAYER_COLOR_HEX[activePlayer.color] }}
+            className={styles.turnBadge}
+            style={{
+              borderLeftColor: activeColorHex,
+              borderRightColor: activeColorHex,
+              backgroundColor: activeBadgeBackground,
+              color: activeColorHex,
+            }}
           >
             {turnStatus(phase.kind, isMyTurn)}
           </span>
