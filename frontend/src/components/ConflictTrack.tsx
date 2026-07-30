@@ -81,7 +81,7 @@ export function ConflictTrack({
           style={{ left: `${trackPercent(-9)}%` }}
         >
           <Tooltip
-            content={`Stolica: ${labelA} — koniec gry przy dotarciu pionka`}
+            content={`Stolica: ${labelB} — koniec gry przy dotarciu pionka`}
             placement="top"
             align="start"
             fillParent
@@ -94,7 +94,7 @@ export function ConflictTrack({
           style={{ left: `${trackPercent(9)}%` }}
         >
           <Tooltip
-            content={`Stolica: ${labelB} — koniec gry przy dotarciu pionka`}
+            content={`Stolica: ${labelA} — koniec gry przy dotarciu pionka`}
             placement="top"
             align="end"
             fillParent

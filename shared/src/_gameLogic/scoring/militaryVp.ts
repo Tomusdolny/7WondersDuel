@@ -5,7 +5,7 @@ import type { GameState } from '../../state/game.js';
 /**
  * VP z toru konfliktu (bez supremacji).
  * |pos|: 0–2 → 0, 3–5 → 2, 6–8 → 5, ≥9 → 10.
- * Punkty dostaje najeźdźca (pos > 0 → A, pos < 0 → B).
+ * A atakuje w stronę ujemną → pos < 0 = przewaga A; pos > 0 = przewaga B.
  */
 export function militaryVpFromPosition(position: ConflictPosition): number {
   const abs = Math.abs(position);
@@ -26,7 +26,7 @@ export function militaryVpByPlayer(
     [playerB.id]: 0,
   };
   if (vp === 0) return scores;
-  if (state.conflictPosition > 0) {
+  if (state.conflictPosition < 0) {
     scores[playerA.id] = vp;
   } else {
     scores[playerB.id] = vp;
