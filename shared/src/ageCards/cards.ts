@@ -67,7 +67,7 @@ export const AGE_2_CARDS = [
   { id: 'brewery', name: 'Brewery', age: 2, color: 'yellow', cost: {}, effect: { kind: 'coinsNow', amount: 6 }, chain: 'barrel' },
 
   // Czerwone (5)
-  { id: 'walls', name: 'Walls', age: 2, color: 'red', cost: { resources: { wood: 2 } }, shields: 2 },
+  { id: 'walls', name: 'Walls', age: 2, color: 'red', cost: { resources: { stone: 2 } }, shields: 2 },
   { id: 'horse-breeders', name: 'Horse Breeders', age: 2, color: 'red', cost: { resources: { clay: 1, wood: 1 } }, shields: 1, chain: 'horseshoe' },
   { id: 'archery-range', name: 'Archery Range', age: 2, color: 'red', cost: { resources: { stone: 1, wood: 1, papyrus: 1 } }, shields: 2, chain: 'target' },
   { id: 'barracks', name: 'Barracks', age: 2, color: 'red', cost: { coins: 3 }, shields: 1, chain: 'sword' },
