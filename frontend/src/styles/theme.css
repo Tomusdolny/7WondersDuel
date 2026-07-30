@@ -19,6 +19,12 @@
   --color-secondary-hover: #a8532f;
   --color-secondary-active: #733419;
 
+  /* Kolory graczy (losowane przy starcie partii) */
+  --color-player-orange: var(--color-terracotta);
+  --color-player-orange-bg: color-mix(in srgb, var(--color-player-orange) 16%, var(--color-parchment));
+  --color-player-blue: var(--color-accent);
+  --color-player-blue-bg: color-mix(in srgb, var(--color-player-blue) 16%, var(--color-parchment));
+
   /* Stan/semantyka */
   --color-danger: #a8321f;
   --color-danger-hover: #c23f29;

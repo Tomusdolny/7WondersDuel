@@ -31,4 +31,5 @@ export interface WonderCard {
   vp: number;
   shields?: number;
   extraTurn?: boolean;
+  description: string;
 }

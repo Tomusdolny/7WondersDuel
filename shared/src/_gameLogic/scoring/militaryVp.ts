@@ -16,7 +16,9 @@ export function militaryVpFromPosition(position: ConflictPosition): number {
 }
 
 /** VP militarne dla obu graczy (dokładnie jeden ma > 0, albo obaj 0). */
-export function militaryVpByPlayer(state: GameState): Record<PlayerId, number> {
+export function militaryVpByPlayer(
+  state: Pick<GameState, 'players' | 'conflictPosition'>,
+): Record<PlayerId, number> {
   const [playerA, playerB] = state.players;
   const vp = militaryVpFromPosition(state.conflictPosition);
   const scores: Record<PlayerId, number> = {

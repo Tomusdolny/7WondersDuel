@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import type { CSSProperties } from 'react';
 import type {
+  Age,
   LegalSlotAction,
   PlayerState,
   StructureSlotView,
@@ -7,10 +10,18 @@ import type {
 } from '@7ww/shared';
 import { getDiscardCoins } from '@7ww/shared';
 import { sendCommand } from '../store/uiStore';
-import { findCard, findWonder, formatCardCost } from '../lib/cardLookup';
+import { findCard, findWonder } from '../lib/cardLookup';
+import { PLAYER_COLOR_HEX } from '../lib/playerColors';
 import { Button } from './ui/Button';
-import { Panel } from './ui/Panel';
+import { CardBack, CardFace, CardFallback } from './CardFace';
 import styles from './StructurePyramid.module.css';
+
+/** Liczba slotów w kolejnych rzędach (góra → dół), zgodna z layouts.ts. */
+export const STRUCTURE_ROWS: Record<Age, readonly number[]> = {
+  1: [2, 3, 4, 5, 6],
+  2: [6, 5, 4, 3, 2],
+  3: [2, 3, 4, 2, 4, 3, 2],
+};
 
 function actionLabel(
   action: LegalSlotAction['action'],
@@ -45,19 +56,42 @@ function SlotActions({
   actions,
   viewer,
   onClose,
+  style,
 }: {
   slotIndex: number;
   actions: LegalSlotAction[];
   viewer: PlayerState | null;
   onClose: () => void;
+  style?: CSSProperties;
 }) {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onPointerDown(event: PointerEvent) {
+      if (!rootRef.current) return;
+      if (!rootRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') onClose();
+    }
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [onClose]);
+
   return (
-    <div className={styles.actions}>
+    <div className={styles.actions} role="menu" ref={rootRef} style={style}>
       <ul className={styles.actionsList}>
         {actions.map((legal, index) => (
-          <li key={index}>
+          <li key={index} role="none">
             <Button
               type="button"
+              role="menuitem"
               onClick={() => {
                 sendCommand({
                   kind: 'takeCard',
@@ -71,21 +105,46 @@ function SlotActions({
             </Button>
           </li>
         ))}
+        <li role="none">
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Anuluj
+          </Button>
+        </li>
       </ul>
-      <Button type="button" variant="ghost" onClick={onClose}>
-        Anuluj
-      </Button>
     </div>
   );
 }
 
+function buildRows(
+  age: Age,
+  structure: (StructureSlotView | TakenSlot)[],
+): { startIndex: number; count: number; gap: boolean }[] {
+  const counts = STRUCTURE_ROWS[age];
+  let offset = 0;
+  return counts.map((count, rowIndex) => {
+    const startIndex = offset;
+    offset += count;
+    // Era 3, rząd 4 (index 3): dwa sloty z luką w środku
+    const gap = age === 3 && rowIndex === 3;
+    return { startIndex, count, gap };
+  });
+}
+
+type ActionsLayout = {
+  top: number;
+  left: number;
+  width: number;
+};
+
 export function StructurePyramid({
+  age,
   structure,
   availableSlots,
   legalActions,
   isMyTurn,
   viewer,
 }: {
+  age: Age;
   structure: (StructureSlotView | TakenSlot)[];
   availableSlots: number[];
   legalActions: Record<number, LegalSlotAction[]>;
@@ -93,66 +152,162 @@ export function StructurePyramid({
   viewer: PlayerState | null;
 }) {
   const [openSlot, setOpenSlot] = useState<number | null>(null);
+  const [actionsLayout, setActionsLayout] = useState<ActionsLayout | null>(
+    null,
+  );
+  const boardRef = useRef<HTMLElement>(null);
+  const openSlotRef = useRef<HTMLDivElement | null>(null);
+  const rowCounts = STRUCTURE_ROWS[age];
+  const rows = rowCounts ? buildRows(age, structure) : [];
+  const openActions =
+    openSlot === null ? undefined : legalActions[openSlot];
+  const openRowIndex =
+    openSlot === null
+      ? null
+      : rows.findIndex(
+          (row) =>
+            openSlot >= row.startIndex &&
+            openSlot < row.startIndex + row.count,
+        );
+
+  const borderColor = viewer ? PLAYER_COLOR_HEX[viewer.color] : undefined;
+
+  useLayoutEffect(() => {
+    function updateActionsLayout() {
+      const board = boardRef.current;
+      const slotEl = openSlotRef.current;
+      if (!board || openSlot === null || !slotEl) {
+        setActionsLayout(null);
+        return;
+      }
+
+      const boardStyles = getComputedStyle(board);
+      const paddingLeft = Number.parseFloat(boardStyles.paddingLeft) || 0;
+      const paddingRight = Number.parseFloat(boardStyles.paddingRight) || 0;
+      const boardRect = board.getBoundingClientRect();
+      const slotRect = slotEl.getBoundingClientRect();
+
+      setActionsLayout({
+        top: slotRect.bottom + 6,
+        left: boardRect.left + paddingLeft,
+        width: board.clientWidth - paddingLeft - paddingRight,
+      });
+    }
+
+    updateActionsLayout();
+
+    const board = boardRef.current;
+    board?.addEventListener('scroll', updateActionsLayout);
+    window.addEventListener('resize', updateActionsLayout);
+    window.addEventListener('scroll', updateActionsLayout, true);
+    return () => {
+      board?.removeEventListener('scroll', updateActionsLayout);
+      window.removeEventListener('resize', updateActionsLayout);
+      window.removeEventListener('scroll', updateActionsLayout, true);
+    };
+  }, [openSlot, structure, age]);
 
   return (
-    <Panel>
-      <h2>Piramida</h2>
-      <div className={styles.grid}>
-        {structure.map((slot, index) => {
-          if (slot === null) {
-            return (
-              <div key={index} className={`${styles.slot} ${styles.slotTaken}`}>
-                wzięty
-              </div>
-            );
-          }
-          const isAvailable = availableSlots.includes(slot.index);
-          const actions = legalActions[slot.index];
-          const card = slot.faceUp ? findCard(slot.cardId) : undefined;
+    <section
+      ref={boardRef}
+      className={styles.board}
+      style={borderColor ? { borderColor } : undefined}
+    >
+      <h2 className={styles.title}>Piramida — era {age}</h2>
+      {!rowCounts ? (
+        <p className={styles.empty}>Nieznana era: {String(age)}</p>
+      ) : structure.length === 0 ? (
+        <p className={styles.empty}>
+          Brak kart w strukturze (faza draftu lub setup).
+        </p>
+      ) : (
+        <div className={styles.pyramid}>
+          {rows.map((row, rowIndex) => (
+            <div
+              key={rowIndex}
+              className={`${styles.row} ${row.gap ? styles.rowGap : ''}`}
+              style={{
+                zIndex:
+                  rowIndex === openRowIndex
+                    ? rows.length + 20
+                    : rowIndex + 1,
+              }}
+            >
+              {Array.from({ length: row.count }, (_, col) => {
+                const index = row.startIndex + col;
+                const slot = structure[index];
 
-          const slotClasses = [
-            styles.slot,
-            !slot.faceUp ? styles.slotFaceDown : null,
-            isAvailable ? styles.slotAvailable : null,
-          ]
-            .filter(Boolean)
-            .join(' ');
+                if (slot === undefined || slot === null) {
+                  return (
+                    <div
+                      key={index}
+                      className={`${styles.slot} ${styles.slotTaken}`}
+                    />
+                  );
+                }
 
-          return (
-            <div key={index} className={slotClasses}>
-              {slot.faceUp ? (
-                <>
-                  <span className={styles.cardName}>
-                    {card?.name ?? slot.cardId}
-                  </span>
-                  <span className={styles.cardCost}>
-                    koszt: {card ? formatCardCost(card.cost) : '?'}
-                  </span>
-                </>
-              ) : (
-                <span className={styles.cardName}>zakryta karta</span>
-              )}
-              {isAvailable && isMyTurn && actions ? (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => setOpenSlot(slot.index)}
-                >
-                  Wybierz
-                </Button>
-              ) : null}
-              {openSlot === slot.index && actions ? (
-                <SlotActions
-                  slotIndex={slot.index}
-                  actions={actions}
-                  viewer={viewer}
-                  onClose={() => setOpenSlot(null)}
-                />
-              ) : null}
+                const isAvailable = availableSlots.includes(slot.index);
+                const actions = legalActions[slot.index];
+                const card =
+                  slot.faceUp && 'cardId' in slot
+                    ? findCard(slot.cardId)
+                    : undefined;
+                const isOpen = openSlot === slot.index;
+
+                return (
+                  <div
+                    key={index}
+                    ref={isOpen ? openSlotRef : undefined}
+                    className={`${styles.slot} ${
+                      isAvailable ? styles.slotAvailable : ''
+                    }`}
+                  >
+                    {!slot.faceUp ? (
+                      <CardBack age={age} />
+                    ) : card ? (
+                      <CardFace card={card} size="pyramid" />
+                    ) : (
+                      <CardFallback
+                        label={
+                          'cardId' in slot ? slot.cardId : `slot ${index}`
+                        }
+                      />
+                    )}
+                    {isAvailable && isMyTurn && actions ? (
+                      <div className={styles.pickButtonWrapper}>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          className={styles.pickButton}
+                          onClick={() => setOpenSlot(slot.index)}
+                        >
+                          Wybierz
+                        </Button>
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
-      </div>
-    </Panel>
+          ))}
+        </div>
+      )}
+      {openSlot !== null && openActions && actionsLayout
+        ? createPortal(
+            <SlotActions
+              slotIndex={openSlot}
+              actions={openActions}
+              viewer={viewer}
+              onClose={() => setOpenSlot(null)}
+              style={{
+                top: actionsLayout.top,
+                left: actionsLayout.left,
+                width: actionsLayout.width,
+              }}
+            />,
+            document.body,
+          )
+        : null}
+    </section>
   );
 }

@@ -91,17 +91,28 @@ function parseCommand(value: unknown): ClientCommand | 'unknown' | null {
   const cmd = value as Record<string, unknown>;
 
   switch (kind as ClientCommandKind) {
-    case 'createRoom':
-      return { kind: 'createRoom' };
+    case 'createRoom': {
+      if (cmd.nickname !== undefined && typeof cmd.nickname !== 'string') {
+        return null;
+      }
+      return {
+        kind: 'createRoom',
+        ...(cmd.nickname !== undefined ? { nickname: cmd.nickname } : {}),
+      };
+    }
     case 'joinRoom': {
       if (!isNonEmptyString(cmd.roomCode)) return null;
       if (cmd.playerToken !== undefined && !isNonEmptyString(cmd.playerToken)) {
+        return null;
+      }
+      if (cmd.nickname !== undefined && typeof cmd.nickname !== 'string') {
         return null;
       }
       return {
         kind: 'joinRoom',
         roomCode: cmd.roomCode,
         ...(cmd.playerToken !== undefined ? { playerToken: cmd.playerToken } : {}),
+        ...(cmd.nickname !== undefined ? { nickname: cmd.nickname } : {}),
       };
     }
     case 'selectWonder': {

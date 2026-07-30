@@ -21,10 +21,18 @@ function isBlankCode(code: string): boolean {
   return code.length === 0;
 }
 
-function newSeat(connectionId: number): PlayerSeat {
+const DEFAULT_NICKNAME = 'Gracz';
+
+function sanitizeNickname(nickname: string | undefined): string {
+  const trimmed = nickname?.trim();
+  return trimmed ? trimmed.slice(0, 20) : DEFAULT_NICKNAME;
+}
+
+function newSeat(connectionId: number, nickname?: string): PlayerSeat {
   return {
     playerId: randomUUID(),
     playerToken: randomUUID(),
+    nickname: sanitizeNickname(nickname),
     connectionId,
   };
 }
@@ -60,6 +68,9 @@ function detachConnection(connectionId: number): Room | undefined {
 export function buildRoomStateEvent(room: Room, seat: PlayerSeat): RoomStateEvent {
   const other = room.seats.find((s) => s.playerId !== seat.playerId);
   const playerCount = (room.seats.length === 2 ? 2 : 1) as 1 | 2;
+  const nicknames = Object.fromEntries(
+    room.seats.map((s) => [s.playerId, s.nickname]),
+  );
   return {
     kind: 'roomState',
     roomId: room.id,
@@ -69,11 +80,13 @@ export function buildRoomStateEvent(room: Room, seat: PlayerSeat): RoomStateEven
     playerId: seat.playerId,
     opponentConnected: other?.connectionId !== null && other?.connectionId !== undefined,
     playerCount,
+    nicknames,
   };
 }
 
 export function createRoom(
   connectionId: number,
+  nickname?: string,
 ): LobbyResult<{ room: Room; seat: PlayerSeat; previousRoom?: Room }> {
   if (roomStore.size() >= config.maxRooms) {
     return { ok: false, code: 'internalError', message: 'Room limit reached' };
@@ -86,7 +99,7 @@ export function createRoom(
     return { ok: false, code: 'internalError', message: 'Could not allocate room code' };
   }
 
-  const seat = newSeat(connectionId);
+  const seat = newSeat(connectionId, nickname);
   const room: Room = {
     id: randomUUID(),
     code,
@@ -111,6 +124,7 @@ export function joinRoom(
   connectionId: number,
   roomCodeRaw: string,
   playerToken?: string,
+  nickname?: string,
 ): LobbyResult<{ room: Room; seat: PlayerSeat; previousRoom?: Room }> {
   const code = normalizeRoomCode(roomCodeRaw);
   if (isBlankCode(code)) {
@@ -133,6 +147,9 @@ export function joinRoom(
       roomStore.unbindConnection(seat.connectionId);
     }
     seat.connectionId = connectionId;
+    if (nickname !== undefined) {
+      seat.nickname = sanitizeNickname(nickname);
+    }
     roomStore.bindConnection(connectionId, room.id);
     log('lobby.reconnect', { roomId: room.id, playerId: seat.playerId });
     return {
@@ -149,7 +166,7 @@ export function joinRoom(
     return { ok: false, code: 'roomFull' };
   }
 
-  const seat = newSeat(connectionId);
+  const seat = newSeat(connectionId, nickname);
   room.seats.push(seat);
   roomStore.bindConnection(connectionId, room.id);
   log('lobby.joinRoom', { roomId: room.id, playerId: seat.playerId });

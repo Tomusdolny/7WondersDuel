@@ -43,7 +43,7 @@ export function applyGameCommand(
 ): ApplyResult {
   switch (command.kind) {
     case 'selectWonder':
-      return applySelectWonder(state, playerId, command.wonderId);
+      return applySelectWonder(state, playerId, command.wonderId, rng);
     case 'takeCard': {
       const { slotIndex, action } = command;
       switch (action.kind) {

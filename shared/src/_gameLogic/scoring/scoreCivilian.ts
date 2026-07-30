@@ -5,11 +5,14 @@ import { cityCounts, guildVpForScoring } from './guildVp.js';
 import { militaryVpByPlayer } from './militaryVp.js';
 import type { CivilianScoreResult, ScoreBreakdown } from './types.js';
 
+/** Podzbiór stanu wystarczający do liczenia wyniku — używany też z `GameStateView` (UI, wynik na bieżąco). */
+export type ScoreCivilianInput = Pick<GameState, 'players' | 'conflictPosition'>;
+
 /**
- * Punktacja cywilna na koniec Ery III (bez supremacji).
+ * Punktacja cywilna (końcowa lub „na bieżąco" — do wyświetlenia w UI w trakcie partii).
  * Remis łącznego VP → więcej VP z niebieskich; inaczej `'tie'`.
  */
-export function scoreCivilian(state: GameState): CivilianScoreResult {
+export function scoreCivilian(state: ScoreCivilianInput): CivilianScoreResult {
   const [playerA, playerB] = state.players;
   const countsA = cityCounts(playerA);
   const countsB = cityCounts(playerB);

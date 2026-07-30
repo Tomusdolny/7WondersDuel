@@ -6,6 +6,9 @@ import type { Resource } from '../resources.js';
 export type PlayerId = string;
 export type { ProgressTokenId };
 
+/** Kolor UI gracza; losowany przy starcie partii, stały przez całą grę. */
+export type PlayerColor = 'orange' | 'blue';
+
 export interface PlayerWonderSlot {
   wonderId: WonderId;
   built: boolean;
@@ -24,6 +27,8 @@ export interface PlayerWonderSlot {
  */
 export interface PlayerState {
   id: PlayerId;
+  /** Kolor UI gracza (losowany przy starcie partii). */
+  color: PlayerColor;
   /** Skarbiec; start = 7. */
   coins: number;
   /** Zbudowane budynki epok (kolejność = historia budowy). */

@@ -1,0 +1,74 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  outline: none;
+}
+
+.fillParent {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.bubble {
+  position: absolute;
+  width: max-content;
+  min-width: 9rem;
+  max-width: 13rem;
+  padding: 0.5em 0.7em;
+  background-color: var(--color-ink);
+  color: var(--color-text-on-dark);
+  border-radius: var(--radius-card-sm);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  box-shadow: var(--shadow-lift);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+  z-index: 50;
+  text-align: left;
+  --tooltip-x: -50%;
+  --tooltip-y: 0;
+}
+
+.alignCenter {
+  left: 50%;
+  --tooltip-x: -50%;
+}
+
+.alignStart {
+  left: 0;
+  --tooltip-x: 0;
+}
+
+.alignEnd {
+  right: 0;
+  left: auto;
+  --tooltip-x: 0;
+}
+
+.bubbleTop {
+  bottom: calc(100% + 0.4rem);
+  --tooltip-y: 4px;
+}
+
+.bubbleBottom {
+  top: calc(100% + 0.4rem);
+  --tooltip-y: -4px;
+}
+
+.bubbleTop,
+.bubbleBottom {
+  transform: translateX(var(--tooltip-x)) translateY(var(--tooltip-y));
+}
+
+.wrapper:hover .bubble,
+.wrapper:focus-visible .bubble,
+.wrapper:focus-within .bubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(var(--tooltip-x)) translateY(0);
+}

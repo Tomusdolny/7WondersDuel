@@ -77,9 +77,9 @@ function withPreviousRoomReleased(conn: WsConnection, then: () => void): void {
   });
 }
 
-function handleCreateRoom(conn: WsConnection): void {
+function handleCreateRoom(conn: WsConnection, nickname?: string): void {
   withPreviousRoomReleased(conn, () => {
-    const result = createRoom(conn.id);
+    const result = createRoom(conn.id, nickname);
     if (!result.ok) {
       sendRejected(conn.socket, result.code, {
         message: result.message,
@@ -95,6 +95,7 @@ function handleJoinRoom(
   conn: WsConnection,
   roomCode: string,
   playerToken?: string,
+  nickname?: string,
 ): void {
   const code = normalizeRoomCode(roomCode);
   const target = roomStore.getByCode(code);
@@ -105,7 +106,7 @@ function handleJoinRoom(
 
   const runJoin = () => {
     enqueueRoomTask(target.id, () => {
-      const result = joinRoom(conn.id, roomCode, playerToken);
+      const result = joinRoom(conn.id, roomCode, playerToken, nickname);
       if (!result.ok) {
         sendRejected(conn.socket, result.code, { refKind: 'joinRoom' });
         return;
@@ -192,10 +193,10 @@ export function handleRawMessage(conn: WsConnection, data: RawData): void {
 
   switch (command.kind) {
     case 'createRoom':
-      handleCreateRoom(conn);
+      handleCreateRoom(conn, command.nickname);
       return;
     case 'joinRoom':
-      handleJoinRoom(conn, command.roomCode, command.playerToken);
+      handleJoinRoom(conn, command.roomCode, command.playerToken, command.nickname);
       return;
     default:
       handleGameCommand(conn, parsed.message);

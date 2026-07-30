@@ -13,8 +13,8 @@ export type TakeCardAction =
 
 /** Komendy klienta → serwer (lobby + rozgrywka). */
 export type ClientCommand =
-  | { kind: 'createRoom' }
-  | { kind: 'joinRoom'; roomCode: string; playerToken?: string }
+  | { kind: 'createRoom'; nickname?: string }
+  | { kind: 'joinRoom'; roomCode: string; playerToken?: string; nickname?: string }
   | { kind: 'selectWonder'; wonderId: WonderId }
   | { kind: 'takeCard'; slotIndex: number; action: TakeCardAction }
   | { kind: 'chooseProgressToken'; tokenId: ProgressTokenId }
