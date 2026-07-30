@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: 7ww-backend
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install && npm run build -w @7ww/shared && npm run build -w @7ww/backend
+    startCommand: npm run start -w @7ww/backend
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: CORS_ORIGIN
+        sync: false
+      - key: MAX_ROOMS
+        value: "100"
+      - key: ROOM_IDLE_TIMEOUT_MS
+        value: "1800000"
+      - key: DISCONNECT_GRACE_MS
+        value: "60000"
+      - key: WS_PING_INTERVAL_MS
+        value: "30000"
