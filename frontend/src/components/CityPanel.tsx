@@ -78,7 +78,12 @@ export function CityPanel({
             return (
               <li key={tokenId}>
                 {token ? (
-                  <ProgressTokenFace token={token} size="player" />
+                  <ProgressTokenFace
+                    token={token}
+                    size="player"
+                    tooltipPlacement="top"
+                    tooltipAlign="start"
+                  />
                 ) : (
                   <span>{tokenId}</span>
                 )}

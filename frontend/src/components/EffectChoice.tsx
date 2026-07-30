@@ -43,7 +43,12 @@ function ChooseProgressToken({
               }
             >
               {token ? (
-                <ProgressTokenFace token={token} size="choice" />
+                <ProgressTokenFace
+                  token={token}
+                  size="choice"
+                  tooltipPlacement="bottom"
+                  tooltipAlign="center"
+                />
               ) : (
                 <span>{tokenId}</span>
               )}

@@ -9,6 +9,7 @@ export function Tooltip({
   children,
   className,
   fullWidth = false,
+  fillParent = false,
   placement = 'top',
   align = 'center',
 }: {
@@ -17,12 +18,20 @@ export function Tooltip({
   className?: string;
   /** Rozciąga wrapper na 100% szerokości rodzica (np. dla obrazków skalowanych przez CSS %). */
   fullWidth?: boolean;
+  /** Wypełnia wysokość i szerokość rodzica (np. markery na torze konfliktu). */
+  fillParent?: boolean;
   /** `top` — nad elementem; `bottom` — pod elementem. */
   placement?: TooltipPlacement;
   /** Wyrównanie poziome względem elementu (chroni przed przycięciem krawędzią ekranu). */
   align?: TooltipAlign;
 }) {
-  const classes = [styles.wrapper, className].filter(Boolean).join(' ');
+  const classes = [
+    styles.wrapper,
+    fillParent ? styles.fillParent : null,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
   const placementClass =
     placement === 'bottom' ? styles.bubbleBottom : styles.bubbleTop;
   const alignClass =

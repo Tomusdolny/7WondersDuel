@@ -4,9 +4,10 @@ import type {
   PlayerColor,
   PlayerId,
 } from '@7ww/shared';
-import { playerLabel } from '../lib/playerLabel';
 import { PLAYER_COLOR_HEX } from '../lib/playerColors';
+import { playerLabel } from '../lib/playerLabel';
 import { Panel } from './ui/Panel';
+import { Tooltip } from './ui/Tooltip';
 import styles from './ConflictTrack.module.css';
 
 const TRACK_MIN = -10;
@@ -33,30 +34,21 @@ export function ConflictTrack({
   playerBColor: PlayerColor;
   viewerId: PlayerId | null;
 }) {
-  const labelA = playerLabel(playerAId, viewerId);
-  const labelB = playerLabel(playerBId, viewerId);
   const hexA = PLAYER_COLOR_HEX[playerAColor];
   const hexB = PLAYER_COLOR_HEX[playerBColor];
   const viewerColor = viewerId === playerBId ? playerBColor : playerAColor;
   const viewerHex = PLAYER_COLOR_HEX[viewerColor];
+  const labelA = playerLabel(playerAId, viewerId);
+  const labelB = playerLabel(playerBId, viewerId);
 
-  let advantage: string;
-  if (conflictPosition < 0) {
-    advantage = `przewaga: ${labelA}`;
-  } else if (conflictPosition > 0) {
-    advantage = `przewaga: ${labelB}`;
-  } else {
-    advantage = 'remis';
-  }
-
+  // Ujemna pozycja = przewaga A; dodatnia = przewaga B. Dla widza: plus = jego przewaga.
+  const relativePosition =
+    viewerId === playerBId ? conflictPosition : -conflictPosition;
   const markerPercent = trackPercent(conflictPosition);
 
   return (
     <Panel compact style={{ borderColor: viewerHex }}>
       <h2>Tor konfliktu</h2>
-      <p className={styles.summary}>
-        Pozycja: {conflictPosition} ({advantage}) · {labelA} ← 0 → {labelB}
-      </p>
       <div
         className={styles.track}
         style={{
@@ -67,37 +59,74 @@ export function ConflictTrack({
         {militaryTokens.map((token) => (
           <div
             key={token.position}
-            className={styles.thresholdMarker}
+            className={styles.thresholdSlot}
             style={{ left: `${trackPercent(token.position)}%` }}
-            title={`poz. ${token.position}: −${token.coinsPenalty} monet`}
           >
-            <span className={styles.thresholdValue}>
-              −{token.coinsPenalty}
-            </span>
+            <Tooltip
+              content={`poz. ${token.position}: −${token.coinsPenalty} monet`}
+              placement="top"
+              align="center"
+              fillParent
+            >
+              <div className={styles.thresholdMarker}>
+                <span className={styles.thresholdValue}>
+                  −{token.coinsPenalty}
+                </span>
+              </div>
+            </Tooltip>
           </div>
         ))}
         <div
-          className={styles.capitalMarker}
+          className={styles.capitalSlot}
           style={{ left: `${trackPercent(-9)}%` }}
-          title="Stolica gracza A — koniec gry przy dotarciu pionka"
-        />
+        >
+          <Tooltip
+            content={`Stolica: ${labelA} — koniec gry przy dotarciu pionka`}
+            placement="top"
+            align="start"
+            fillParent
+          >
+            <div className={styles.capitalMarker} />
+          </Tooltip>
+        </div>
         <div
-          className={styles.capitalMarker}
+          className={styles.capitalSlot}
           style={{ left: `${trackPercent(9)}%` }}
-          title="Stolica gracza B — koniec gry przy dotarciu pionka"
-        />
+        >
+          <Tooltip
+            content={`Stolica: ${labelB} — koniec gry przy dotarciu pionka`}
+            placement="top"
+            align="end"
+            fillParent
+          >
+            <div className={styles.capitalMarker} />
+          </Tooltip>
+        </div>
         <div
-          className={styles.marker}
-          style={{
-            left: `${markerPercent}%`,
-            backgroundColor:
-              conflictPosition < 0
-                ? hexA
-                : conflictPosition > 0
-                  ? hexB
-                  : undefined,
-          }}
-        />
+          className={styles.markerSlot}
+          style={{ left: `${markerPercent}%` }}
+        >
+          <Tooltip
+            content={`Pozycja: ${relativePosition}`}
+            placement="top"
+            align="center"
+            fillParent
+          >
+            <div
+              className={styles.marker}
+              style={{
+                backgroundColor:
+                  conflictPosition < 0
+                    ? hexA
+                    : conflictPosition > 0
+                      ? hexB
+                      : undefined,
+              }}
+            >
+              <span className={styles.markerValue}>{relativePosition}</span>
+            </div>
+          </Tooltip>
+        </div>
       </div>
 
       {militaryTokens.length === 0 ? (

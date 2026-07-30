@@ -21,4 +21,5 @@ export interface ProgressToken {
   id: ProgressTokenId;
   name: string;
   effects: readonly ProgressEffect[];
+  description: string;
 }

@@ -325,10 +325,12 @@ function PlayerProgressTokens({
   label,
   tokenIds,
   color,
+  tooltipPlacement,
 }: {
   label: string;
   tokenIds: PlayerState['progressTokens'];
   color: PlayerColor;
+  tooltipPlacement: 'top' | 'bottom';
 }) {
   const tokenGroupColorClass = playerColorClass(color, {
     orange: styles.playerTokenGroupOrange,
@@ -348,6 +350,8 @@ function PlayerProgressTokens({
                 key={tokenId}
                 token={token}
                 size="player"
+                tooltipPlacement={tooltipPlacement}
+                tooltipAlign="start"
               />
             ) : (
               <span key={tokenId}>{tokenId}</span>
@@ -477,11 +481,13 @@ export function GameScreen() {
               label="Żetony przeciwnika"
               tokenIds={opponent.progressTokens}
               color={opponent.color}
+              tooltipPlacement="bottom"
             />
             <PlayerProgressTokens
               label="Twoje żetony"
               tokenIds={me.progressTokens}
               color={me.color}
+              tooltipPlacement="top"
             />
           </div>
           <PlayerBar

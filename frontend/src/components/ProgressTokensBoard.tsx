@@ -23,7 +23,12 @@ export function ProgressTokensBoard({
             return (
               <li key={tokenId} className={styles.token}>
                 {token ? (
-                  <ProgressTokenFace token={token} size="board" />
+                  <ProgressTokenFace
+                    token={token}
+                    size="board"
+                    tooltipPlacement="bottom"
+                    tooltipAlign="end"
+                  />
                 ) : (
                   <span>{tokenId}</span>
                 )}

@@ -8,7 +8,7 @@
   height: 20px;
   border-radius: var(--radius-pill);
   border: 2px solid var(--color-panel-border);
-  margin: var(--space-lg) 0 var(--space-md);
+  margin: 1.75rem 0 1.6rem;
 }
 
 .zeroMark {
@@ -20,56 +20,102 @@
   background-color: var(--color-panel-border);
 }
 
-.marker {
+.markerSlot {
   position: absolute;
   top: 50%;
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  transition: left var(--transition-fast);
+  line-height: 0;
+}
+
+.marker {
+  position: relative;
   width: 22px;
   height: 22px;
   border-radius: 50%;
   background-color: var(--color-ink);
   border: 3px solid var(--color-cream);
   box-shadow: var(--shadow-soft);
+  cursor: help;
+  box-sizing: border-box;
+}
+
+.markerValue {
+  position: absolute;
+  bottom: calc(100% + 0.2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.thresholdSlot {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
   transform: translate(-50%, -50%);
-  transition: left var(--transition-fast);
-  z-index: 2;
+  z-index: 1;
+  line-height: 0;
 }
 
 .thresholdMarker {
-  position: absolute;
-  top: 50%;
+  position: relative;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background-color: var(--color-warning);
   border: 2px solid var(--color-cream);
   box-shadow: var(--shadow-soft);
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: default;
-  z-index: 1;
+  cursor: help;
+  box-sizing: border-box;
 }
 
 .thresholdValue {
   position: absolute;
-  top: -1.35rem;
+  top: calc(100% + 0.25rem);
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.65rem;
   font-weight: 700;
+  line-height: 1;
   color: var(--color-secondary);
   white-space: nowrap;
 }
 
-.capitalMarker {
+.capitalSlot {
   position: absolute;
   top: -4px;
   bottom: -4px;
+  width: 10px;
+  transform: translateX(-50%);
+  z-index: 0;
+  line-height: 0;
+}
+
+.capitalMarker {
+  width: 10px;
+  height: 100%;
+  position: relative;
+  cursor: help;
+}
+
+.capitalMarker::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
   width: 3px;
+  transform: translateX(-50%);
   background-color: var(--color-danger);
   opacity: 0.6;
-  transform: translateX(-50%);
 }
 
 .emptyHint {

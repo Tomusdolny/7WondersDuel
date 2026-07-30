@@ -4,6 +4,12 @@
   outline: none;
 }
 
+.fillParent {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .bubble {
   position: absolute;
   width: max-content;
