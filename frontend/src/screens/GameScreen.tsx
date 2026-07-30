@@ -37,45 +37,8 @@ function HelpModalContent() {
 }
 
 function SettingsModalContent({ onClose }: { onClose: () => void }) {
-  const { nickname } = useUiStore();
-  const [draft, setDraft] = useState(nickname ?? '');
-  const [error, setError] = useState<string | null>(null);
-
-  function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    try {
-      setNickname(draft);
-      setError(null);
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : 'Nie udało się zapisać nicku.',
-      );
-    }
-  }
-
   return (
     <>
-      <form className={styles.settingsForm} onSubmit={handleSubmit}>
-        <label className={styles.settingsLabel} htmlFor="nickname-input">
-          Twój nickname
-        </label>
-        <div className={styles.settingsRow}>
-          <input
-            id="nickname-input"
-            className={styles.settingsInput}
-            type="text"
-            maxLength={20}
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-          />
-          <Button type="submit" variant="secondary">
-            Zapisz
-          </Button>
-        </div>
-        {error ? <p className={styles.settingsError}>{error}</p> : null}
-      </form>
       <Button
         type="button"
         variant="danger"
