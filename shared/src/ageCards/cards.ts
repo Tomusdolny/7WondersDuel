@@ -61,7 +61,7 @@ export const AGE_2_CARDS = [
   { id: 'school', name: 'School', age: 2, color: 'green', cost: { resources: { wood: 1, papyrus: 2 } }, vp: 1, science: 'wheel', chain: 'harp' },
 
   // Żółte (4)
-  { id: 'forum', name: 'Forum', age: 2, color: 'yellow', cost: { coins: 1, resources: { clay: 1 } }, effect: { kind: 'production', oneOf: ['glass', 'papyrus'] } },
+  { id: 'forum', name: 'Forum', age: 2, color: 'yellow', cost: { coins: 3, resources: { clay: 1 } }, effect: { kind: 'production', oneOf: ['glass', 'papyrus'] } },
   { id: 'caravansery', name: 'Caravansery', age: 2, color: 'yellow', cost: { coins: 2, resources: { glass: 1, papyrus: 1 } }, effect: { kind: 'production', oneOf: ['wood', 'stone', 'clay'] } },
   { id: 'customs-house', name: 'Customs House', age: 2, color: 'yellow', cost: { coins: 4 }, effect: { kind: 'tradeDiscount', resources: ['glass', 'papyrus'] } },
   { id: 'brewery', name: 'Brewery', age: 2, color: 'yellow', cost: {}, effect: { kind: 'coinsNow', amount: 6 }, chain: 'barrel' },
