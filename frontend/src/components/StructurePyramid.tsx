@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import type { CSSProperties } from 'react';
 import type {
   Age,
   LegalSlotAction,
@@ -54,11 +56,13 @@ function SlotActions({
   actions,
   viewer,
   onClose,
+  style,
 }: {
   slotIndex: number;
   actions: LegalSlotAction[];
   viewer: PlayerState | null;
   onClose: () => void;
+  style?: CSSProperties;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -81,8 +85,7 @@ function SlotActions({
   }, [onClose]);
 
   return (
-    <div className={styles.actions} role="menu" ref={rootRef}>
-      <span className={styles.actionsArrow} aria-hidden />
+    <div className={styles.actions} role="menu" ref={rootRef} style={style}>
       <ul className={styles.actionsList}>
         {actions.map((legal, index) => (
           <li key={index} role="none">
@@ -102,10 +105,12 @@ function SlotActions({
             </Button>
           </li>
         ))}
+        <li role="none">
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Anuluj
+          </Button>
+        </li>
       </ul>
-      <Button type="button" variant="ghost" onClick={onClose}>
-        Anuluj
-      </Button>
     </div>
   );
 }
@@ -125,6 +130,12 @@ function buildRows(
   });
 }
 
+type ActionsLayout = {
+  top: number;
+  left: number;
+  width: number;
+};
+
 export function StructurePyramid({
   age,
   structure,
@@ -141,21 +152,67 @@ export function StructurePyramid({
   viewer: PlayerState | null;
 }) {
   const [openSlot, setOpenSlot] = useState<number | null>(null);
+  const [actionsLayout, setActionsLayout] = useState<ActionsLayout | null>(
+    null,
+  );
+  const boardRef = useRef<HTMLElement>(null);
+  const openSlotRef = useRef<HTMLDivElement | null>(null);
   const rowCounts = STRUCTURE_ROWS[age];
-  const rows = rowCounts
-    ? buildRows(age, structure)
-    : [];
+  const rows = rowCounts ? buildRows(age, structure) : [];
+  const openActions =
+    openSlot === null ? undefined : legalActions[openSlot];
   const openRowIndex =
     openSlot === null
       ? null
       : rows.findIndex(
-          (row) => openSlot >= row.startIndex && openSlot < row.startIndex + row.count,
+          (row) =>
+            openSlot >= row.startIndex &&
+            openSlot < row.startIndex + row.count,
         );
 
   const borderColor = viewer ? PLAYER_COLOR_HEX[viewer.color] : undefined;
 
+  useLayoutEffect(() => {
+    function updateActionsLayout() {
+      const board = boardRef.current;
+      const slotEl = openSlotRef.current;
+      if (!board || openSlot === null || !slotEl) {
+        setActionsLayout(null);
+        return;
+      }
+
+      const boardStyles = getComputedStyle(board);
+      const paddingLeft = Number.parseFloat(boardStyles.paddingLeft) || 0;
+      const paddingRight = Number.parseFloat(boardStyles.paddingRight) || 0;
+      const boardRect = board.getBoundingClientRect();
+      const slotRect = slotEl.getBoundingClientRect();
+
+      setActionsLayout({
+        top: slotRect.bottom + 6,
+        left: boardRect.left + paddingLeft,
+        width: board.clientWidth - paddingLeft - paddingRight,
+      });
+    }
+
+    updateActionsLayout();
+
+    const board = boardRef.current;
+    board?.addEventListener('scroll', updateActionsLayout);
+    window.addEventListener('resize', updateActionsLayout);
+    window.addEventListener('scroll', updateActionsLayout, true);
+    return () => {
+      board?.removeEventListener('scroll', updateActionsLayout);
+      window.removeEventListener('resize', updateActionsLayout);
+      window.removeEventListener('scroll', updateActionsLayout, true);
+    };
+  }, [openSlot, structure, age]);
+
   return (
-    <section className={styles.board} style={borderColor ? { borderColor } : undefined}>
+    <section
+      ref={boardRef}
+      className={styles.board}
+      style={borderColor ? { borderColor } : undefined}
+    >
       <h2 className={styles.title}>Piramida — era {age}</h2>
       {!rowCounts ? (
         <p className={styles.empty}>Nieznana era: {String(age)}</p>
@@ -171,7 +228,9 @@ export function StructurePyramid({
               className={`${styles.row} ${row.gap ? styles.rowGap : ''}`}
               style={{
                 zIndex:
-                  rowIndex === openRowIndex ? rows.length + 10 : rowIndex + 1,
+                  rowIndex === openRowIndex
+                    ? rows.length + 20
+                    : rowIndex + 1,
               }}
             >
               {Array.from({ length: row.count }, (_, col) => {
@@ -193,10 +252,12 @@ export function StructurePyramid({
                   slot.faceUp && 'cardId' in slot
                     ? findCard(slot.cardId)
                     : undefined;
+                const isOpen = openSlot === slot.index;
 
                 return (
                   <div
                     key={index}
+                    ref={isOpen ? openSlotRef : undefined}
                     className={`${styles.slot} ${
                       isAvailable ? styles.slotAvailable : ''
                     }`}
@@ -224,14 +285,6 @@ export function StructurePyramid({
                         </Button>
                       </div>
                     ) : null}
-                    {openSlot === slot.index && actions ? (
-                      <SlotActions
-                        slotIndex={slot.index}
-                        actions={actions}
-                        viewer={viewer}
-                        onClose={() => setOpenSlot(null)}
-                      />
-                    ) : null}
                   </div>
                 );
               })}
@@ -239,6 +292,22 @@ export function StructurePyramid({
           ))}
         </div>
       )}
+      {openSlot !== null && openActions && actionsLayout
+        ? createPortal(
+            <SlotActions
+              slotIndex={openSlot}
+              actions={openActions}
+              viewer={viewer}
+              onClose={() => setOpenSlot(null)}
+              style={{
+                top: actionsLayout.top,
+                left: actionsLayout.left,
+                width: actionsLayout.width,
+              }}
+            />,
+            document.body,
+          )
+        : null}
     </section>
   );
 }

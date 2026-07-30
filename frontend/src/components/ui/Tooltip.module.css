@@ -6,9 +6,6 @@
 
 .bubble {
   position: absolute;
-  bottom: calc(100% + 0.4rem);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
   width: max-content;
   min-width: 9rem;
   max-width: 13rem;
@@ -27,6 +24,39 @@
     transform var(--transition-fast);
   z-index: 50;
   text-align: left;
+  --tooltip-x: -50%;
+  --tooltip-y: 0;
+}
+
+.alignCenter {
+  left: 50%;
+  --tooltip-x: -50%;
+}
+
+.alignStart {
+  left: 0;
+  --tooltip-x: 0;
+}
+
+.alignEnd {
+  right: 0;
+  left: auto;
+  --tooltip-x: 0;
+}
+
+.bubbleTop {
+  bottom: calc(100% + 0.4rem);
+  --tooltip-y: 4px;
+}
+
+.bubbleBottom {
+  top: calc(100% + 0.4rem);
+  --tooltip-y: -4px;
+}
+
+.bubbleTop,
+.bubbleBottom {
+  transform: translateX(var(--tooltip-x)) translateY(var(--tooltip-y));
 }
 
 .wrapper:hover .bubble,
@@ -34,5 +64,5 @@
 .wrapper:focus-within .bubble {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(var(--tooltip-x)) translateY(0);
 }

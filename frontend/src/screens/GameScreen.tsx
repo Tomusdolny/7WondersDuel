@@ -128,6 +128,19 @@ function WonderDraft({
   );
 }
 
+function DiscardCardItem({ cardId }: { cardId: CardId }) {
+  const card = findCard(cardId);
+  return (
+    <li>
+      {card ? (
+        <CardFace card={card} size="summary" />
+      ) : (
+        <span>{cardId}</span>
+      )}
+    </li>
+  );
+}
+
 function DiscardPile({
   discard,
   borderColor,
@@ -135,37 +148,57 @@ function DiscardPile({
   discard: CardId[];
   borderColor: string;
 }) {
+  const [allDiscardsOpen, setAllDiscardsOpen] = useState(false);
+  const recentDiscard = discard.slice(-4).reverse();
+
   return (
-    <Panel compact style={{ borderColor }}>
-      <h2>Discard ({discard.length})</h2>
-      {discard.length === 0 ? (
-        <p className={styles.emptyHint}>pusty</p>
-      ) : (
-        <ul className={styles.cardStrip}>
-          {discard.map((cardId) => {
-            const card = findCard(cardId);
-            return (
-              <li key={cardId}>
-                {card ? (
-                  <CardFace card={card} size="summary" />
-                ) : (
-                  <span>{cardId}</span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </Panel>
+    <>
+      <Panel compact style={{ borderColor }}>
+        <h2>Discard ({discard.length})</h2>
+        {discard.length === 0 ? (
+          <p className={styles.emptyHint}>pusty</p>
+        ) : (
+          <>
+            <ul className={styles.discardPreview}>
+              {recentDiscard.map((cardId) => (
+                <DiscardCardItem key={cardId} cardId={cardId} />
+              ))}
+            </ul>
+            <Button
+              variant="secondary"
+              className={styles.discardShowAllButton}
+              onClick={() => setAllDiscardsOpen(true)}
+            >
+              Wszystkie odrzucone karty
+            </Button>
+          </>
+        )}
+      </Panel>
+      {allDiscardsOpen ? (
+        <Modal
+          title={`Odrzucone karty (${discard.length})`}
+          onClose={() => setAllDiscardsOpen(false)}
+        >
+          <ul className={styles.discardModalList}>
+            {discard.map((cardId) => (
+              <DiscardCardItem key={cardId} cardId={cardId} />
+            ))}
+          </ul>
+        </Modal>
+      ) : null}
+    </>
   );
 }
 
 function WonderGrid({
   player,
   buildableWonderIds,
+  topRowTooltipPlacement = 'bottom',
 }: {
   player: PlayerState;
   buildableWonderIds?: ReadonlySet<WonderId>;
+  /** Pozycja tooltipa dla górnego rzędu siatki 2×2. Dolny rząd zawsze `top`. */
+  topRowTooltipPlacement?: 'top' | 'bottom';
 }) {
   const slots = Array.from({ length: WONDER_SLOTS }, (_, index) => {
     return player.wonders[index] ?? null;
@@ -194,7 +227,15 @@ function WonderGrid({
             }`}
           >
             {wonder ? (
-              <WonderFace wonder={wonder} size="board" built={slot.built} />
+              <WonderFace
+                wonder={wonder}
+                size="board"
+                built={slot.built}
+                tooltipPlacement={
+                  index < 2 ? topRowTooltipPlacement : 'top'
+                }
+                tooltipAlign={index % 2 === 0 ? 'start' : 'end'}
+              />
             ) : (
               <span>{slot.wonderId}</span>
             )}
@@ -486,12 +527,12 @@ export function GameScreen() {
             score={scores[me.id] ?? 0}
             color={me.color}
           />
-          <WonderGrid player={me} buildableWonderIds={buildableWonderIds} />
+          <WonderGrid player={me} buildableWonderIds={buildableWonderIds} topRowTooltipPlacement="top" />
         </aside>
 
         <section className={styles.centerColumn}>
           <CardSummary
-            title="Skrót kart przeciwnika"
+            title="Karty przeciwnika"
             buildings={opponent.buildings}
             color={opponent.color}
           />
@@ -524,7 +565,7 @@ export function GameScreen() {
           )}
 
           <CardSummary
-            title="Skrót Twoich kart"
+            title="Twoje karty"
             buildings={me.buildings}
             color={me.color}
           />
