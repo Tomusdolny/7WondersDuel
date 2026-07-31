@@ -14,7 +14,7 @@ export type CreateInitialGameStateParams = {
 
 /**
  * Bootstrap partii: gracze (7 monet), Progress, militarne, start draftu cudów.
- * `players[0]` = A (pierwszy w ABBA), `players[1]` = B.
+ * `players[0]` = A (niebieski, pierwszy w ABBA), `players[1]` = B (pomarańczowy).
  * Po drafcie: `setupAge` osobno.
  */
 export function createInitialGameState(params: CreateInitialGameStateParams): GameState {
@@ -26,12 +26,20 @@ export function createInitialGameState(params: CreateInitialGameStateParams): Ga
   const { progressOnBoard, progressInBox } = dealProgressTokens(params.rng);
   const [colorA, colorB] = params.rng.shuffle(['orange', 'blue'] as const);
 
+  let players: [PlayerState, PlayerState] = [
+    emptyPlayer(idA, colorA!),
+    emptyPlayer(idB, colorB!),
+  ];
+  if (players[0].color !== 'blue') {
+    players = [players[1], players[0]];
+  }
+
   const base: GameState = {
     version: 0,
     phase: { kind: 'playing' },
     age: 1,
-    activePlayerId: idA,
-    players: [emptyPlayer(idA, colorA!), emptyPlayer(idB, colorB!)],
+    activePlayerId: players[0].id,
+    players,
     structure: [],
     discard: [],
     progressOnBoard,

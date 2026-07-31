@@ -415,7 +415,7 @@ export function GameScreen() {
     activePlayer.color === 'orange'
       ? 'rgba(201, 106, 63, 0.18)'
       : 'rgba(43, 111, 119, 0.15)';
-  const scores = scoreCivilian(gameView).scores;
+  const scores = scoreCivilian(gameView, { mode: 'live' }).scores;
   const buildableWonderIds = new Set<WonderId>();
   for (const actions of Object.values(legalActions)) {
     for (const legal of actions) {

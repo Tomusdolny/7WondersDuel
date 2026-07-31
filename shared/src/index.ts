@@ -75,7 +75,11 @@ export { startWonderDraft } from './_gameLogic/setup/startWonderDraft.js';
 export { applySelectWonder } from './_gameLogic/setup/applySelectWonder.js';
 
 export type { ScoreBreakdown, CivilianScoreResult } from './_gameLogic/scoring/types.js';
-export type { ScoreCivilianInput } from './_gameLogic/scoring/scoreCivilian.js';
+export type {
+  ScoreCivilianInput,
+  ScoreCivilianMode,
+  ScoreCivilianOptions,
+} from './_gameLogic/scoring/scoreCivilian.js';
 export { scoreCivilian } from './_gameLogic/scoring/scoreCivilian.js';
 export { militaryVpFromPosition } from './_gameLogic/scoring/militaryVp.js';
 
