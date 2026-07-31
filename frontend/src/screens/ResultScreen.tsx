@@ -1,6 +1,5 @@
 import type { GameResult, PlayerId, ScoreBreakdown } from '@7ww/shared';
 import { leaveRoom, useUiStore } from '../store/uiStore';
-import { playerLabel } from '../lib/playerLabel';
 import { Button } from '../components/ui/Button';
 import { Panel } from '../components/ui/Panel';
 import styles from './ResultScreen.module.css';
@@ -15,26 +14,46 @@ const SCORE_COLUMNS: { key: keyof ScoreBreakdown; label: string }[] = [
   { key: 'blueVp', label: 'Niebieskie (TB)' },
 ];
 
-function resultSummary(
-  result: GameResult,
+function nicknameFor(
+  id: PlayerId,
+  nicknames: Record<PlayerId, string>,
+  localNickname: string | null,
   viewerId: PlayerId | null,
 ): string {
+  const fromMap = nicknames[id]?.trim();
+  if (fromMap) return fromMap;
+  if (id === viewerId) {
+    const local = localNickname?.trim();
+    if (local) return local;
+  }
+  return 'Gracz';
+}
+
+function resultSummary(
+  result: GameResult,
+  nicknames: Record<PlayerId, string>,
+  localNickname: string | null,
+  viewerId: PlayerId | null,
+): string {
+  const winnerName = (winnerId: PlayerId) =>
+    nicknameFor(winnerId, nicknames, localNickname, viewerId);
+
   switch (result.kind) {
     case 'military':
-      return `Zwycięstwo militarne — ${playerLabel(result.winnerId, viewerId)}`;
+      return `Zwycięstwo militarne — ${winnerName(result.winnerId)}`;
     case 'science':
-      return `Zwycięstwo naukowe — ${playerLabel(result.winnerId, viewerId)}`;
+      return `Zwycięstwo naukowe — ${winnerName(result.winnerId)}`;
     case 'civilian':
       return result.winnerId === 'tie'
         ? 'Remis punktowy'
-        : `Zwycięstwo cywilne — ${playerLabel(result.winnerId, viewerId)}`;
+        : `Zwycięstwo cywilne — ${winnerName(result.winnerId)}`;
     case 'resign':
-      return `Walkower — ${playerLabel(result.winnerId, viewerId)}`;
+      return `Walkower — ${winnerName(result.winnerId)}`;
   }
 }
 
 export function ResultScreen() {
-  const { gameEnded, playerId } = useUiStore();
+  const { gameEnded, playerId, nickname, nicknames } = useUiStore();
 
   return (
     <main className={styles.screen}>
@@ -43,7 +62,7 @@ export function ResultScreen() {
         {gameEnded ? (
           <>
             <p className={styles.summary}>
-              {resultSummary(gameEnded.result, playerId)}
+              {resultSummary(gameEnded.result, nicknames, nickname, playerId)}
             </p>
             <div className={styles.tableWrapper}>
               <table className={styles.table}>
@@ -66,7 +85,14 @@ export function ResultScreen() {
                         key={score.playerId}
                         className={isWinner ? styles.winnerRow : undefined}
                       >
-                        <td>{playerLabel(score.playerId, playerId)}</td>
+                        <td>
+                          {nicknameFor(
+                            score.playerId,
+                            nicknames,
+                            nickname,
+                            playerId,
+                          )}
+                        </td>
                         {SCORE_COLUMNS.map((column) => (
                           <td key={column.key}>{score[column.key]}</td>
                         ))}
