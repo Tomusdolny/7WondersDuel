@@ -34,7 +34,7 @@ export const AGE_1_CARDS = [
   { id: 'guard-tower', name: 'Guard Tower', age: 1, color: 'red', cost: {}, shields: 1 },
   { id: 'stable', name: 'Stable', age: 1, color: 'red', cost: { resources: { wood: 1 } }, shields: 1, chain: 'horseshoe' },
   { id: 'garrison', name: 'Garrison', age: 1, color: 'red', cost: { resources: { clay: 1 } }, shields: 1, chain: 'sword' },
-  { id: 'palisade', name: 'Palisade', age: 1, color: 'red', cost: { coins: 1 }, shields: 1, chain: 'tower' },
+  { id: 'palisade', name: 'Palisade', age: 1, color: 'red', cost: { coins: 2 }, shields: 1, chain: 'tower' },
 ] satisfies readonly Card[];
 
 export const AGE_2_CARDS = [
