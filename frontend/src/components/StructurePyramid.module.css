@@ -55,6 +55,22 @@
   pointer-events: auto;
 }
 
+.slot:hover {
+  z-index: 100;
+}
+
+.slot:hover img {
+  position: relative;
+  z-index: 40;
+  transform: scale(1.85);
+  transform-origin: center bottom;
+  box-shadow: 0 10px 24px rgba(58, 46, 38, 0.42);
+}
+
+.row:has(.slot:hover) {
+  z-index: 100 !important;
+}
+
 .slotTaken {
   width: 4.6rem;
   height: 7.1rem;
@@ -68,18 +84,20 @@
   font-style: italic;
 }
 
-.slotAvailable {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: 8px;
-}
-
 .pickButtonWrapper {
   position: absolute;
   left: 50%;
   bottom: -0.35rem;
   transform: translateX(-50%);
-  z-index: 2;
+  transform-origin: center top;
+  /* Nad powiększoną kartą — inaczej scale zasłania „Wybierz”. */
+  z-index: 50;
+  pointer-events: auto;
+  transition: transform var(--transition-fast);
+}
+
+.slot:hover .pickButtonWrapper {
+  transform: translateX(-50%) scale(1.85);
 }
 
 .pickButton {

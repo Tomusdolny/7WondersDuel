@@ -53,6 +53,11 @@
   display: flex;
 }
 
+.wonderItem:hover {
+  position: relative;
+  z-index: 40;
+}
+
 .tokenList {
   display: flex;
   flex-wrap: wrap;

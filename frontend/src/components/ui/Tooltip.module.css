@@ -4,6 +4,11 @@
   outline: none;
 }
 
+.wrapper:hover,
+.wrapper:focus-within {
+  z-index: 40;
+}
+
 .fillParent {
   display: block;
   width: 100%;
@@ -60,8 +65,21 @@
   --tooltip-y: -4px;
 }
 
+/* Odstęp ponad/pod powiększoną kartą (pyramid rośnie od dołu ≈ ×1.85). */
+.bubbleTopClearZoom {
+  bottom: calc(100% + 6.5rem);
+  --tooltip-y: 4px;
+}
+
+.bubbleBottomClearZoom {
+  top: calc(100% + 3.6rem);
+  --tooltip-y: -4px;
+}
+
 .bubbleTop,
-.bubbleBottom {
+.bubbleBottom,
+.bubbleTopClearZoom,
+.bubbleBottomClearZoom {
   transform: translateX(var(--tooltip-x)) translateY(var(--tooltip-y));
 }
 
