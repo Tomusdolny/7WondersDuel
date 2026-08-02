@@ -258,9 +258,7 @@ export function StructurePyramid({
                   <div
                     key={index}
                     ref={isOpen ? openSlotRef : undefined}
-                    className={`${styles.slot} ${
-                      isAvailable ? styles.slotAvailable : ''
-                    }`}
+                    className={styles.slot}
                   >
                     {!slot.faceUp ? (
                       <CardBack age={age} />

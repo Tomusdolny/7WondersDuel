@@ -61,6 +61,7 @@ export function WonderFace({
       fullWidth={size === 'board'}
       placement={tooltipPlacement}
       align={tooltipAlign}
+      clearZoom
     >
       <img
         className={classes}

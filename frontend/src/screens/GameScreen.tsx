@@ -19,22 +19,10 @@ import { ProgressTokenFace } from '../components/ProgressTokenFace';
 import { Panel } from '../components/ui/Panel';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
+import { HelpModal } from '../components/HelpModal';
 import styles from './GameScreen.module.css';
 
 const WONDER_SLOTS = 4;
-
-function HelpModalContent() {
-  return (
-    <>
-      <p>
-        Skrócony przewodnik po interfejsie gry pojawi się tutaj wkrótce —
-        obejmie zasady piramidy, budowy cudów, toru konfliktu i żetonów
-        postępu.
-      </p>
-      <p className={styles.emptyHint}>Treść: wkrótce.</p>
-    </>
-  );
-}
 
 function SettingsModalContent({ onClose }: { onClose: () => void }) {
   return (
@@ -415,7 +403,7 @@ export function GameScreen() {
     activePlayer.color === 'orange'
       ? 'rgba(201, 106, 63, 0.18)'
       : 'rgba(43, 111, 119, 0.15)';
-  const scores = scoreCivilian(gameView).scores;
+  const scores = scoreCivilian(gameView, { mode: 'live' }).scores;
   const buildableWonderIds = new Set<WonderId>();
   for (const actions of Object.values(legalActions)) {
     for (const legal of actions) {
@@ -560,11 +548,7 @@ export function GameScreen() {
         </aside>
       </div>
       </div>
-      {helpOpen ? (
-        <Modal title="Pomoc" onClose={() => setHelpOpen(false)}>
-          <HelpModalContent />
-        </Modal>
-      ) : null}
+      {helpOpen ? <HelpModal onClose={() => setHelpOpen(false)} /> : null}
       {settingsOpen ? (
         <Modal title="Ustawienia" onClose={() => setSettingsOpen(false)}>
           <SettingsModalContent onClose={() => setSettingsOpen(false)} />

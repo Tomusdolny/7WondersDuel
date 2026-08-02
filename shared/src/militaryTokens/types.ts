@@ -8,6 +8,6 @@ export interface MilitaryToken {
   coinsPenalty: 2 | 5;
 }
 
-export const PLAYER_A_WIN = -10;
-export const PLAYER_B_WIN = 10;
+export const PLAYER_A_WIN = -9;
+export const PLAYER_B_WIN = 9;
 export const MILITARY_TOKEN_CENTER = 0;

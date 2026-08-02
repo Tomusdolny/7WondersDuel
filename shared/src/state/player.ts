@@ -6,7 +6,7 @@ import type { Resource } from '../resources.js';
 export type PlayerId = string;
 export type { ProgressTokenId };
 
-/** Kolor UI gracza; losowany przy starcie partii, stały przez całą grę. */
+/** Kolor UI gracza; `players[0]` jest zawsze niebieski. */
 export type PlayerColor = 'orange' | 'blue';
 
 export interface PlayerWonderSlot {
@@ -18,7 +18,7 @@ export interface PlayerWonderSlot {
  * Persystowany stan gracza.
  *
  * Świadomie NIE trzymamy tu:
- * - VP — wyliczane na koniec (budynki + cuda + Progress + militarne z toru + monety/3)
+ * - VP — buildings/wonders/progress liczone na bieżąco; military/treasury/guilds na koniec
  * - zapasu surowców — produkcja jest ciągła z kart/cudów, nie „wydawana z magazynu”
  * - cen handlu — `2 + N` z brąz/szary przeciwnika + własne zniżki z żółtych
  * - listy efektów / symboli nauki / łańcuchów / tarcz — wynikają z buildings + wonders + progressTokens
@@ -27,7 +27,7 @@ export interface PlayerWonderSlot {
  */
 export interface PlayerState {
   id: PlayerId;
-  /** Kolor UI gracza (losowany przy starcie partii). */
+  /** Kolor UI gracza (`players[0]` = blue). */
   color: PlayerColor;
   /** Skarbiec; start = 7. */
   coins: number;

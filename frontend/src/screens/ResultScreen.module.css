@@ -5,10 +5,16 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-lg);
+  box-sizing: border-box;
+  background-image: url('/images/menu-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--color-plaster);
 }
 
 .card {
-  width: min(720px, 100%);
+  width: min(1120px, 94%);
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
@@ -27,17 +33,20 @@
 
 .tableWrapper {
   overflow-x: auto;
+  width: 100%;
 }
 
 .table {
   width: 100%;
+  min-width: 52rem;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  table-layout: fixed;
 }
 
 .table th,
 .table td {
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-md) var(--space-sm);
   text-align: center;
   border-bottom: 1px solid rgba(58, 46, 38, 0.15);
 }
@@ -46,11 +55,14 @@
   font-family: var(--font-heading);
   color: var(--color-secondary);
   border-bottom: 2px solid var(--color-panel-border);
+  font-size: 0.95rem;
 }
 
 .table td:first-child,
 .table th:first-child {
   text-align: left;
+  width: 9rem;
+  padding-left: var(--space-md);
 }
 
 .table tbody tr:nth-child(odd) {

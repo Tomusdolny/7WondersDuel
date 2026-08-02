@@ -34,7 +34,7 @@ export function CardFace({
   const classes = [styles.card, sizeClass, className].filter(Boolean).join(' ');
 
   return (
-    <Tooltip content={<CardTooltipContent card={card} />}>
+    <Tooltip content={<CardTooltipContent card={card} />} clearZoom>
       <img
         className={classes}
         src={cardImageSrc(card.id)}

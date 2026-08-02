@@ -12,6 +12,7 @@ export function Tooltip({
   fillParent = false,
   placement = 'top',
   align = 'center',
+  clearZoom = false,
 }: {
   content: ReactNode;
   children: ReactNode;
@@ -24,6 +25,8 @@ export function Tooltip({
   placement?: TooltipPlacement;
   /** Wyrównanie poziome względem elementu (chroni przed przycięciem krawędzią ekranu). */
   align?: TooltipAlign;
+  /** Większy odstęp, żeby opis nie nachodził na powiększoną kartę. */
+  clearZoom?: boolean;
 }) {
   const classes = [
     styles.wrapper,
@@ -33,7 +36,13 @@ export function Tooltip({
     .filter(Boolean)
     .join(' ');
   const placementClass =
-    placement === 'bottom' ? styles.bubbleBottom : styles.bubbleTop;
+    placement === 'bottom'
+      ? clearZoom
+        ? styles.bubbleBottomClearZoom
+        : styles.bubbleBottom
+      : clearZoom
+        ? styles.bubbleTopClearZoom
+        : styles.bubbleTop;
   const alignClass =
     align === 'start'
       ? styles.alignStart

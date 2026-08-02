@@ -16,6 +16,11 @@
   overflow-y: auto;
 }
 
+.panelWide {
+  max-width: min(96vw, 72rem);
+  max-height: 92vh;
+}
+
 .header {
   display: flex;
   align-items: center;
