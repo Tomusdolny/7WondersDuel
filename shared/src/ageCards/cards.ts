@@ -71,7 +71,7 @@ export const AGE_2_CARDS = [
   { id: 'horse-breeders', name: 'Horse Breeders', age: 2, color: 'red', cost: { resources: { clay: 1, wood: 1 } }, shields: 1, chain: 'horseshoe' },
   { id: 'archery-range', name: 'Archery Range', age: 2, color: 'red', cost: { resources: { stone: 1, wood: 1, papyrus: 1 } }, shields: 2, chain: 'target' },
   { id: 'barracks', name: 'Barracks', age: 2, color: 'red', cost: { coins: 3 }, shields: 1, chain: 'sword' },
-  { id: 'parade-ground', name: 'Parade Ground', age: 2, color: 'red', cost: { resources: { clay: 2, papyrus: 1 } }, shields: 2, chain: 'helmet' },
+  { id: 'parade-ground', name: 'Parade Ground', age: 2, color: 'red', cost: { resources: { clay: 2, glass: 1 } }, shields: 2, chain: 'helmet' },
 ] satisfies readonly Card[];
 
 export const AGE_3_CARDS = [
