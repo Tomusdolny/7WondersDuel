@@ -27,7 +27,7 @@ export function militaryVpByPlayer(
     [playerB.id]: 0,
   };
   if (vp === 0) return scores;
-  if (state.conflictPosition > 0) {
+  if (state.conflictPosition < 0) {
     scores[playerA.id] = vp;
   } else {
     scores[playerB.id] = vp;
