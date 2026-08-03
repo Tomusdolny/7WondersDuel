@@ -129,6 +129,7 @@ function DiscardPile({
         <Modal
           title={`Odrzucone karty (${discard.length})`}
           onClose={() => setAllDiscardsOpen(false)}
+          size="wide"
         >
           <ul className={styles.discardModalList}>
             {discard.map((cardId) => (

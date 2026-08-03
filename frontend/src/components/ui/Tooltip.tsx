@@ -25,8 +25,11 @@ export function Tooltip({
   placement?: TooltipPlacement;
   /** Wyrównanie poziome względem elementu (chroni przed przycięciem krawędzią ekranu). */
   align?: TooltipAlign;
-  /** Większy odstęp, żeby opis nie nachodził na powiększoną kartę. */
-  clearZoom?: boolean;
+  /**
+   * Odstęp od powiększonej karty:
+   * `false` — blisko; `true` / `'pyramid'` — duży (piramida); `'summary'` — średni.
+   */
+  clearZoom?: boolean | 'pyramid' | 'summary';
 }) {
   const classes = [
     styles.wrapper,
@@ -35,14 +38,24 @@ export function Tooltip({
   ]
     .filter(Boolean)
     .join(' ');
+  const zoomMode =
+    clearZoom === true || clearZoom === 'pyramid'
+      ? 'pyramid'
+      : clearZoom === 'summary'
+        ? 'summary'
+        : null;
   const placementClass =
     placement === 'bottom'
-      ? clearZoom
+      ? zoomMode === 'pyramid'
         ? styles.bubbleBottomClearZoom
-        : styles.bubbleBottom
-      : clearZoom
+        : zoomMode === 'summary'
+          ? styles.bubbleBottomClearZoomSummary
+          : styles.bubbleBottom
+      : zoomMode === 'pyramid'
         ? styles.bubbleTopClearZoom
-        : styles.bubbleTop;
+        : zoomMode === 'summary'
+          ? styles.bubbleTopClearZoomSummary
+          : styles.bubbleTop;
   const alignClass =
     align === 'start'
       ? styles.alignStart

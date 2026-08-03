@@ -161,14 +161,6 @@ export function StructurePyramid({
   const rows = rowCounts ? buildRows(age, structure) : [];
   const openActions =
     openSlot === null ? undefined : legalActions[openSlot];
-  const openRowIndex =
-    openSlot === null
-      ? null
-      : rows.findIndex(
-          (row) =>
-            openSlot >= row.startIndex &&
-            openSlot < row.startIndex + row.count,
-        );
 
   const borderColor = viewer ? PLAYER_COLOR_HEX[viewer.color] : undefined;
 
@@ -226,12 +218,6 @@ export function StructurePyramid({
             <div
               key={rowIndex}
               className={`${styles.row} ${row.gap ? styles.rowGap : ''}`}
-              style={{
-                zIndex:
-                  rowIndex === openRowIndex
-                    ? rows.length + 20
-                    : rowIndex + 1,
-              }}
             >
               {Array.from({ length: row.count }, (_, col) => {
                 const index = row.startIndex + col;
@@ -242,6 +228,7 @@ export function StructurePyramid({
                     <div
                       key={index}
                       className={`${styles.slot} ${styles.slotTaken}`}
+                      style={{ zIndex: rowIndex + 1 }}
                     />
                   );
                 }
@@ -258,7 +245,10 @@ export function StructurePyramid({
                   <div
                     key={index}
                     ref={isOpen ? openSlotRef : undefined}
-                    className={styles.slot}
+                    className={`${styles.slot}${
+                      slot.faceUp ? ` ${styles.slotFaceUp}` : ''
+                    }`}
+                    style={{ zIndex: rowIndex + 1 }}
                   >
                     {!slot.faceUp ? (
                       <CardBack age={age} />

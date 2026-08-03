@@ -76,10 +76,23 @@
   --tooltip-y: -4px;
 }
 
+/* Środek między bliskim (0.4rem) a piramidowym (6.5rem) — karty summary. */
+.bubbleTopClearZoomSummary {
+  bottom: calc(100% + 3.45rem);
+  --tooltip-y: 4px;
+}
+
+.bubbleBottomClearZoomSummary {
+  top: calc(100% + 2rem);
+  --tooltip-y: -4px;
+}
+
 .bubbleTop,
 .bubbleBottom,
 .bubbleTopClearZoom,
-.bubbleBottomClearZoom {
+.bubbleBottomClearZoom,
+.bubbleTopClearZoomSummary,
+.bubbleBottomClearZoomSummary {
   transform: translateX(var(--tooltip-x)) translateY(var(--tooltip-y));
 }
 

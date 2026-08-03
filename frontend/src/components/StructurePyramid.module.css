@@ -7,9 +7,8 @@
   padding: var(--space-md);
   color: var(--color-text-on-light);
   box-shadow: var(--shadow-soft);
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-gutter: stable;
+  /* Stały overflow — zmiana przy hoverze przesuwała piramidę. */
+  overflow: visible;
   min-height: 320px;
 }
 
@@ -37,6 +36,8 @@
      elementów rzędów pod spodem (niższy z-index) w miejscach pustych/
      przezroczystych slotów. Klikalność włączana z powrotem na .slot. */
   pointer-events: none;
+  /* Bez z-index na rzędzie — wtedy slot może wyjść ponad inne rzędy. */
+  z-index: auto;
 }
 
 .row:first-child {
@@ -55,20 +56,17 @@
   pointer-events: auto;
 }
 
-.slot:hover {
-  z-index: 100;
+/* Tylko odkryte karty: powiększenie + wyjście na wierzch. */
+.slotFaceUp:hover {
+  z-index: 100 !important;
 }
 
-.slot:hover img {
+.slotFaceUp:hover img {
   position: relative;
   z-index: 40;
   transform: scale(1.85);
   transform-origin: center bottom;
   box-shadow: 0 10px 24px rgba(58, 46, 38, 0.42);
-}
-
-.row:has(.slot:hover) {
-  z-index: 100 !important;
 }
 
 .slotTaken {
@@ -96,7 +94,7 @@
   transition: transform var(--transition-fast);
 }
 
-.slot:hover .pickButtonWrapper {
+.slotFaceUp:hover .pickButtonWrapper {
   transform: translateX(-50%) scale(1.85);
 }
 

@@ -125,6 +125,7 @@
 
 .centerColumn {
   justify-content: space-between;
+  overflow: visible;
 }
 
 .rightColumn {
@@ -331,6 +332,13 @@
   border-radius: var(--radius-card-sm);
   background-color: var(--color-panel-bg);
   color: var(--color-ink);
+  overflow: visible;
+  position: relative;
+  z-index: 0;
+}
+
+.cardSummary:has(.cardStackItem:hover) {
+  z-index: 40;
 }
 
 .cardSummaryTitle {
@@ -381,7 +389,6 @@
 }
 
 .discardPreview > li:hover,
-.discardModalList > li:hover,
 .cardStrip > li:hover {
   position: relative;
   z-index: 40;
@@ -395,20 +402,34 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: var(--space-sm);
+  justify-content: flex-start;
+  gap: var(--space-md);
   list-style: none;
+  /* Zapas na scale(1.85) od środka karty summary (~2.1rem na stronę). */
   margin: 0;
-  padding: 0;
+  padding: 2.75rem;
+  overflow: visible;
+  min-height: 12rem;
+}
+
+.discardModalList > li {
+  position: relative;
+  z-index: 0;
+}
+
+.discardModalList > li:hover {
+  z-index: 80;
 }
 
 .cardColorStack {
   position: relative;
   width: 3.2rem;
   flex-shrink: 0;
+  z-index: 0;
 }
 
-.cardColorStack:hover {
-  z-index: 40;
+.cardColorStack:has(.cardStackItem:hover) {
+  z-index: 50;
 }
 
 .cardStackItem {
@@ -418,7 +439,8 @@
 }
 
 .cardStackItem:hover {
-  z-index: 40;
+  /* Nadpisuje inline zIndex ze stosu (kolejność kart). */
+  z-index: 200 !important;
 }
 
 .tokenIcons {
@@ -440,6 +462,7 @@
   min-height: 280px;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 .pyramidArea > * {
